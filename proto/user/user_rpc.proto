@@ -1,0 +1,122 @@
+syntax = "proto3";
+
+package user;
+
+import "google/protobuf/timestamp.proto";
+
+option go_package = "github.com/GoSimplicity/AICoreOps/proto/user;user";
+
+// 用户服务定义
+service UserService {
+  // 创建用户
+  rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
+  // 获取用户详情
+  rpc GetUser (GetUserRequest) returns (GetUserResponse);
+  // 更新用户
+  rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
+  // 删除用户
+  rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
+  // 列出用户
+  rpc ListUsers (ListUsersRequest) returns (ListUsersResponse);
+}
+
+// 用户对象
+message User {
+  int64 id = 1; // 用户ID
+  string username = 2; // 用户名
+  string email = 3; // 邮箱
+  string phone = 4; // 电话
+  string nickname = 5; // 昵称
+  string avatar = 6; // 头像URL
+  repeated string roles = 12; // 用户角色列表
+  UserStatus status = 7; // 用户状态
+  google.protobuf.Timestamp last_login_time = 8; // 最后登录时间
+  google.protobuf.Timestamp create_time = 9; // 创建时间
+  google.protobuf.Timestamp update_time = 10; // 更新时间
+  bool is_deleted = 11; // 是否已删除
+}
+
+// 用户状态枚举
+enum UserStatus {
+  STATUS_UNSPECIFIED = 0; // 未指定
+  ACTIVE = 1; // 活跃
+  INACTIVE = 2; // 不活跃
+  BANNED = 3; // 被封禁
+  // 根据需求添加更多状态
+}
+
+// 创建用户请求
+message CreateUserRequest {
+  string username = 1; // 用户名
+  string password = 2; // 密码
+  string email = 3; // 邮箱
+  string phone = 4; // 电话
+  string nickname = 5; // 昵称
+  string avatar = 6; // 头像URL
+  UserStatus status = 7; // 用户状态
+  bool is_default = 8; // 是否为默认用户
+}
+
+// 创建用户响应
+message CreateUserResponse {
+  bool success = 1; // 是否成功
+  string message = 2; // 消息
+  User user = 3; // 创建的用户对象
+}
+
+// 获取用户请求
+message GetUserRequest {
+  int64 id = 1; // 用户ID
+}
+
+// 获取用户响应
+message GetUserResponse {
+  User user = 1; // 用户对象
+}
+
+// 更新用户请求
+message UpdateUserRequest {
+  int64 id = 1; // 用户ID
+  string username = 2; // 用户名
+  string email = 3; // 邮箱
+  string phone = 4; // 电话
+  string nickname = 5; // 昵称
+  string avatar = 6; // 头像URL
+  UserStatus status = 7; // 用户状态
+  bool is_deleted = 8; // 是否已删除
+}
+
+// 更新用户响应
+message UpdateUserResponse {
+  bool success = 1; // 是否成功
+  string message = 2; // 消息
+  User user = 3; // 更新后的用户对象
+}
+
+// 删除用户请求
+message DeleteUserRequest {
+  int64 id = 1; // 用户ID
+}
+
+// 删除用户响应
+message DeleteUserResponse {
+  bool success = 1; // 是否成功
+  string message = 2; // 消息
+}
+
+// 列出用户请求
+message ListUsersRequest {
+  int32 page_number = 1; // 页码
+  int32 page_size = 2; // 每页数量
+  string filter = 3; // 过滤条件（例如：用户名、邮箱）
+  string sort_by = 4; // 排序字段
+  bool descending = 5; // 是否降序
+}
+
+// 列出用户响应
+message ListUsersResponse {
+  repeated User users = 1; // 用户列表
+  int32 total = 2; // 总数量
+  int32 page_number = 3; // 当前页码
+  int32 page_size = 4; // 每页数量
+}
