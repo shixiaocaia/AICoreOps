@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package tree_rpc;
+option go_package="./tree_rpc";
+
+message Request {
+  string ping = 1;
+}
+
+message Response {
+  string pong = 1;
+}
+
+service Tree_rpc {
+  rpc Ping(Request) returns(Response);
+}
