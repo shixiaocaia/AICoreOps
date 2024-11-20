@@ -58,9 +58,8 @@ message CreateUserRequest {
 
 // 创建用户响应
 message CreateUserResponse {
-  bool success = 1; // 是否成功
-  string message = 2; // 消息
-  User user = 3; // 创建的用户对象
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
 }
 
 // 获取用户请求
@@ -70,7 +69,9 @@ message GetUserRequest {
 
 // 获取用户响应
 message GetUserResponse {
-  User user = 1; // 用户对象
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
+  User data = 3; // 响应数据
 }
 
 // 更新用户请求
@@ -87,9 +88,8 @@ message UpdateUserRequest {
 
 // 更新用户响应
 message UpdateUserResponse {
-  bool success = 1; // 是否成功
-  string message = 2; // 消息
-  User user = 3; // 更新后的用户对象
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
 }
 
 // 删除用户请求
@@ -99,8 +99,8 @@ message DeleteUserRequest {
 
 // 删除用户响应
 message DeleteUserResponse {
-  bool success = 1; // 是否成功
-  string message = 2; // 消息
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
 }
 
 // 列出用户请求
@@ -114,6 +114,13 @@ message ListUsersRequest {
 
 // 列出用户响应
 message ListUsersResponse {
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
+  ListUsersData data = 3; // 响应数据
+}
+
+// 列出用户响应数据
+message ListUsersData {
   repeated User users = 1; // 用户列表
   int32 total = 2; // 总数量
   int32 page_number = 3; // 当前页码
