@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package workorder_rpc;
+option go_package="./types/workorder;workorder";
+
+message Request {
+  string ping = 1;
+}
+
+message Response {
+  string pong = 1;
+}
+
+service Workorder_rpc {
+  rpc Ping(Request) returns(Response);
+}
