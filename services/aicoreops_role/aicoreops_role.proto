@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package aicoreops_role;
+option go_package="./aicoreops_role";
+
+message Request {
+  string ping = 1;
+}
+
+message Response {
+  string pong = 1;
+}
+
+service Aicoreops_role {
+  rpc Ping(Request) returns(Response);
+}

@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package aicoreops_prometheus;
+option go_package="./aicoreops_prometheus";
+
+message Request {
+  string ping = 1;
+}
+
+message Response {
+  string pong = 1;
+}
+
+service Aicoreops_prometheus {
+  rpc Ping(Request) returns(Response);
+}

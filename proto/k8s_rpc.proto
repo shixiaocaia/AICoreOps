@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package k8s_rpc;
+option go_package="./types/k8s;k8s";
+
+message Request {
+  string ping = 1;
+}
+
+message Response {
+  string pong = 1;
+}
+
+service K8s_rpc {
+  rpc Ping(Request) returns(Response);
+}

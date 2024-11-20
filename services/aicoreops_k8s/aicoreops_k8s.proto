@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package aicoreops_k8s;
+option go_package="./aicoreops_k8s";
+
+message Request {
+  string ping = 1;
+}
+
+message Response {
+  string pong = 1;
+}
+
+service Aicoreops_k8s {
+  rpc Ping(Request) returns(Response);
+}
