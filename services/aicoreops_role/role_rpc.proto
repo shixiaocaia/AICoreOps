@@ -4,7 +4,7 @@ package role;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "./types/role;role";
+option go_package = "./types";
 
 // 角色服务定义
 service RoleService {

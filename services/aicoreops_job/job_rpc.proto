@@ -1,7 +1,7 @@
 syntax = "proto3";
 
-package aicoreops_tree;
-option go_package="./aicoreops_tree";
+package job_rpc;
+option go_package="./types";
 
 message Request {
   string ping = 1;
@@ -11,6 +11,6 @@ message Response {
   string pong = 1;
 }
 
-service Aicoreops_tree {
+service Job_rpc {
   rpc Ping(Request) returns(Response);
 }

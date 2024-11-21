@@ -4,7 +4,7 @@ package menu;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "./types/menu;menu";
+option go_package = "./types";
 
 // 菜单服务定义
 service MenuService {
