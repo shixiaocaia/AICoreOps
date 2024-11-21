@@ -8,8 +8,10 @@ import (
 type UserRepo interface {
 	// CreateUser 创建用户
 	CreateUser(ctx context.Context, user *model.User) error
-	// GetUser 根据ID获取用户
-	GetUser(ctx context.Context, id int) (*model.User, error)
+	// GetUserById 根据ID获取用户
+	GetUserById(ctx context.Context, id int) (*model.User, error)
+	// GetUserByUsernameAndPassword 根据用户名和密码获取用户
+	GetUserByUsernameAndPassword(ctx context.Context, username, password string) (*model.User, error)
 	// GetUserByUsername 根据用户名获取用户
 	GetUserByUsername(ctx context.Context, username string) (*model.User, error)
 	// UpdateUser 更新用户信息
@@ -22,4 +24,6 @@ type UserRepo interface {
 	UpdatePassword(ctx context.Context, id int, newPassword string) error
 	// UpdateStatus 更新用户状态
 	UpdateStatus(ctx context.Context, id int, status int) error
+	// UpdateLastLoginTime 更新用户最后登录时间
+	UpdateLastLoginTime(ctx context.Context, id int) error
 }

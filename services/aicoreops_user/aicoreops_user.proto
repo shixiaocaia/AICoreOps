@@ -1,7 +1,5 @@
 syntax = "proto3";
 
-import "google/protobuf/timestamp.proto"; // 导入 Timestamp 类型
-
 package aicoreops_user;
 option go_package="./types";
 
@@ -17,6 +15,10 @@ service UserService {
   rpc DeleteUser (DeleteUserRequest) returns (DeleteUserResponse);
   // 列出用户
   rpc ListUsers (ListUsersRequest) returns (ListUsersResponse);
+  // 登陆
+  rpc Login (LoginRequest) returns (LoginResponse);
+  // 登出
+  rpc Logout (LogoutRequest) returns (LogoutResponse);
 }
 
 // 用户对象
@@ -29,10 +31,10 @@ message User {
   string avatar = 6; // 头像URL
   repeated string roles = 12; // 用户角色列表
   UserStatus status = 7; // 用户状态
-  google.protobuf.Timestamp last_login_time = 8; // 最后登录时间
-  google.protobuf.Timestamp create_time = 9; // 创建时间
-  google.protobuf.Timestamp update_time = 10; // 更新时间
-  bool is_deleted = 11; // 是否已删除
+  int64 last_login_time = 8; // 最后登录时间
+  int64 create_time = 9; // 创建时间
+  int64 update_time = 10; // 更新时间
+  int32 is_deleted = 11; // 是否已删除
 }
 
 // 用户状态枚举
@@ -41,7 +43,6 @@ enum UserStatus {
   ACTIVE = 1; // 活跃
   INACTIVE = 2; // 不活跃
   BANNED = 3; // 被封禁
-  // 根据需求添加更多状态
 }
 
 // 创建用户请求
@@ -83,7 +84,7 @@ message UpdateUserRequest {
   string nickname = 5; // 昵称
   string avatar = 6; // 头像URL
   UserStatus status = 7; // 用户状态
-  bool is_deleted = 8; // 是否已删除
+  int32 is_deleted = 8; // 是否已删除
 }
 
 // 更新用户响应
@@ -125,4 +126,32 @@ message ListUsersData {
   int32 total = 2; // 总数量
   int32 page_number = 3; // 当前页码
   int32 page_size = 4; // 每页数量
+}
+
+// 登录请求
+message LoginRequest {
+  string username = 1; // 用户名
+  string password = 2; // 密码
+}
+
+// 登录响应
+message LoginResponse {
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
+  LoginResponseData data = 3; // 响应数据
+}
+
+message LoginResponseData {
+  string jwt_token = 1; // 登录令牌
+  string refresh_token = 2; // 刷新令牌
+}
+
+// 登出请求
+message LogoutRequest {
+}
+
+// 登出响应
+message LogoutResponse {
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
 }

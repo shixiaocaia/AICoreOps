@@ -17,6 +17,12 @@ type AicoreopsUserServer struct {
 	types.UnimplementedUserServiceServer
 }
 
+func NewAicoreopsUserServer(svcCtx *svc.ServiceContext) *AicoreopsUserServer {
+	return &AicoreopsUserServer{
+		svcCtx: svcCtx,
+	}
+}
+
 func (s *AicoreopsUserServer) CreateUser(ctx context.Context, request *types.CreateUserRequest) (*types.CreateUserResponse, error) {
 	l := logic.NewUserLogic(ctx, s.svcCtx)
 	return l.CreateUser(ctx, request)
@@ -42,8 +48,12 @@ func (s *AicoreopsUserServer) ListUsers(ctx context.Context, request *types.List
 	return l.ListUsers(ctx, request)
 }
 
-func NewAicoreopsUserServer(svcCtx *svc.ServiceContext) *AicoreopsUserServer {
-	return &AicoreopsUserServer{
-		svcCtx: svcCtx,
-	}
+func (s *AicoreopsUserServer) Login(ctx context.Context, request *types.LoginRequest) (*types.LoginResponse, error) {
+	l := logic.NewUserLogic(ctx, s.svcCtx)
+	return l.Login(ctx, request)
+}
+
+func (s *AicoreopsUserServer) Logout(ctx context.Context, request *types.LogoutRequest) (*types.LogoutResponse, error) {
+	l := logic.NewUserLogic(ctx, s.svcCtx)
+	return l.Logout(ctx, request)
 }

@@ -4,7 +4,7 @@ package api;
 
 import "google/protobuf/timestamp.proto";
 
-option go_package = "./types/api;api";
+option go_package = "./types";
 
 service ApiService {
   // 创建 API

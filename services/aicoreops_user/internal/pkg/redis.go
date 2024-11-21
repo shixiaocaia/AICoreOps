@@ -1,5 +1,11 @@
 package pkg
 
+import (
+	"aicoreops_user/internal/config"
+
+	"github.com/redis/go-redis/v9"
+)
+
 /*
  * Copyright 2024 Bamboo
  *
@@ -18,3 +24,9 @@ package pkg
  * File: redis.go
  * Description:
  */
+
+func InitRedis(c config.MyRedisConfig) redis.Cmdable {
+	return redis.NewClient(&redis.Options{
+		Addr: c.Addr,
+	})
+}
