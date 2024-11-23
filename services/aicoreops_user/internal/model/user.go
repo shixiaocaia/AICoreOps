@@ -31,7 +31,7 @@ type User struct {
 	LastLoginTime int64  `gorm:"column:last_login_time;type:int" json:"last_login_time"`           // 最后登录时间
 	CreateTime    int64  `gorm:"column:create_time;type:int;autoCreateTime" json:"create_time"`    // 创建时间
 	UpdateTime    int64  `gorm:"column:update_time;type:int;autoUpdateTime" json:"update_time"`    // 更新时间
-	IsDeleted     int32  `gorm:"column:is_deleted;type:tinyint;default:0" json:"is_deleted"`       // 软删除标志（0:否, 1:是）
+	IsDeleted     int    `gorm:"column:is_deleted;type:tinyint;default:0" json:"is_deleted"`       // 软删除标志（0:否, 1:是）
 }
 
 func (*User) TableName() string {

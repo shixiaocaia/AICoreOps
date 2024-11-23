@@ -3,6 +3,7 @@ package logic
 import (
 	"context"
 	"errors"
+	"strconv"
 
 	"aicoreops_user/internal/domain"
 	"aicoreops_user/internal/svc"
@@ -117,6 +118,23 @@ func (l *UserLogic) Login(ctx context.Context, req *types.LoginRequest) (*types.
 
 // Logout 登出
 func (l *UserLogic) Logout(ctx context.Context, req *types.LogoutRequest) (*types.LogoutResponse, error) {
+	// 检查用户是否存在
+	_, err := l.domain.GetUserById(ctx, int(req.Id))
+	if err != nil {
+		if err == gorm.ErrRecordNotFound {
+			l.Logger.Errorf("用户不存在: %v", err)
+			return nil, errors.New("用户不存在")
+		}
+		l.Logger.Errorf("查询用户失败: %v", err)
+		return nil, errors.New("系统错误")
+	}
+
+	// 清除token
+	if err := l.svcCtx.JWT.ClearToken(ctx, strconv.Itoa(int(req.Id))); err != nil {
+		l.Logger.Errorf("清除token失败: %v", err)
+		return nil, errors.New("登出失败")
+	}
+
 	return &types.LogoutResponse{
 		Code:    0,
 		Message: "登出成功",
@@ -173,7 +191,7 @@ func (l *UserLogic) UpdateUser(ctx context.Context, req *types.UpdateUserRequest
 		l.Logger.Errorf("不允许修改用户名")
 		return nil, errors.New("不允许修改用户名")
 	}
-	
+
 	if req.Email != "" {
 		user.Email = req.Email
 	}
@@ -190,7 +208,7 @@ func (l *UserLogic) UpdateUser(ctx context.Context, req *types.UpdateUserRequest
 		user.Status = int(req.Status)
 	}
 	if req.IsDeleted != 0 {
-		user.IsDeleted = req.IsDeleted
+		user.IsDeleted = int(req.IsDeleted)
 	}
 
 	// 调用领域层更新用户
@@ -230,6 +248,7 @@ func (l *UserLogic) DeleteUser(ctx context.Context, req *types.DeleteUserRequest
 		Message: "删除用户成功",
 	}, nil
 }
+
 // ListUsers 列出用户
 func (l *UserLogic) ListUsers(ctx context.Context, req *types.ListUsersRequest) (*types.ListUsersResponse, error) {
 	// 参数校验
@@ -261,7 +280,7 @@ func (l *UserLogic) ListUsers(ctx context.Context, req *types.ListUsersRequest) 
 			CreateTime:    user.CreateTime,
 			UpdateTime:    user.UpdateTime,
 			Status:        types.UserStatus(user.Status),
-			IsDeleted:     user.IsDeleted,
+			IsDeleted:     int32(user.IsDeleted),
 		})
 	}
 

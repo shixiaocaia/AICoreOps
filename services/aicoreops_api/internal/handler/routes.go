@@ -2,6 +2,7 @@ package handler
 
 import (
 	"net/http"
+	"path"
 
 	"github.com/zeromicro/go-zero/rest"
 )
@@ -12,25 +13,24 @@ type Routers struct {
 	prefix      string
 }
 
-func NewRouters(server *rest.Server, prefix string) *Routers {
+func NewRouters(server *rest.Server) *Routers {
 	return &Routers{
 		server: server,
-		prefix: prefix,
 	}
 }
 
 // addRoute 内部通用路由添加方法
-func (r *Routers) addRoute(method, path string, handler http.HandlerFunc) {
+func (r *Routers) addRoute(method, routePath string, handler http.HandlerFunc) {
+	fullPath := path.Join(r.prefix, routePath)
 	r.server.AddRoutes(
 		rest.WithMiddlewares(
 			r.middlewares,
 			rest.Route{
 				Method:  method,
-				Path:    path,
+				Path:    fullPath,
 				Handler: handler,
 			},
 		),
-		rest.WithPrefix(r.prefix),
 	)
 }
 
@@ -55,11 +55,14 @@ func (r *Routers) Put(path string, handler http.HandlerFunc) {
 }
 
 // Group 创建路由组
-func (r *Routers) Group() *Routers {
-	return &Routers{
+func (r *Routers) Group(prefix ...string) *Routers {
+	group := &Routers{
 		server: r.server,
-		prefix: r.prefix,
 	}
+	if len(prefix) > 0 {
+		group.prefix = path.Join(r.prefix, prefix[0])
+	}
+	return group
 }
 
 // Use 添加中间件

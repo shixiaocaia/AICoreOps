@@ -148,6 +148,7 @@ message LoginResponseData {
 
 // 登出请求
 message LogoutRequest {
+  int64 id = 1; // 用户ID
 }
 
 // 登出响应
