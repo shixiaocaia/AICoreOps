@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/aicoreopsuser.yaml", "the config file")
+var configFile = flag.String("f", "etc/config.yaml", "the config file")
 
 func main() {
 	flag.Parse()

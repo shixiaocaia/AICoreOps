@@ -2,29 +2,147 @@ package logic
 
 import (
 	"context"
+	"time"
 
 	"aicoreops_api/internal/svc"
 	"aicoreops_api/internal/types"
+	"aicoreops_common/types/user"
 
+	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type Aicoreops_apiLogic struct {
+type UserLogic struct {
 	logx.Logger
 	ctx    context.Context
 	svcCtx *svc.ServiceContext
 }
 
-func NewAicoreops_apiLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Aicoreops_apiLogic {
-	return &Aicoreops_apiLogic{
+func NewUserLogic(ctx context.Context, svcCtx *svc.ServiceContext) *UserLogic {
+	return &UserLogic{
 		Logger: logx.WithContext(ctx),
 		ctx:    ctx,
 		svcCtx: svcCtx,
 	}
 }
 
-func (l *Aicoreops_apiLogic) Aicoreops_api(req *types.Request) (resp *types.Response, err error) {
-	// todo: add your logic here and delete this line
+// Login 用户登录
+func (l *UserLogic) Login(req *types.LoginRequest) (resp *user.LoginResponse, err error) {
+	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
+	defer cancel()
 
-	return
+	loginReq := &user.LoginRequest{}
+	if err := copier.Copy(loginReq, req); err != nil {
+		return nil, err
+	}
+
+	loginResp, err := l.svcCtx.UserRpc.Login(ctx, loginReq)
+	if err != nil {
+		return nil, err
+	}
+
+	return loginResp, nil
+}
+
+// Register 用户注册
+func (l *UserLogic) Register(req *types.RegisterRequest) (err error) {
+	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
+	defer cancel()
+
+	createReq := &user.CreateUserRequest{}
+	if err := copier.Copy(createReq, req); err != nil {
+		return err
+	}
+
+	_, err = l.svcCtx.UserRpc.CreateUser(ctx, createReq)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// Logout 用户登出
+func (l *UserLogic) Logout() (err error) {
+	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
+	defer cancel()
+
+	_, err = l.svcCtx.UserRpc.Logout(ctx, &user.LogoutRequest{})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetUser 获取用户信息
+func (l *UserLogic) GetUser(req *types.GetUserRequest) (resp *user.GetUserResponse, err error) {
+	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
+	defer cancel()
+
+	getUserReq := &user.GetUserRequest{}
+	if err := copier.Copy(getUserReq, req); err != nil {
+		return nil, err
+	}
+
+	userResp, err := l.svcCtx.UserRpc.GetUser(ctx, getUserReq)
+	if err != nil {
+		return nil, err
+	}
+
+	return userResp, nil
+}
+
+// UpdateUser 更新用户信息
+func (l *UserLogic) UpdateUser(req *types.UpdateUserRequest) (err error) {
+	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
+	defer cancel()
+
+	updateReq := &user.UpdateUserRequest{}
+	if err := copier.Copy(updateReq, req); err != nil {
+		return err
+	}
+
+	_, err = l.svcCtx.UserRpc.UpdateUser(ctx, updateReq)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// DeleteUser 删除用户
+func (l *UserLogic) DeleteUser(req *types.DeleteUserRequest) (err error) {
+	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
+	defer cancel()
+
+	deleteReq := &user.DeleteUserRequest{}
+	if err := copier.Copy(deleteReq, req); err != nil {
+		return err
+	}
+
+	_, err = l.svcCtx.UserRpc.DeleteUser(ctx, deleteReq)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+// GetUserList 获取用户列表
+func (l *UserLogic) GetUserList(req *types.GetUserListRequest) (resp *user.ListUsersResponse, err error) {
+	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
+	defer cancel()
+
+	listReq := &user.ListUsersRequest{}
+	if err := copier.Copy(listReq, req); err != nil {
+		return nil, err
+	}
+
+	listResp, err := l.svcCtx.UserRpc.ListUsers(ctx, listReq)
+	if err != nil {
+		return nil, err
+	}
+
+	return listResp, nil
 }
