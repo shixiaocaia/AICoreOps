@@ -6,3 +6,6 @@ UserRpc:
     Hosts:
       - 127.0.0.1:2379
     Key: aicoreopsuser.rpc
+JWT:
+  Secret: "aicoreops"
+  Expire: 86400
