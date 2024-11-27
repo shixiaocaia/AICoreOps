@@ -3,7 +3,6 @@ package logic
 import (
 	"context"
 	"errors"
-	"strconv"
 
 	"aicoreops_user/internal/domain"
 	"aicoreops_user/internal/svc"
@@ -118,19 +117,8 @@ func (l *UserLogic) Login(ctx context.Context, req *types.LoginRequest) (*types.
 
 // Logout 登出
 func (l *UserLogic) Logout(ctx context.Context, req *types.LogoutRequest) (*types.LogoutResponse, error) {
-	// 检查用户是否存在
-	_, err := l.domain.GetUserById(ctx, int(req.Id))
-	if err != nil {
-		if err == gorm.ErrRecordNotFound {
-			l.Logger.Errorf("用户不存在: %v", err)
-			return nil, errors.New("用户不存在")
-		}
-		l.Logger.Errorf("查询用户失败: %v", err)
-		return nil, errors.New("系统错误")
-	}
-
 	// 清除token
-	if err := l.svcCtx.JWT.ClearToken(ctx, strconv.Itoa(int(req.Id))); err != nil {
+	if err := l.svcCtx.JWT.ClearToken(ctx, req.JwtToken, req.RefreshToken); err != nil {
 		l.Logger.Errorf("清除token失败: %v", err)
 		return nil, errors.New("登出失败")
 	}

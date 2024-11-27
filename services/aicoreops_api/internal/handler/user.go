@@ -116,8 +116,14 @@ func (h *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 
 // Logout 处理用户登出请求
 func (h *UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
+	var req types.LogoutRequest
+	if err := httpx.Parse(r, &req); err != nil {
+		httpx.Error(w, err)
+		return
+	}
+
 	l := logic.NewUserLogic(r.Context(), h.svcCtx)
-	err := l.Logout()
+	err := l.Logout(&req)
 	result := aicoreops_common.NewResultResponse().HandleResponse(nil, err)
 
 	httpx.OkJsonCtx(r.Context(), w, result)

@@ -4,7 +4,7 @@
 // - protoc             v5.27.1
 // source: aicoreops_user.proto
 
-package user	
+package user
 
 import (
 	context "context"

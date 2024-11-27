@@ -148,7 +148,8 @@ message LoginResponseData {
 
 // 登出请求
 message LogoutRequest {
-  int64 id = 1; // 用户ID
+  string jwt_token = 1; // 登录令牌
+  string refresh_token = 2; // 刷新令牌
 }
 
 // 登出响应

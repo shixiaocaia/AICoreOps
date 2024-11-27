@@ -24,7 +24,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/golang-jwt/jwt/v4"
@@ -55,7 +54,7 @@ var (
 type JWTHandler interface {
 	SetLoginToken(uid int) (accessToken string, refreshToken string, err error)
 	SetJWTToken(uid int, ssid string) (string, error)
-	ClearToken(ctx context.Context, token string) error
+	ClearToken(ctx context.Context, token string, refreshToken string) error
 	setRefreshToken(uid int, ssid string) (string, error)
 }
 
@@ -191,37 +190,40 @@ func (j *jwtHandler) generateToken(claims jwt.Claims, secret []byte) (string, er
 }
 
 // ClearToken 清除令牌
-func (j *jwtHandler) ClearToken(ctx context.Context, t string) error {
-	authToken, err := j.extractBearerToken(t)
-	if err != nil {
-		return fmt.Errorf("提取令牌失败: %w", err)
-	}
-
+func (j *jwtHandler) ClearToken(ctx context.Context, token string, refreshToken string) error {
 	claims := &UserClaims{}
-	token, err := jwt.ParseWithClaims(authToken, claims, func(token *jwt.Token) (interface{}, error) {
+	parsedToken, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
 		if token.Method != j.signingMethod {
 			return nil, fmt.Errorf("意外的签名方法: %v", token.Header["alg"])
 		}
 		return j.secret, nil
 	})
 
-	if err != nil || !token.Valid {
+	if err != nil || !parsedToken.Valid {
 		return ErrInvalidToken
 	}
 
-	if err := j.addToBlacklist(ctx, authToken, claims.ExpiresAt.Time); err != nil {
-		return fmt.Errorf("添加到黑名单失败: %w", err)
+	if err := j.addToBlacklist(ctx, token, claims.ExpiresAt.Time); err != nil {
+		return fmt.Errorf("添加访问令牌到黑名单失败: %w", err)
+	}
+
+	refreshClaims := &RefreshClaims{}
+	parsedRefreshToken, err := jwt.ParseWithClaims(refreshToken, refreshClaims, func(token *jwt.Token) (interface{}, error) {
+		if token.Method != j.signingMethod {
+			return nil, fmt.Errorf("意外的签名方法: %v", token.Header["alg"])
+		}
+		return j.refreshSecret, nil
+	})
+
+	if err != nil || !parsedRefreshToken.Valid {
+		return ErrInvalidToken
+	}
+
+	if err := j.addToBlacklist(ctx, refreshToken, refreshClaims.ExpiresAt.Time); err != nil {
+		return fmt.Errorf("添加刷新令牌到黑名单失败: %w", err)
 	}
 
 	return nil
-}
-
-// extractBearerToken 提取Bearer令牌
-func (j *jwtHandler) extractBearerToken(token string) (string, error) {
-	if len(token) <= len(bearerPrefix) || !strings.HasPrefix(token, bearerPrefix) {
-		return "", ErrInvalidFormat
-	}
-	return token[len(bearerPrefix):], nil
 }
 
 // addToBlacklist 添加令牌到黑名单
