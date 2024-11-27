@@ -17,20 +17,28 @@
  * Description:
  */
 
-package config
+package svc
 
-import "github.com/zeromicro/go-zero/zrpc"
+import (
+	"aicoreops_role/internal/config"
+	"aicoreops_role/internal/pkg"
 
-type Config struct {
-	zrpc.RpcServerConf
-	Mysql  DBConfig
-	Casbin CasbinConfig
+	"github.com/casbin/casbin/v2"
+	"gorm.io/gorm"
+)
+
+type ServiceContext struct {
+	Config config.Config
+	DB     *gorm.DB
+	Casbin *casbin.Enforcer
 }
 
-type DBConfig struct {
-	Addr string
-}
-
-type CasbinConfig struct {
-	Path string
+func NewServiceContext(c config.Config) *ServiceContext {
+	db := pkg.InitDB(c.Mysql.Addr)
+	casbin := pkg.InitCasbin(c.Casbin.Path, db)
+	return &ServiceContext{
+		Config: c,
+		DB:     db,
+		Casbin: casbin,
+	}
 }

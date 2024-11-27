@@ -1,8 +1,6 @@
 syntax = "proto3";
 
-package menu;
-
-import "google/protobuf/timestamp.proto";
+package aicoreops_menu;
 
 option go_package = "./types";
 
@@ -30,10 +28,10 @@ message Menu {
   string icon = 6; // 图标
   int32 sort_order = 7; // 排序顺序
   string route_name = 8; // 路由名称
-  bool hidden = 9; // 是否隐藏
-  google.protobuf.Timestamp create_time = 10; // 创建时间
-  google.protobuf.Timestamp update_time = 11; // 更新时间
-  bool is_deleted = 12; // 是否已删除
+  int32 hidden = 9; // 是否隐藏
+  int64 create_time = 10; // 创建时间
+  int64 update_time = 11; // 更新时间
+  int32 is_deleted = 12; // 是否已删除
 }
 
 // 创建菜单请求
@@ -45,13 +43,13 @@ message CreateMenuRequest {
   string icon = 5; // 图标
   int32 sort_order = 6; // 排序顺序
   string route_name = 7; // 路由名称
-  bool hidden = 8; // 是否隐藏
+  int32 hidden = 8; // 是否隐藏
 }
 
 // 创建菜单响应
 message CreateMenuResponse {
-  bool success = 1; // 是否成功
-  string message = 2; // 消息
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
   Menu menu = 3; // 创建的菜单对象
 }
 
@@ -62,7 +60,9 @@ message GetMenuRequest {
 
 // 获取菜单响应
 message GetMenuResponse {
-  Menu menu = 1; // 菜单对象
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
+  Menu data = 3; // 菜单对象
 }
 
 // 更新菜单请求
@@ -72,9 +72,8 @@ message UpdateMenuRequest {
 
 // 更新菜单响应
 message UpdateMenuResponse {
-  bool success = 1; // 是否成功
-  string message = 2; // 消息
-  Menu menu = 3; // 更新后的菜单对象
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
 }
 
 // 删除菜单请求
@@ -84,8 +83,8 @@ message DeleteMenuRequest {
 
 // 删除菜单响应
 message DeleteMenuResponse {
-  bool success = 1; // 是否成功
-  string message = 2; // 消息
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
 }
 
 // 列出菜单请求
@@ -94,11 +93,18 @@ message ListMenusRequest {
   int32 page_size = 2; // 每页数量
   string filter = 3; // 过滤条件（例如：名称、父菜单ID）
   string sort_by = 4; // 排序字段
-  bool descending = 5; // 是否降序
+  int32 descending = 5; // 是否降序
 }
 
 // 列出菜单响应
 message ListMenusResponse {
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
+  ListMenusData data = 3; // 响应数据
+}
+
+// 列出菜单响应数据
+message ListMenusData {
   repeated Menu menus = 1; // 菜单列表
   int32 total = 2; // 总数量
   int32 page_number = 3; // 当前页码

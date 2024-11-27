@@ -17,20 +17,25 @@
  * Description:
  */
 
-package config
+package pkg
 
-import "github.com/zeromicro/go-zero/zrpc"
+import (
+	"github.com/casbin/casbin/v2"
+	gormadapter "github.com/casbin/gorm-adapter/v3"
+	"gorm.io/gorm"
+)
 
-type Config struct {
-	zrpc.RpcServerConf
-	Mysql  DBConfig
-	Casbin CasbinConfig
-}
+// InitCasbin 初始化casbin
+func InitCasbin(path string, db *gorm.DB) *casbin.Enforcer {
+	adapter, err := gormadapter.NewAdapterByDB(db)
+	if err != nil {
+		panic(err)
+	}
 
-type DBConfig struct {
-	Addr string
-}
+	enforcer, err := casbin.NewEnforcer(path, adapter)
+	if err != nil {
+		panic(err)
+	}
 
-type CasbinConfig struct {
-	Path string
+	return enforcer
 }

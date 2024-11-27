@@ -2,12 +2,12 @@
 // goctl 1.7.3
 // Source: aicoreops_role.proto
 
-package aicoreopsroleclient
+package types
 
 import (
 	"context"
 
-	"aicoreops_role/aicoreops_role"
+	"aicoreops_role/types"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

@@ -38,6 +38,11 @@ type UpdateUserRequest struct {
 	Avatar   string `json:"avatar"`
 }
 
+type LogoutRequest struct {
+	JWTToken   string `json:"jwt_token"`
+	RefreshToken string `json:"refresh_token"`
+}
+
 type GeneralResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`

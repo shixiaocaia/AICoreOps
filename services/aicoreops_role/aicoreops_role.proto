@@ -1,8 +1,6 @@
 syntax = "proto3";
 
-package role;
-
-import "google/protobuf/timestamp.proto";
+package aicoreops_role;
 
 option go_package = "./types";
 
@@ -26,10 +24,10 @@ message Role {
   string name = 2; // 角色名称
   string description = 3; // 角色描述
   RoleType role_type = 4; // 角色类型
-  bool is_default = 5; // 是否为默认角色
-  google.protobuf.Timestamp create_time = 6; // 创建时间
-  google.protobuf.Timestamp update_time = 7; // 更新时间
-  bool is_deleted = 8; // 是否已删除
+  int32 is_default = 5; // 是否为默认角色
+  int64 create_time = 6; // 创建时间
+  int64 update_time = 7; // 更新时间
+  int32 is_deleted = 8; // 是否已删除
 }
 
 // 角色类型枚举
@@ -38,7 +36,6 @@ enum RoleType {
   ADMIN = 1; // 管理员
   USER = 2; // 普通用户
   GUEST = 3; // 访客
-  // 根据需求添加更多角色类型
 }
 
 // 创建角色请求
@@ -46,13 +43,13 @@ message CreateRoleRequest {
   string name = 1; // 角色名称
   string description = 2; // 角色描述
   RoleType role_type = 3; // 角色类型
-  bool is_default = 4; // 是否为默认角色
+  int32 is_default = 4; // 是否为默认角色
 }
 
 // 创建角色响应
 message CreateRoleResponse {
-  bool success = 1; // 是否成功
-  string message = 2; // 消息
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
   Role role = 3; // 创建的角色对象
 }
 
@@ -63,7 +60,9 @@ message GetRoleRequest {
 
 // 获取角色响应
 message GetRoleResponse {
-  Role role = 1; // 角色对象
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
+  Role data = 3; // 角色对象
 }
 
 // 更新角色请求
@@ -73,9 +72,8 @@ message UpdateRoleRequest {
 
 // 更新角色响应
 message UpdateRoleResponse {
-  bool success = 1; // 是否成功
-  string message = 2; // 消息
-  Role role = 3; // 更新后的角色对象
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
 }
 
 // 删除角色请求
@@ -85,8 +83,8 @@ message DeleteRoleRequest {
 
 // 删除角色响应
 message DeleteRoleResponse {
-  bool success = 1; // 是否成功
-  string message = 2; // 消息
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
 }
 
 // 列出角色请求
@@ -95,11 +93,18 @@ message ListRolesRequest {
   int32 page_size = 2; // 每页数量
   string filter = 3; // 过滤条件（例如：名称、角色类型）
   string sort_by = 4; // 排序字段
-  bool descending = 5; // 是否降序
+  int32 descending = 5; // 是否降序
 }
 
 // 列出角色响应
 message ListRolesResponse {
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
+  ListRolesData data = 3; // 响应数据
+}
+
+// 列出角色响应数据
+message ListRolesData {
   repeated Role roles = 1; // 角色列表
   int32 total = 2; // 总数量
   int32 page_number = 3; // 当前页码

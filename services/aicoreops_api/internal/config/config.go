@@ -9,9 +9,13 @@ type Config struct {
 	rest.RestConf
 	UserRpc zrpc.RpcClientConf
 	JWT     JWTConfig
+	MyRedis MyRedis
 }
 
 type JWTConfig struct {
 	Secret string
-	Expire int64
+}
+
+type MyRedis struct {
+	Addr string
 }

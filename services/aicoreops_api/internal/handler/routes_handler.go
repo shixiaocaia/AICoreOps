@@ -7,12 +7,21 @@ import (
 
 func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	userGroup := r.Group("/api")
+
 	user := NewUserHandler(serverCtx)
+	authMiddleware := middleware.NewAuthMiddleware(serverCtx.Config.JWT.Secret, serverCtx.RDB)
+
+	// login 接口不需要认证
 	userGroup.Post("/user/login", user.Login)
-	userGroup.Post("/user/logout", user.Logout).Use(middleware.AuthMiddleware(serverCtx.Config.JWT.Secret))
 	userGroup.Post("/user/create", user.CreateUser)
-	userGroup.Get("/user/get", user.GetUser).Use(middleware.AuthMiddleware(serverCtx.Config.JWT.Secret))
-	userGroup.Post("/user/update", user.UpdateUser).Use(middleware.AuthMiddleware(serverCtx.Config.JWT.Secret))
-	userGroup.Delete("/user/delete", user.DeleteUser).Use(middleware.AuthMiddleware(serverCtx.Config.JWT.Secret))
-	userGroup.Get("/user/list", user.ListUsers).Use(middleware.AuthMiddleware(serverCtx.Config.JWT.Secret))
+
+	// 其他接口需要认证
+	authGroup := userGroup.Group("")
+	authGroup.Use(authMiddleware.Handle)
+
+	authGroup.Post("/user/logout", user.Logout)
+	authGroup.Get("/user/get", user.GetUser)
+	authGroup.Post("/user/update", user.UpdateUser)
+	authGroup.Delete("/user/delete", user.DeleteUser)
+	authGroup.Get("/user/list", user.ListUsers)
 }

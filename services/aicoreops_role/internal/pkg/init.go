@@ -17,20 +17,20 @@
  * Description:
  */
 
-package config
+package pkg
 
-import "github.com/zeromicro/go-zero/zrpc"
+import (
+	"aicoreops_role/internal/model"
 
-type Config struct {
-	zrpc.RpcServerConf
-	Mysql  DBConfig
-	Casbin CasbinConfig
-}
+	"gorm.io/gorm"
+)
 
-type DBConfig struct {
-	Addr string
-}
-
-type CasbinConfig struct {
-	Path string
+func InitTables(db *gorm.DB) error {
+	return db.AutoMigrate(
+		&model.Api{},
+		&model.Menu{},
+		&model.Role{},
+		&model.RoleMenu{},
+		&model.RoleApi{},
+	)
 }

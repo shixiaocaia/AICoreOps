@@ -35,6 +35,10 @@ func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	// 处理响应结果
 	result := aicoreops_common.NewResultResponse().HandleResponse(&resp, err)
 
+	// 设置响应头部
+	w.Header().Set("x-jwt-token", resp.Data.JwtToken)
+	w.Header().Set("x-refresh-token", resp.Data.RefreshToken)
+
 	// 返回响应结果
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
@@ -116,8 +120,13 @@ func (h *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 
 // Logout 处理用户登出请求
 func (h *UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
+	var req types.LogoutRequest
+
+	req.JWTToken = r.Header.Get("x-jwt-token")
+	req.RefreshToken = r.Header.Get("x-refresh-token")
+
 	l := logic.NewUserLogic(r.Context(), h.svcCtx)
-	err := l.Logout()
+	err := l.Logout(&req)
 	result := aicoreops_common.NewResultResponse().HandleResponse(nil, err)
 
 	httpx.OkJsonCtx(r.Context(), w, result)

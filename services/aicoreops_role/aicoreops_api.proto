@@ -1,11 +1,10 @@
 syntax = "proto3";
 
-package api;
-
-import "google/protobuf/timestamp.proto";
+package aicoreops_api;
 
 option go_package = "./types";
 
+// API 服务定义
 service ApiService {
   // 创建 API
   rpc CreateApi (CreateApiRequest) returns (CreateApiResponse);
@@ -28,10 +27,10 @@ message Api {
   string description = 5; // 描述
   string version = 6; // 版本
   ApiCategory category = 7; // 分类
-  bool is_public = 8; // 是否公开
-  google.protobuf.Timestamp create_time = 9; // 创建时间
-  google.protobuf.Timestamp update_time = 10; // 更新时间
-  bool is_deleted = 11; // 是否已删除
+  int32 is_public = 8; // 是否公开
+  int64 create_time = 9; // 创建时间
+  int64 update_time = 10; // 更新时间
+  int32 is_deleted = 11; // 是否已删除
 }
 
 // HTTP 方法枚举
@@ -53,7 +52,6 @@ enum ApiCategory {
   ADMIN = 2;
   PAYMENT = 3;
   NOTIFICATION = 4;
-  // 根据需求添加更多分类
 }
 
 // 创建 API 请求
@@ -64,13 +62,13 @@ message CreateApiRequest {
   string description = 4; // 描述
   string version = 5; // 版本
   ApiCategory category = 6; // 分类
-  bool is_public = 7; // 是否公开
+  int32 is_public = 7; // 是否公开
 }
 
 // 创建 API 响应
 message CreateApiResponse {
-  bool success = 1; // 是否成功
-  string message = 2; // 消息
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
   Api api = 3; // 创建的 API 对象
 }
 
@@ -81,7 +79,9 @@ message GetApiRequest {
 
 // 获取 API 响应
 message GetApiResponse {
-  Api api = 1; // API 对象
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
+  Api data = 3; // API 对象
 }
 
 // 更新 API 请求
@@ -91,9 +91,8 @@ message UpdateApiRequest {
 
 // 更新 API 响应
 message UpdateApiResponse {
-  bool success = 1; // 是否成功
-  string message = 2; // 消息
-  Api api = 3; // 更新后的 API 对象
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
 }
 
 // 删除 API 请求
@@ -103,8 +102,8 @@ message DeleteApiRequest {
 
 // 删除 API 响应
 message DeleteApiResponse {
-  bool success = 1; // 是否成功
-  string message = 2; // 消息
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
 }
 
 // 列出 APIs 请求
@@ -113,11 +112,18 @@ message ListApisRequest {
   int32 page_size = 2; // 每页数量
   string filter = 3; // 过滤条件（例如：名称、分类）
   string sort_by = 4; // 排序字段
-  bool descending = 5; // 是否降序
+  int32 descending = 5; // 是否降序
 }
 
 // 列出 APIs 响应
 message ListApisResponse {
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
+  ListApisData data = 3; // 响应数据
+}
+
+// 列出 APIs 响应数据
+message ListApisData {
   repeated Api apis = 1; // API 列表
   int32 total = 2; // 总数量
   int32 page_number = 3; // 当前页码

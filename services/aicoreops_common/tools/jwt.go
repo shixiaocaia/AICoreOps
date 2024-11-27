@@ -1,26 +1,30 @@
 package tools
 
 import (
+	"context"
 	"errors"
 	"fmt"
 	"strings"
 
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/redis/go-redis/v9"
 )
 
 // 定义常量和错误
 const (
 	bearerPrefix = "Bearer "
+	blacklistKey = "aicoreops:user:blacklist:ssid:%s"
 )
 
 var (
-	ErrEmptyToken    = errors.New("token不能为空")
-	ErrEmptySecret   = errors.New("secret不能为空")
-	ErrInvalidFormat = errors.New("token格式无效")
-	ErrInvalidToken  = errors.New("无效的token")
-	ErrTokenExpired  = errors.New("token已过期")
-	ErrInvalidUserID = errors.New("无效的用户ID")
-	ErrMissingClaims = errors.New("token缺少必要的声明信息")
+	ErrEmptyToken       = errors.New("token不能为空")
+	ErrEmptySecret      = errors.New("secret不能为空")
+	ErrInvalidFormat    = errors.New("token格式无效")
+	ErrInvalidToken     = errors.New("无效的token")
+	ErrTokenExpired     = errors.New("token已过期")
+	ErrInvalidUserID    = errors.New("无效的用户ID")
+	ErrMissingClaims    = errors.New("token缺少必要的声明信息")
+	ErrTokenBlacklisted = errors.New("token已被加入黑名单")
 )
 
 // Claims 定义token的声明结构
@@ -34,14 +38,11 @@ func ParseToken(tokenString string, secret string) (int64, error) {
 	if tokenString == "" {
 		return 0, ErrEmptyToken
 	}
+
 	if secret == "" {
 		return 0, ErrEmptySecret
 	}
 
-	// 提取Bearer token
-	if !strings.HasPrefix(tokenString, bearerPrefix) {
-		return 0, ErrInvalidFormat
-	}
 	tokenString = strings.TrimPrefix(tokenString, bearerPrefix)
 
 	// 解析token
@@ -71,4 +72,22 @@ func ParseToken(tokenString string, secret string) (int64, error) {
 	}
 
 	return int64(claims.Uid), nil
+}
+
+func ValidateTokenBlacklist(ctx context.Context, rdb redis.Cmdable, tokenString string) error {
+	if rdb == nil {
+		return errors.New("redis客户端不能为空")
+	}
+
+	key := fmt.Sprintf(blacklistKey, tokenString)
+	exists, err := rdb.Exists(ctx, key).Result()
+	if err != nil {
+		return fmt.Errorf("检查黑名单失败: %w", err)
+	}
+
+	if exists > 0 {
+		return ErrTokenBlacklisted
+	}
+
+	return nil
 }

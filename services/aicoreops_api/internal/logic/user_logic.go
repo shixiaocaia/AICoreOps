@@ -63,11 +63,16 @@ func (l *UserLogic) CreateUser(req *types.CreateUserRequest) (err error) {
 }
 
 // Logout 用户登出
-func (l *UserLogic) Logout() (err error) {
+func (l *UserLogic) Logout(req *types.LogoutRequest) (err error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
-	_, err = l.svcCtx.UserRpc.Logout(ctx, &user.LogoutRequest{})
+	logoutReq := &user.LogoutRequest{}
+	if err := copier.Copy(logoutReq, req); err != nil {
+		return err
+	}
+
+	_, err = l.svcCtx.UserRpc.Logout(ctx, logoutReq)
 	if err != nil {
 		return err
 	}
