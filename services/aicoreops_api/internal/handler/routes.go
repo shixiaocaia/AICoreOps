@@ -20,7 +20,7 @@ func NewRouters(server *rest.Server) *Routers {
 }
 
 // addRoute 内部通用路由添加方法
-func (r *Routers) addRoute(method, routePath string, handler http.HandlerFunc) {
+func (r *Routers) addRoute(method, routePath string, handler http.HandlerFunc) *Routers {
 	fullPath := path.Join(r.prefix, routePath)
 	r.server.AddRoutes(
 		rest.WithMiddlewares(
@@ -32,26 +32,27 @@ func (r *Routers) addRoute(method, routePath string, handler http.HandlerFunc) {
 			},
 		),
 	)
+	return r
 }
 
 // Get 添加GET路由
-func (r *Routers) Get(path string, handler http.HandlerFunc) {
-	r.addRoute(http.MethodGet, path, handler)
+func (r *Routers) Get(path string, handler http.HandlerFunc) *Routers {
+	return r.addRoute(http.MethodGet, path, handler)
 }
 
 // Post 添加POST路由
-func (r *Routers) Post(path string, handler http.HandlerFunc) {
-	r.addRoute(http.MethodPost, path, handler)
+func (r *Routers) Post(path string, handler http.HandlerFunc) *Routers {
+	return r.addRoute(http.MethodPost, path, handler)
 }
 
 // Delete 添加DELETE路由
-func (r *Routers) Delete(path string, handler http.HandlerFunc) {
-	r.addRoute(http.MethodDelete, path, handler)
+func (r *Routers) Delete(path string, handler http.HandlerFunc) *Routers {
+	return r.addRoute(http.MethodDelete, path, handler)
 }
 
 // Put 添加PUT路由
-func (r *Routers) Put(path string, handler http.HandlerFunc) {
-	r.addRoute(http.MethodPut, path, handler)
+func (r *Routers) Put(path string, handler http.HandlerFunc) *Routers {
+	return r.addRoute(http.MethodPut, path, handler)
 }
 
 // Group 创建路由组
@@ -66,6 +67,7 @@ func (r *Routers) Group(prefix ...string) *Routers {
 }
 
 // Use 添加中间件
-func (r *Routers) Use(middleware ...rest.Middleware) {
+func (r *Routers) Use(middleware ...rest.Middleware) *Routers {
 	r.middlewares = append(r.middlewares, middleware...)
+	return r
 }

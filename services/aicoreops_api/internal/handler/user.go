@@ -39,16 +39,16 @@ func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
 
-// Register 处理用户注册请求
-func (h *UserHandler) Register(w http.ResponseWriter, r *http.Request) {
-	var req types.RegisterRequest
+// CreateUser 处理用户注册请求
+func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
+	var req types.CreateUserRequest
 	if err := httpx.Parse(r, &req); err != nil {
 		httpx.Error(w, err)
 		return
 	}
 
 	l := logic.NewUserLogic(r.Context(), h.svcCtx)
-	err := l.Register(&req)
+	err := l.CreateUser(&req)
 	result := aicoreops_common.NewResultResponse().HandleResponse(nil, err)
 
 	httpx.OkJsonCtx(r.Context(), w, result)

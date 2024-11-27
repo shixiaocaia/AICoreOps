@@ -44,8 +44,8 @@ func (l *UserLogic) Login(req *types.LoginRequest) (resp *user.LoginResponse, er
 	return loginResp, nil
 }
 
-// Register 用户注册
-func (l *UserLogic) Register(req *types.RegisterRequest) (err error) {
+// CreateUser 创建用户
+func (l *UserLogic) CreateUser(req *types.CreateUserRequest) (err error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 

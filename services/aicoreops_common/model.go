@@ -4,6 +4,7 @@ package aicoreops_common
 type BizCode int
 
 const SuccessCode BizCode = 0
+const BizCodeUnauthorized BizCode = 401
 
 type Result struct {
 	Code    BizCode `json:"code"`           // 业务状态码

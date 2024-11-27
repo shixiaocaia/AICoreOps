@@ -8,4 +8,10 @@ import (
 type Config struct {
 	rest.RestConf
 	UserRpc zrpc.RpcClientConf
+	JWT     JWTConfig
+}
+
+type JWTConfig struct {
+	Secret string
+	Expire int64
 }
