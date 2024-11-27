@@ -17,20 +17,21 @@
  * Description:
  */
 
-package config
+package domain
 
-import "github.com/zeromicro/go-zero/zrpc"
+import (
+	"aicoreops_role/internal/dao"
+	"aicoreops_role/internal/repo"
 
-type Config struct {
-	zrpc.RpcServerConf
-	Mysql  DBConfig
-	Casbin CasbinConfig
+	"gorm.io/gorm"
+)
+
+type ApiDomain struct {
+	repo repo.ApiRepo
 }
 
-type DBConfig struct {
-	Addr string
-}
-
-type CasbinConfig struct {
-	Path string
+func NewApiDomain(db *gorm.DB) *ApiDomain {
+	return &ApiDomain{
+		repo: dao.NewApiDao(db),
+	}
 }

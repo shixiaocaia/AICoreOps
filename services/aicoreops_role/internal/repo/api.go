@@ -17,20 +17,22 @@
  * Description:
  */
 
-package config
+package repo
 
-import "github.com/zeromicro/go-zero/zrpc"
+import (
+	"aicoreops_role/internal/model"
+	"context"
+)
 
-type Config struct {
-	zrpc.RpcServerConf
-	Mysql  DBConfig
-	Casbin CasbinConfig
-}
-
-type DBConfig struct {
-	Addr string
-}
-
-type CasbinConfig struct {
-	Path string
+type ApiRepo interface {
+	// CreateApi 创建API
+	CreateApi(ctx context.Context, api *model.Api) error
+	// GetApiById 根据ID获取API
+	GetApiById(ctx context.Context, id int) (*model.Api, error)
+	// UpdateApi 更新API信息
+	UpdateApi(ctx context.Context, api *model.Api) error
+	// DeleteApi 删除API
+	DeleteApi(ctx context.Context, id int) error
+	// ListApis 获取API列表
+	ListApis(ctx context.Context, page, pageSize int) ([]*model.Api, int, error)
 }
