@@ -67,6 +67,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			httpx.WriteJson(w, http.StatusUnauthorized, response)
 			return
 		}
+
 		// 设置用户ID到上下文
 		ctx := context.WithValue(r.Context(), userIDKey, uid)
 		r = r.WithContext(ctx)

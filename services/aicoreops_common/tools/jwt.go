@@ -38,14 +38,11 @@ func ParseToken(tokenString string, secret string) (int64, error) {
 	if tokenString == "" {
 		return 0, ErrEmptyToken
 	}
+
 	if secret == "" {
 		return 0, ErrEmptySecret
 	}
 
-	// 提取Bearer token
-	if !strings.HasPrefix(tokenString, bearerPrefix) {
-		return 0, ErrInvalidFormat
-	}
 	tokenString = strings.TrimPrefix(tokenString, bearerPrefix)
 
 	// 解析token

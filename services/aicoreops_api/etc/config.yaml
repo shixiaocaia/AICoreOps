@@ -8,6 +8,5 @@ UserRpc:
     Key: aicoreopsuser.rpc
 JWT:
   Secret: "aicoreops"
-  Expire: 86400
 MyRedis:
   Addr: 127.0.0.1:6379
