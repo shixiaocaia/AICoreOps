@@ -30,7 +30,5 @@ func InitTables(db *gorm.DB) error {
 		&model.Api{},
 		&model.Menu{},
 		&model.Role{},
-		&model.RoleMenu{},
-		&model.RoleApi{},
 	)
 }

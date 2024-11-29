@@ -32,6 +32,7 @@ message Menu {
   int64 create_time = 10; // 创建时间
   int64 update_time = 11; // 更新时间
   int32 is_deleted = 12; // 是否已删除
+  repeated Menu children = 13; // 子菜单
 }
 
 // 创建菜单请求
@@ -50,7 +51,6 @@ message CreateMenuRequest {
 message CreateMenuResponse {
   int32 code = 1; // 响应码
   string message = 2; // 响应消息
-  Menu menu = 3; // 创建的菜单对象
 }
 
 // 获取菜单请求
@@ -67,7 +67,15 @@ message GetMenuResponse {
 
 // 更新菜单请求
 message UpdateMenuRequest {
-  Menu menu = 1; // 需要更新的菜单对象
+  int64 id = 1; // 菜单ID
+  string name = 2; // 名称
+  int64 parent_id = 3; // 父菜单ID，根菜单为0
+  string path = 4; // 路径
+  string component = 5; // 组件
+  string icon = 6; // 图标
+  int32 sort_order = 7; // 排序顺序
+  string route_name = 8; // 路由名称
+  int32 hidden = 9; // 是否隐藏
 }
 
 // 更新菜单响应
@@ -94,6 +102,7 @@ message ListMenusRequest {
   string filter = 3; // 过滤条件（例如：名称、父菜单ID）
   string sort_by = 4; // 排序字段
   int32 descending = 5; // 是否降序
+  bool is_tree = 6; // 是否树形结构
 }
 
 // 列出菜单响应
