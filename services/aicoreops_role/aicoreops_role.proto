@@ -16,6 +16,8 @@ service RoleService {
   rpc DeleteRole (DeleteRoleRequest) returns (DeleteRoleResponse);
   // 列出角色
   rpc ListRoles (ListRolesRequest) returns (ListRolesResponse);
+  // 分配权限
+  rpc AssignPermissions (AssignPermissionsRequest) returns (AssignPermissionsResponse);
 }
 
 // 角色对象
@@ -50,7 +52,6 @@ message CreateRoleRequest {
 message CreateRoleResponse {
   int32 code = 1; // 响应码
   string message = 2; // 响应消息
-  Role role = 3; // 创建的角色对象
 }
 
 // 获取角色请求
@@ -67,7 +68,11 @@ message GetRoleResponse {
 
 // 更新角色请求
 message UpdateRoleRequest {
-  Role role = 1; // 需要更新的角色对象
+  int64 id = 1; // 角色ID
+  string name = 2; // 角色名称
+  string description = 3; // 角色描述
+  RoleType role_type = 4; // 角色类型
+  int32 is_default = 5; // 是否为默认角色
 }
 
 // 更新角色响应
@@ -109,4 +114,17 @@ message ListRolesData {
   int32 total = 2; // 总数量
   int32 page_number = 3; // 当前页码
   int32 page_size = 4; // 每页数量
+}
+
+// 分配权限请求
+message AssignPermissionsRequest {
+  int64 role_id = 1; // 角色ID
+  repeated int64 menu_ids = 2; // 菜单ID列表
+  repeated int64 api_ids = 3; // API ID列表
+}
+
+// 分配权限响应
+message AssignPermissionsResponse {
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
 }

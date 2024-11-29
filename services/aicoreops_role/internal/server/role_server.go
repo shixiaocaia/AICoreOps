@@ -61,3 +61,8 @@ func (s *RoleServer) ListRoles(ctx context.Context, request *types.ListRolesRequ
 	l := logic.NewRoleLogic(ctx, s.svcCtx)
 	return l.ListRoles(ctx, request)
 }
+
+func (s *RoleServer) AssignPermissions(ctx context.Context, request *types.AssignPermissionsRequest) (*types.AssignPermissionsResponse, error) {
+	l := logic.NewRoleLogic(ctx, s.svcCtx)
+	return l.AssignPermissions(ctx, request)
+}

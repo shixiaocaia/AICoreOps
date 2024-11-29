@@ -66,9 +66,21 @@ func (a *ApiDao) UpdateApi(ctx context.Context, api *model.Api) error {
 		return gorm.ErrRecordNotFound
 	}
 
-	api.UpdateTime = time.Now().Unix()
+	updates := map[string]interface{}{
+		"name":        api.Name,
+		"path":        api.Path,
+		"method":      api.Method,
+		"description": api.Description,
+		"version":     api.Version,
+		"category":    api.Category,
+		"is_public":   api.IsPublic,
+		"update_time": time.Now().Unix(),
+	}
 
-	return a.db.WithContext(ctx).Where("id = ? AND is_deleted = 0", api.ID).Updates(api).Error
+	return a.db.WithContext(ctx).
+		Model(&model.Api{}).
+		Where("id = ? AND is_deleted = 0", api.ID).
+		Updates(updates).Error
 }
 
 // DeleteApi 删除API(软删除)
@@ -77,7 +89,7 @@ func (a *ApiDao) DeleteApi(ctx context.Context, id int) error {
 		"is_deleted":  1,
 		"update_time": time.Now().Unix(),
 	}
-	
+
 	return a.db.WithContext(ctx).Model(&model.Api{}).Where("id = ? AND is_deleted = 0", id).Updates(updates).Error
 }
 
@@ -95,7 +107,7 @@ func (a *ApiDao) ListApis(ctx context.Context, page, pageSize int) ([]*model.Api
 
 	// 获取分页数据
 	offset := (page - 1) * pageSize
-	if err := db.Offset(offset).Limit(pageSize).Order("id DESC").Find(&apis).Error; err != nil {
+	if err := db.Offset(offset).Limit(pageSize).Order("id ASC").Find(&apis).Error; err != nil {
 		return nil, 0, err
 	}
 

@@ -69,7 +69,6 @@ message CreateApiRequest {
 message CreateApiResponse {
   int32 code = 1; // 响应码
   string message = 2; // 响应消息
-  Api api = 3; // 创建的 API 对象
 }
 
 // 获取 API 请求
@@ -86,7 +85,14 @@ message GetApiResponse {
 
 // 更新 API 请求
 message UpdateApiRequest {
-  Api api = 1; // 需要更新的 API 对象
+  int64 id = 1; // API ID
+  string name = 2; // 名称
+  string path = 3; // 路径
+  HttpMethod method = 4; // HTTP 方法
+  string description = 5; // 描述
+  string version = 6; // 版本
+  ApiCategory category = 7; // 分类
+  int32 is_public = 8; // 是否公开
 }
 
 // 更新 API 响应
