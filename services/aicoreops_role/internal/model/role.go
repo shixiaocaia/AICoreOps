@@ -23,7 +23,6 @@ import (
 	"errors"
 )
 
-// 在文件开头添加常量定义
 const (
 	RoleTypeSystem = 1 // 系统角色
 	RoleTypeCustom = 2 // 自定义角色

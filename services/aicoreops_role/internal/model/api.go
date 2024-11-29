@@ -24,7 +24,6 @@ import (
 	"fmt"
 )
 
-// 常量定义
 const (
 	// 长度限制常量
 	MaxApiNameLength        = 50

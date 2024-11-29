@@ -24,7 +24,6 @@ import (
 	"fmt"
 )
 
-// 定义菜单相关常量
 const (
 	MenuHiddenNo  = 0 // 菜单显示
 	MenuHiddenYes = 1 // 菜单隐藏

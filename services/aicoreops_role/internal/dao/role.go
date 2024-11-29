@@ -32,14 +32,12 @@ import (
 	"gorm.io/gorm"
 )
 
-// RoleDao 角色数据访问层结构体
 type RoleDao struct {
 	db       *gorm.DB
 	enforcer *casbin.Enforcer
 	apiDao   *ApiDao
 }
 
-// NewRoleDao 创建角色数据访问层实例
 func NewRoleDao(db *gorm.DB, enforcer *casbin.Enforcer) *RoleDao {
 	return &RoleDao{
 		db:       db,
