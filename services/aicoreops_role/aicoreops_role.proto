@@ -18,6 +18,12 @@ service RoleService {
   rpc ListRoles (ListRolesRequest) returns (ListRolesResponse);
   // 分配权限
   rpc AssignPermissions (AssignPermissionsRequest) returns (AssignPermissionsResponse);
+  // 分配角色给用户
+  rpc AssignRoleToUser (AssignRoleToUserRequest) returns (AssignRoleToUserResponse);
+  // 移除用户权限
+  rpc RemoveUserPermissions (RemoveUserPermissionsRequest) returns (RemoveUserPermissionsResponse);
+  // 移除用户角色
+  rpc RemoveRoleFromUser (RemoveRoleFromUserRequest) returns (RemoveRoleFromUserResponse);
 }
 
 // 角色对象
@@ -125,6 +131,41 @@ message AssignPermissionsRequest {
 
 // 分配权限响应
 message AssignPermissionsResponse {
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
+}
+
+// 分配角色给用户请求
+message AssignRoleToUserRequest {
+  int64 user_id = 1; // 用户ID
+  repeated int64 role_ids = 2; // 角色ID列表
+}
+
+// 分配角色给用户响应
+message AssignRoleToUserResponse {
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
+}
+
+// 移除用户权限请求
+message RemoveUserPermissionsRequest {
+  int64 user_id = 1; // 用户ID
+}
+
+// 移除用户权限响应
+message RemoveUserPermissionsResponse {
+  int32 code = 1; // 响应码
+  string message = 2; // 响应消息
+}
+
+// 移除用户角色请求
+message RemoveRoleFromUserRequest {
+  int64 user_id = 1; // 用户ID
+  repeated int64 role_ids = 2; // 角色ID列表
+}
+
+// 移除用户角色响应
+message RemoveRoleFromUserResponse {
   int32 code = 1; // 响应码
   string message = 2; // 响应消息
 }

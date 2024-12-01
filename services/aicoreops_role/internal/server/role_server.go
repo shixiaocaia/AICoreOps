@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * File: init.go
- * Description:
+ * File: role_server.go
+ * Description: 角色服务层实现
  */
 
 package server
@@ -65,4 +65,19 @@ func (s *RoleServer) ListRoles(ctx context.Context, request *types.ListRolesRequ
 func (s *RoleServer) AssignPermissions(ctx context.Context, request *types.AssignPermissionsRequest) (*types.AssignPermissionsResponse, error) {
 	l := logic.NewRoleLogic(ctx, s.svcCtx)
 	return l.AssignPermissions(ctx, request)
+}
+
+func (s *RoleServer) AssignRoleToUser(ctx context.Context, request *types.AssignRoleToUserRequest) (*types.AssignRoleToUserResponse, error) {
+	l := logic.NewRoleLogic(ctx, s.svcCtx)
+	return l.AssignRoleToUser(ctx, request)
+}
+
+func (s *RoleServer) RemoveUserPermissions(ctx context.Context, request *types.RemoveUserPermissionsRequest) (*types.RemoveUserPermissionsResponse, error) {
+	l := logic.NewRoleLogic(ctx, s.svcCtx)
+	return l.RemoveUserPermissions(ctx, request)
+}
+
+func (s *RoleServer) RemoveRoleFromUser(ctx context.Context, request *types.RemoveRoleFromUserRequest) (*types.RemoveRoleFromUserResponse, error) {
+	l := logic.NewRoleLogic(ctx, s.svcCtx)
+	return l.RemoveRoleFromUser(ctx, request)
 }

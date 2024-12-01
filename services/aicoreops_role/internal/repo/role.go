@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * File: init.go
- * Description:
+ * File: role.go
+ * Description: 角色数据层接口
  */
 
 package repo
@@ -37,4 +37,10 @@ type RoleRepo interface {
 	ListRoles(ctx context.Context, page, pageSize int) ([]*model.Role, int, error)
 	// AssignPermissions 分配权限
 	AssignPermissions(ctx context.Context, roleId int, menuIds []int, apiIds []int) error
+	// AssignRoleToUser 分配角色给用户
+	AssignRoleToUser(ctx context.Context, userId int, roleIds []int) error
+	// RemoveUserPermissions 移除用户权限
+	RemoveUserPermissions(ctx context.Context, userId int) error
+	// RemoveRoleFromUser 移除用户角色
+	RemoveRoleFromUser(ctx context.Context, userId int, roleIds []int) error
 }

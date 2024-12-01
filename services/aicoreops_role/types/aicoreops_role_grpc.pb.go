@@ -19,12 +19,15 @@ import (
 const _ = grpc.SupportPackageIsVersion8
 
 const (
-	RoleService_CreateRole_FullMethodName        = "/aicoreops_role.RoleService/CreateRole"
-	RoleService_GetRole_FullMethodName           = "/aicoreops_role.RoleService/GetRole"
-	RoleService_UpdateRole_FullMethodName        = "/aicoreops_role.RoleService/UpdateRole"
-	RoleService_DeleteRole_FullMethodName        = "/aicoreops_role.RoleService/DeleteRole"
-	RoleService_ListRoles_FullMethodName         = "/aicoreops_role.RoleService/ListRoles"
-	RoleService_AssignPermissions_FullMethodName = "/aicoreops_role.RoleService/AssignPermissions"
+	RoleService_CreateRole_FullMethodName            = "/aicoreops_role.RoleService/CreateRole"
+	RoleService_GetRole_FullMethodName               = "/aicoreops_role.RoleService/GetRole"
+	RoleService_UpdateRole_FullMethodName            = "/aicoreops_role.RoleService/UpdateRole"
+	RoleService_DeleteRole_FullMethodName            = "/aicoreops_role.RoleService/DeleteRole"
+	RoleService_ListRoles_FullMethodName             = "/aicoreops_role.RoleService/ListRoles"
+	RoleService_AssignPermissions_FullMethodName     = "/aicoreops_role.RoleService/AssignPermissions"
+	RoleService_AssignRoleToUser_FullMethodName      = "/aicoreops_role.RoleService/AssignRoleToUser"
+	RoleService_RemoveUserPermissions_FullMethodName = "/aicoreops_role.RoleService/RemoveUserPermissions"
+	RoleService_RemoveRoleFromUser_FullMethodName    = "/aicoreops_role.RoleService/RemoveRoleFromUser"
 )
 
 // RoleServiceClient is the client API for RoleService service.
@@ -45,6 +48,12 @@ type RoleServiceClient interface {
 	ListRoles(ctx context.Context, in *ListRolesRequest, opts ...grpc.CallOption) (*ListRolesResponse, error)
 	// 分配权限
 	AssignPermissions(ctx context.Context, in *AssignPermissionsRequest, opts ...grpc.CallOption) (*AssignPermissionsResponse, error)
+	// 分配角色给用户
+	AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, opts ...grpc.CallOption) (*AssignRoleToUserResponse, error)
+	// 移除用户权限
+	RemoveUserPermissions(ctx context.Context, in *RemoveUserPermissionsRequest, opts ...grpc.CallOption) (*RemoveUserPermissionsResponse, error)
+	// 移除用户角色
+	RemoveRoleFromUser(ctx context.Context, in *RemoveRoleFromUserRequest, opts ...grpc.CallOption) (*RemoveRoleFromUserResponse, error)
 }
 
 type roleServiceClient struct {
@@ -115,6 +124,36 @@ func (c *roleServiceClient) AssignPermissions(ctx context.Context, in *AssignPer
 	return out, nil
 }
 
+func (c *roleServiceClient) AssignRoleToUser(ctx context.Context, in *AssignRoleToUserRequest, opts ...grpc.CallOption) (*AssignRoleToUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(AssignRoleToUserResponse)
+	err := c.cc.Invoke(ctx, RoleService_AssignRoleToUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleServiceClient) RemoveUserPermissions(ctx context.Context, in *RemoveUserPermissionsRequest, opts ...grpc.CallOption) (*RemoveUserPermissionsResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RemoveUserPermissionsResponse)
+	err := c.cc.Invoke(ctx, RoleService_RemoveUserPermissions_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *roleServiceClient) RemoveRoleFromUser(ctx context.Context, in *RemoveRoleFromUserRequest, opts ...grpc.CallOption) (*RemoveRoleFromUserResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(RemoveRoleFromUserResponse)
+	err := c.cc.Invoke(ctx, RoleService_RemoveRoleFromUser_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // RoleServiceServer is the server API for RoleService service.
 // All implementations must embed UnimplementedRoleServiceServer
 // for forward compatibility
@@ -133,6 +172,12 @@ type RoleServiceServer interface {
 	ListRoles(context.Context, *ListRolesRequest) (*ListRolesResponse, error)
 	// 分配权限
 	AssignPermissions(context.Context, *AssignPermissionsRequest) (*AssignPermissionsResponse, error)
+	// 分配角色给用户
+	AssignRoleToUser(context.Context, *AssignRoleToUserRequest) (*AssignRoleToUserResponse, error)
+	// 移除用户权限
+	RemoveUserPermissions(context.Context, *RemoveUserPermissionsRequest) (*RemoveUserPermissionsResponse, error)
+	// 移除用户角色
+	RemoveRoleFromUser(context.Context, *RemoveRoleFromUserRequest) (*RemoveRoleFromUserResponse, error)
 	mustEmbedUnimplementedRoleServiceServer()
 }
 
@@ -157,6 +202,15 @@ func (UnimplementedRoleServiceServer) ListRoles(context.Context, *ListRolesReque
 }
 func (UnimplementedRoleServiceServer) AssignPermissions(context.Context, *AssignPermissionsRequest) (*AssignPermissionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method AssignPermissions not implemented")
+}
+func (UnimplementedRoleServiceServer) AssignRoleToUser(context.Context, *AssignRoleToUserRequest) (*AssignRoleToUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method AssignRoleToUser not implemented")
+}
+func (UnimplementedRoleServiceServer) RemoveUserPermissions(context.Context, *RemoveUserPermissionsRequest) (*RemoveUserPermissionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveUserPermissions not implemented")
+}
+func (UnimplementedRoleServiceServer) RemoveRoleFromUser(context.Context, *RemoveRoleFromUserRequest) (*RemoveRoleFromUserResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method RemoveRoleFromUser not implemented")
 }
 func (UnimplementedRoleServiceServer) mustEmbedUnimplementedRoleServiceServer() {}
 
@@ -279,6 +333,60 @@ func _RoleService_AssignPermissions_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
+func _RoleService_AssignRoleToUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(AssignRoleToUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServiceServer).AssignRoleToUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleService_AssignRoleToUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServiceServer).AssignRoleToUser(ctx, req.(*AssignRoleToUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RoleService_RemoveUserPermissions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveUserPermissionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServiceServer).RemoveUserPermissions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleService_RemoveUserPermissions_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServiceServer).RemoveUserPermissions(ctx, req.(*RemoveUserPermissionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _RoleService_RemoveRoleFromUser_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(RemoveRoleFromUserRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(RoleServiceServer).RemoveRoleFromUser(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: RoleService_RemoveRoleFromUser_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(RoleServiceServer).RemoveRoleFromUser(ctx, req.(*RemoveRoleFromUserRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // RoleService_ServiceDesc is the grpc.ServiceDesc for RoleService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -309,6 +417,18 @@ var RoleService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "AssignPermissions",
 			Handler:    _RoleService_AssignPermissions_Handler,
+		},
+		{
+			MethodName: "AssignRoleToUser",
+			Handler:    _RoleService_AssignRoleToUser_Handler,
+		},
+		{
+			MethodName: "RemoveUserPermissions",
+			Handler:    _RoleService_RemoveUserPermissions_Handler,
+		},
+		{
+			MethodName: "RemoveRoleFromUser",
+			Handler:    _RoleService_RemoveRoleFromUser_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
