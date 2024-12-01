@@ -69,7 +69,7 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 	l := logic.NewUserLogic(r.Context(), h.svcCtx)
 	resp, err := l.GetUser(&req)
 	result := aicoreops_common.NewResultResponse().HandleResponse(&resp, err)
-
+	// uid := r.Context().Value(middleware.UserIDKey()).(int64)
 	httpx.OkJsonCtx(r.Context(), w, result)
 }
 

@@ -68,10 +68,16 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 			return
 		}
 
+		reqCtx := r.Context()
+
 		// 设置用户ID到上下文
-		ctx := context.WithValue(r.Context(), userIDKey, uid)
+		ctx := context.WithValue(reqCtx, userIDKey, uid)
 		r = r.WithContext(ctx)
 
 		next(w, r)
 	}
+}
+
+func UserIDKey() interface{} {
+	return userIDKey
 }

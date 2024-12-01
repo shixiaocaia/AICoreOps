@@ -10,6 +10,8 @@ type Config struct {
 	UserRpc zrpc.RpcClientConf
 	JWT     JWTConfig
 	MyRedis MyRedis
+	Casbin  CasbinConfig
+	Mysql   MysqlConfig
 }
 
 type JWTConfig struct {
@@ -17,5 +19,13 @@ type JWTConfig struct {
 }
 
 type MyRedis struct {
+	Addr string
+}
+
+type CasbinConfig struct {
+	Path string
+}
+
+type MysqlConfig struct {
 	Addr string
 }

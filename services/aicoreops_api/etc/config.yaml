@@ -10,3 +10,7 @@ JWT:
   Secret: "aicoreops"
 MyRedis:
   Addr: 127.0.0.1:6379
+Casbin:
+  Path: "etc/model.conf"
+Mysql:
+  Addr: "root:root@tcp(localhost:3306)/AICoreOps?charset=utf8mb4&parseTime=True&loc=Local"
