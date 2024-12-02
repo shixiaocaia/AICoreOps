@@ -112,6 +112,11 @@ func (l *RoleLogic) DeleteRole(req *types.DeleteRoleRequest) (*role.DeleteRoleRe
 		return nil, err
 	}
 
+	// 加载最新的策略
+	if err := l.svcCtx.Enforcer.LoadPolicy(); err != nil {
+		return nil, err
+	}
+
 	return deleteResp, nil
 }
 
@@ -148,6 +153,11 @@ func (l *RoleLogic) AssignPermissions(req *types.AssignPermissionsRequest) (*rol
 		return nil, err
 	}
 
+	// 加载最新的策略
+	if err := l.svcCtx.Enforcer.LoadPolicy(); err != nil {
+		return nil, err
+	}
+
 	return assignResp, nil
 }
 
@@ -163,6 +173,11 @@ func (l *RoleLogic) AssignRoleToUser(req *types.AssignRoleToUserRequest) (*role.
 
 	assignResp, err := l.svcCtx.RoleRpc.AssignRoleToUser(ctx, assignReq)
 	if err != nil {
+		return nil, err
+	}
+
+	// 加载最新的策略
+	if err := l.svcCtx.Enforcer.LoadPolicy(); err != nil {
 		return nil, err
 	}
 
@@ -184,6 +199,11 @@ func (l *RoleLogic) RemoveUserPermissions(req *types.RemoveUserPermissionsReques
 		return nil, err
 	}
 
+	// 加载最新的策略
+	if err := l.svcCtx.Enforcer.LoadPolicy(); err != nil {
+		return nil, err
+	}
+
 	return removeResp, nil
 }
 
@@ -199,6 +219,11 @@ func (l *RoleLogic) RemoveRoleFromUser(req *types.RemoveRoleFromUserRequest) (*r
 
 	removeResp, err := l.svcCtx.RoleRpc.RemoveRoleFromUser(ctx, removeReq)
 	if err != nil {
+		return nil, err
+	}
+
+	// 加载最新的策略
+	if err := l.svcCtx.Enforcer.LoadPolicy(); err != nil {
 		return nil, err
 	}
 

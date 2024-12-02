@@ -68,10 +68,10 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	roleGroup.Post("/role/update", role.UpdateRole)
 	roleGroup.Delete("/role/delete", role.DeleteRole)
 	roleGroup.Get("/role/list", role.ListRoles)
-	roleGroup.Post("/role/assign-permissions", role.AssignPermissions)
-	roleGroup.Post("/role/assign-role-to-user", role.AssignRoleToUser)
-	roleGroup.Post("/role/remove-role-from-user", role.RemoveRoleFromUser)
-	roleGroup.Post("/role/remove-permissions", role.RemoveUserPermissions)
+	roleGroup.Post("/role/assign_permissions", role.AssignPermissions)
+	roleGroup.Post("/role/assign_role_to_user", role.AssignRoleToUser)
+	roleGroup.Post("/role/remove_role_from_user", role.RemoveRoleFromUser)
+	roleGroup.Post("/role/remove_permissions", role.RemoveUserPermissions)
 
 	// 菜单相关接口
 	menuGroup := group.Group("")

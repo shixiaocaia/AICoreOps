@@ -45,9 +45,7 @@ func (r *Result) SetFailResponse(code BizCode, msg string) {
 func (r *Result) SetSuccessResponse(data any) {
 	r.Code = SuccessCode
 	r.Message = "success"
-	if data != nil {
-		r.Data = data
-	}
+	r.Data = data
 }
 
 // HandleResponse 处理响应结果
@@ -56,7 +54,7 @@ func (r *Result) HandleResponse(data any, err error) *Result {
 		r.SetFailResponse(500, err.Error())
 		return r
 	}
-	r.SetSuccessResponse(data)
 
+	r.SetSuccessResponse(data)
 	return r
 }

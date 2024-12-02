@@ -63,39 +63,39 @@ func (l *UserLogic) Login(req *types.LoginRequest) (resp *user.LoginResponse, er
 }
 
 // CreateUser 创建用户
-func (l *UserLogic) CreateUser(req *types.CreateUserRequest) (err error) {
+func (l *UserLogic) CreateUser(req *types.CreateUserRequest) (resp *user.CreateUserResponse, err error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
 	createReq := &user.CreateUserRequest{}
 	if err := copier.Copy(createReq, req); err != nil {
-		return err
+		return nil, err
 	}
 
-	_, err = l.svcCtx.UserRpc.CreateUser(ctx, createReq)
+	createResp, err := l.svcCtx.UserRpc.CreateUser(ctx, createReq)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return createResp, nil
 }
 
 // Logout 用户登出
-func (l *UserLogic) Logout(req *types.LogoutRequest) (err error) {
+func (l *UserLogic) Logout(req *types.LogoutRequest) (resp *user.LogoutResponse, err error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
 	logoutReq := &user.LogoutRequest{}
 	if err := copier.Copy(logoutReq, req); err != nil {
-		return err
+		return nil, err
 	}
 
-	_, err = l.svcCtx.UserRpc.Logout(ctx, logoutReq)
+	logoutResp, err := l.svcCtx.UserRpc.Logout(ctx, logoutReq)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return logoutResp, nil
 }
 
 // GetUser 获取用户信息
@@ -117,39 +117,39 @@ func (l *UserLogic) GetUser(req *types.GetUserRequest) (resp *user.GetUserRespon
 }
 
 // UpdateUser 更新用户信息
-func (l *UserLogic) UpdateUser(req *types.UpdateUserRequest) (err error) {
+func (l *UserLogic) UpdateUser(req *types.UpdateUserRequest) (resp *user.UpdateUserResponse, err error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
 	updateReq := &user.UpdateUserRequest{}
 	if err := copier.Copy(updateReq, req); err != nil {
-		return err
+		return nil, err
 	}
 
-	_, err = l.svcCtx.UserRpc.UpdateUser(ctx, updateReq)
+	updateResp, err := l.svcCtx.UserRpc.UpdateUser(ctx, updateReq)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return updateResp, nil
 }
 
 // DeleteUser 删除用户
-func (l *UserLogic) DeleteUser(req *types.DeleteUserRequest) (err error) {
+func (l *UserLogic) DeleteUser(req *types.DeleteUserRequest) (resp *user.DeleteUserResponse, err error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
 	deleteReq := &user.DeleteUserRequest{}
 	if err := copier.Copy(deleteReq, req); err != nil {
-		return err
+		return nil, err
 	}
 
-	_, err = l.svcCtx.UserRpc.DeleteUser(ctx, deleteReq)
+	deleteResp, err := l.svcCtx.UserRpc.DeleteUser(ctx, deleteReq)
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	return nil
+	return deleteResp, nil
 }
 
 // GetUserList 获取用户列表
