@@ -1,5 +1,3 @@
-package client
-
 /*
  * Copyright 2024 Bamboo
  *
@@ -16,8 +14,9 @@ package client
  * limitations under the License.
  *
  * File: user.go
- * Description:
  */
+
+package client
 
 import (
 	"context"

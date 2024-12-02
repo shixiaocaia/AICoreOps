@@ -14,7 +14,6 @@
  * limitations under the License.
  *
  * File: init.go
- * Description:
  */
 
 package pkg

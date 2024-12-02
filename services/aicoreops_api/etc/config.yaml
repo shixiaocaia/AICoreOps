@@ -6,6 +6,21 @@ UserRpc:
     Hosts:
       - 127.0.0.1:2379
     Key: aicoreopsuser.rpc
+ApiRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: aicoreopsrole.rpc
+MenuRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: aicoreopsrole.rpc
+RoleRpc:
+  Etcd:
+    Hosts:
+      - 127.0.0.1:2379
+    Key: aicoreopsrole.rpc
 JWT:
   Secret: "aicoreops"
 MyRedis:

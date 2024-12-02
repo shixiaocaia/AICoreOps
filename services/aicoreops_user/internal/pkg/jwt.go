@@ -1,5 +1,3 @@
-package pkg
-
 /*
  * Copyright 2024 Bamboo
  *
@@ -16,8 +14,9 @@ package pkg
  * limitations under the License.
  *
  * File: jwt.go
- * Description: JWT 认证相关功能实现
  */
+
+package pkg
 
 import (
 	"aicoreops_user/internal/config"

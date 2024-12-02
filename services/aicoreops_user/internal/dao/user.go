@@ -1,5 +1,3 @@
-package dao
-
 /*
  * Copyright 2024 Bamboo
  *
@@ -16,8 +14,9 @@ package dao
  * limitations under the License.
  *
  * File: user.go
- * Description: 用户数据访问层实现
  */
+
+package dao
 
 import (
 	"aicoreops_user/internal/model"

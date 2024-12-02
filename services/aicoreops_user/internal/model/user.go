@@ -1,5 +1,3 @@
-package model
-
 /*
  * Copyright 2024 Bamboo
  *
@@ -16,8 +14,9 @@ package model
  * limitations under the License.
  *
  * File: user.go
- * Description:
  */
+
+package model
 
 type User struct {
 	ID            int    `gorm:"column:id;primaryKey;autoIncrement" json:"id"`                     // 用户ID
