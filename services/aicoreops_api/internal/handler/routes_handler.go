@@ -24,23 +24,61 @@ import (
 )
 
 func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
-	userGroup := r.Group("/api")
+	group := r.Group("/api")
 
+	// 初始化各个 handler
 	user := NewUserHandler(serverCtx)
+	api := NewApiHandler(serverCtx)
+	role := NewRoleHandler(serverCtx)
+	menu := NewMenuHandler(serverCtx)
+
+	// 初始化中间件
 	authMiddleware := middleware.NewAuthMiddleware(serverCtx.Config.JWT.Secret, serverCtx.RDB)
 	casbinMiddleware := middleware.NewCasbinMiddleware(serverCtx.Enforcer)
 
-	// login 接口不需要认证
-	userGroup.Post("/user/login", user.Login)
-	userGroup.Post("/user/create", user.CreateUser)
+	// 公开接口，不需要认证
+	group.Post("/user/login", user.Login)
+	group.Post("/user/create", user.CreateUser)
 
-	// 其他接口需要认证和权限验证
-	authGroup := userGroup.Group("")
+	// 需要认证和权限验证的接口组
+	authGroup := group.Group("")
 	authGroup.Use(authMiddleware.Handle, casbinMiddleware.Handle)
 
+	// 用户相关接口
 	authGroup.Post("/user/logout", user.Logout)
 	authGroup.Get("/user/get", user.GetUser)
 	authGroup.Post("/user/update", user.UpdateUser)
 	authGroup.Delete("/user/delete", user.DeleteUser)
 	authGroup.Get("/user/list", user.ListUsers)
+
+	// API相关接口
+	apiGroup := group.Group("")
+	apiGroup.Use(authMiddleware.Handle, casbinMiddleware.Handle)
+	apiGroup.Post("/api/create", api.CreateApi)
+	apiGroup.Get("/api/get", api.GetApi)
+	apiGroup.Post("/api/update", api.UpdateApi)
+	apiGroup.Delete("/api/delete", api.DeleteApi)
+	apiGroup.Get("/api/list", api.ListApis)
+
+	// 角色相关接口
+	roleGroup := group.Group("")
+	roleGroup.Use(authMiddleware.Handle, casbinMiddleware.Handle)
+	roleGroup.Post("/role/create", role.CreateRole)
+	roleGroup.Get("/role/get", role.GetRole)
+	roleGroup.Post("/role/update", role.UpdateRole)
+	roleGroup.Delete("/role/delete", role.DeleteRole)
+	roleGroup.Get("/role/list", role.ListRoles)
+	roleGroup.Post("/role/assign-permissions", role.AssignPermissions)
+	roleGroup.Post("/role/assign-role-to-user", role.AssignRoleToUser)
+	roleGroup.Post("/role/remove-role-from-user", role.RemoveRoleFromUser)
+	roleGroup.Post("/role/remove-permissions", role.RemoveUserPermissions)
+
+	// 菜单相关接口
+	menuGroup := group.Group("")
+	menuGroup.Use(authMiddleware.Handle, casbinMiddleware.Handle)
+	menuGroup.Post("/menu/create", menu.CreateMenu)
+	menuGroup.Get("/menu/get", menu.GetMenu)
+	menuGroup.Post("/menu/update", menu.UpdateMenu)
+	menuGroup.Delete("/menu/delete", menu.DeleteMenu)
+	menuGroup.Get("/menu/list", menu.ListMenus)
 }

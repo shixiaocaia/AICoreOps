@@ -72,11 +72,11 @@ type GeneralWithDataResponse struct {
 type CreateApiRequest struct {
 	Name        string `json:"name"`
 	Path        string `json:"path"`
-	Method      string `json:"method"`
+	Method      int    `json:"method"`
 	Description string `json:"description"`
 	Version     string `json:"version"`
-	Category    string `json:"category"`  // 分类
-	IsPublic    bool   `json:"is_public"` // 是否公开
+	Category    int    `json:"category"`  // 分类
+	IsPublic    int    `json:"is_public"` // 是否公开
 }
 
 type GetApiRequest struct {
@@ -87,11 +87,11 @@ type UpdateApiRequest struct {
 	Id          int    `json:"id"`
 	Name        string `json:"name"`
 	Path        string `json:"path"`
-	Method      string `json:"method"`
+	Method      int    `json:"method"`
 	Description string `json:"description"`
 	Version     string `json:"version"`
-	Category    string `json:"category"`
-	IsPublic    bool   `json:"is_public"`
+	Category    int    `json:"category"`
+	IsPublic    int    `json:"is_public"`
 }
 
 type DeleteApiRequest struct {
