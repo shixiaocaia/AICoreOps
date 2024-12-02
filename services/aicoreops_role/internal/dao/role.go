@@ -361,6 +361,11 @@ func (r *RoleDao) AssignRoleToUser(ctx context.Context, userId int, roleIds []in
 			return fmt.Errorf("添加用户角色关联失败: %v", err)
 		}
 
+		// 加载最新的策略
+		if err := r.enforcer.LoadPolicy(); err != nil {
+			return fmt.Errorf("加载策略失败: %v", err)
+		}
+
 		return nil
 	})
 }
@@ -420,6 +425,11 @@ func (r *RoleDao) RemoveRoleFromUser(ctx context.Context, userId int, roleIds []
 			return fmt.Errorf("移除用户角色关联失败: %v", err)
 		}
 
+		// 加载最新的策略
+		if err := r.enforcer.LoadPolicy(); err != nil {
+			return fmt.Errorf("加载策略失败: %v", err)
+		}
+
 		return nil
 	})
 }
@@ -445,6 +455,11 @@ func (r *RoleDao) batchAddPolicies(policies [][]string, batchSize int) error {
 		if _, err := r.enforcer.AddPolicies(policies[i:end]); err != nil {
 			return fmt.Errorf("添加权限策略失败: %v", err)
 		}
+	}
+
+	// 加载最新的策略
+	if err := r.enforcer.LoadPolicy(); err != nil {
+		return fmt.Errorf("加载策略失败: %v", err)
 	}
 
 	return nil
