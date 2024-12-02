@@ -1,5 +1,3 @@
-package pkg
-
 /*
  * Copyright 2024 Bamboo
  *
@@ -16,8 +14,9 @@ package pkg
  * limitations under the License.
  *
  * File: gorm.go
- * Description:
  */
+
+package pkg
 
 import (
 	"gorm.io/driver/mysql"

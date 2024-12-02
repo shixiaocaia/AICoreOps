@@ -4,7 +4,7 @@
 // 	protoc        v5.27.1
 // source: aicoreops_role.proto
 
-package types
+package role
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

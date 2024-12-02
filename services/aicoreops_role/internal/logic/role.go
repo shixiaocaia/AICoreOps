@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * File: init.go
+ * File: role.go
  * Description: 角色管理逻辑层
  */
 
@@ -30,6 +30,7 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
+// RoleLogic 角色管理逻辑结构体
 type RoleLogic struct {
 	ctx    context.Context
 	domain *domain.RoleDomain
@@ -37,6 +38,7 @@ type RoleLogic struct {
 	logx.Logger
 }
 
+// NewRoleLogic 创建角色管理逻辑实例
 func NewRoleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleLogic {
 	return &RoleLogic{
 		ctx:    ctx,
@@ -46,8 +48,11 @@ func NewRoleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *RoleLogic {
 	}
 }
 
-// 将角色模型转换为响应类型
+// convertToRoleResponse 将角色模型转换为响应类型
 func convertToRoleResponse(role *model.Role) *types.Role {
+	if role == nil {
+		return nil
+	}
 	return &types.Role{
 		Id:          role.ID,
 		Name:        role.Name,
@@ -61,7 +66,10 @@ func convertToRoleResponse(role *model.Role) *types.Role {
 
 // CreateRole 创建角色
 func (l *RoleLogic) CreateRole(ctx context.Context, req *types.CreateRoleRequest) (*types.CreateRoleResponse, error) {
-	// 参数验证
+	if req == nil {
+		return nil, errors.New("请求参数不能为空")
+	}
+	
 	if req.Name == "" {
 		return nil, errors.New("角色名称不能为空")
 	}
@@ -70,11 +78,9 @@ func (l *RoleLogic) CreateRole(ctx context.Context, req *types.CreateRoleRequest
 		Name:        req.Name,
 		Description: req.Description,
 		RoleType:    int(req.RoleType),
-
-		IsDefault: int(req.IsDefault),
+		IsDefault:   int(req.IsDefault),
 	}
 
-	// 验证角色模型
 	if err := role.Validate(); err != nil {
 		l.Errorf("角色参数验证失败: %v", err)
 		return nil, err
@@ -94,6 +100,14 @@ func (l *RoleLogic) CreateRole(ctx context.Context, req *types.CreateRoleRequest
 
 // GetRole 获取角色详情
 func (l *RoleLogic) GetRole(ctx context.Context, req *types.GetRoleRequest) (*types.GetRoleResponse, error) {
+	if req == nil {
+		return nil, errors.New("请求参数不能为空")
+	}
+
+	if req.Id <= 0 {
+		return nil, errors.New("无效的角色ID")
+	}
+
 	role, err := l.domain.GetRole(ctx, int(req.Id))
 	if err != nil {
 		l.Errorf("获取角色详情失败: %v", err)
@@ -109,6 +123,14 @@ func (l *RoleLogic) GetRole(ctx context.Context, req *types.GetRoleRequest) (*ty
 
 // UpdateRole 更新角色
 func (l *RoleLogic) UpdateRole(ctx context.Context, req *types.UpdateRoleRequest) (*types.UpdateRoleResponse, error) {
+	if req == nil {
+		return nil, errors.New("请求参数不能为空")
+	}
+
+	if req.Id <= 0 {
+		return nil, errors.New("无效的角色ID")
+	}
+
 	role := &model.Role{
 		ID:          req.Id,
 		Name:        req.Name,
@@ -130,6 +152,14 @@ func (l *RoleLogic) UpdateRole(ctx context.Context, req *types.UpdateRoleRequest
 
 // DeleteRole 删除角色
 func (l *RoleLogic) DeleteRole(ctx context.Context, req *types.DeleteRoleRequest) (*types.DeleteRoleResponse, error) {
+	if req == nil {
+		return nil, errors.New("请求参数不能为空")
+	}
+
+	if req.Id <= 0 {
+		return nil, errors.New("无效的角色ID")
+	}
+
 	if err := l.domain.DeleteRole(ctx, int(req.Id)); err != nil {
 		l.Errorf("删除角色失败: %v", err)
 		return nil, err
@@ -143,6 +173,14 @@ func (l *RoleLogic) DeleteRole(ctx context.Context, req *types.DeleteRoleRequest
 
 // ListRoles 获取角色列表
 func (l *RoleLogic) ListRoles(ctx context.Context, req *types.ListRolesRequest) (*types.ListRolesResponse, error) {
+	if req == nil {
+		return nil, errors.New("请求参数不能为空")
+	}
+
+	if req.PageSize <= 0 || req.PageSize > 100 {
+		return nil, errors.New("无效的分页大小")
+	}
+
 	roles, total, err := l.domain.ListRoles(ctx, int(req.PageNumber), int(req.PageSize))
 	if err != nil {
 		l.Errorf("获取角色列表失败: %v", err)
@@ -168,6 +206,18 @@ func (l *RoleLogic) ListRoles(ctx context.Context, req *types.ListRolesRequest) 
 
 // AssignPermissions 分配权限
 func (l *RoleLogic) AssignPermissions(ctx context.Context, req *types.AssignPermissionsRequest) (*types.AssignPermissionsResponse, error) {
+	if req == nil {
+		return nil, errors.New("请求参数不能为空")
+	}
+
+	if req.RoleId <= 0 {
+		return nil, errors.New("无效的角色ID")
+	}
+
+	if len(req.MenuIds) == 0 && len(req.ApiIds) == 0 {
+		return nil, errors.New("菜单ID和API ID不能同时为空")
+	}
+
 	menuIds := make([]int, len(req.MenuIds))
 	for i, id := range req.MenuIds {
 		menuIds[i] = int(id)
@@ -186,5 +236,86 @@ func (l *RoleLogic) AssignPermissions(ctx context.Context, req *types.AssignPerm
 	return &types.AssignPermissionsResponse{
 		Code:    0,
 		Message: "分配权限成功",
+	}, nil
+}
+
+// AssignRoleToUser 分配角色给用户
+func (l *RoleLogic) AssignRoleToUser(ctx context.Context, req *types.AssignRoleToUserRequest) (*types.AssignRoleToUserResponse, error) {
+	if req == nil {
+		return nil, errors.New("请求参数不能为空")
+	}
+
+	if req.UserId <= 0 {
+		return nil, errors.New("无效的用户ID")
+	}
+
+	if len(req.RoleIds) == 0 {
+		return nil, errors.New("角色ID列表不能为空")
+	}
+
+	roleIds := make([]int, len(req.RoleIds))
+	for i, id := range req.RoleIds {
+		roleIds[i] = int(id)
+	}
+
+	if err := l.domain.AssignRoleToUser(ctx, int(req.UserId), roleIds); err != nil {
+		l.Errorf("分配角色给用户失败: %v", err)
+		return nil, err
+	}
+
+	return &types.AssignRoleToUserResponse{
+		Code:    0,
+		Message: "分配角色给用户成功",
+	}, nil
+}
+
+// RemoveUserPermissions 移除用户权限
+func (l *RoleLogic) RemoveUserPermissions(ctx context.Context, req *types.RemoveUserPermissionsRequest) (*types.RemoveUserPermissionsResponse, error) {
+	if req == nil {
+		return nil, errors.New("请求参数不能为空")
+	}
+
+	if req.UserId <= 0 {
+		return nil, errors.New("无效的用户ID")
+	}
+
+	if err := l.domain.RemoveUserPermissions(ctx, int(req.UserId)); err != nil {
+		l.Errorf("移除用户权限失败: %v", err)
+		return nil, err
+	}
+
+	return &types.RemoveUserPermissionsResponse{
+		Code:    0,
+		Message: "移除用户权限成功",
+	}, nil
+}
+
+// RemoveRoleFromUser 移除用户角色
+func (l *RoleLogic) RemoveRoleFromUser(ctx context.Context, req *types.RemoveRoleFromUserRequest) (*types.RemoveRoleFromUserResponse, error) {
+	if req == nil {
+		return nil, errors.New("请求参数不能为空")
+	}
+
+	if req.UserId <= 0 {
+		return nil, errors.New("无效的用户ID")
+	}
+
+	if len(req.RoleIds) == 0 {
+		return nil, errors.New("角色ID列表不能为空")
+	}
+
+	roleIds := make([]int, len(req.RoleIds))
+	for i, id := range req.RoleIds {
+		roleIds[i] = int(id)
+	}
+
+	if err := l.domain.RemoveRoleFromUser(ctx, int(req.UserId), roleIds); err != nil {
+		l.Errorf("移除用户角色失败: %v", err)
+		return nil, err
+	}
+
+	return &types.RemoveRoleFromUserResponse{
+		Code:    0,
+		Message: "移除用户角色成功",
 	}, nil
 }

@@ -13,8 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  *
- * File: init.go
- * Description:
+ * File: config.go
  */
 
 package config

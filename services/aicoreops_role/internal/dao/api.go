@@ -14,7 +14,6 @@
  * limitations under the License.
  *
  * File: api.go
- * Description: API数据访问层实现
  */
 
 package dao

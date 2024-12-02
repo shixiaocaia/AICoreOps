@@ -25,19 +25,20 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"strings"
 	"time"
 
 	"github.com/casbin/casbin/v2"
 	"gorm.io/gorm"
 )
 
+// RoleDao 角色数据访问层结构体
 type RoleDao struct {
 	db       *gorm.DB
 	enforcer *casbin.Enforcer
 	apiDao   *ApiDao
 }
 
+// NewRoleDao 创建角色数据访问层实例
 func NewRoleDao(db *gorm.DB, enforcer *casbin.Enforcer) *RoleDao {
 	return &RoleDao{
 		db:       db,
@@ -48,6 +49,14 @@ func NewRoleDao(db *gorm.DB, enforcer *casbin.Enforcer) *RoleDao {
 
 // CreateRole 创建角色
 func (r *RoleDao) CreateRole(ctx context.Context, role *model.Role) error {
+	if role == nil {
+		return errors.New("角色对象不能为空")
+	}
+
+	if role.Name == "" {
+		return errors.New("角色名称不能为空")
+	}
+
 	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
 		// 检查角色名是否已存在
 		var count int64
@@ -57,6 +66,12 @@ func (r *RoleDao) CreateRole(ctx context.Context, role *model.Role) error {
 		if count > 0 {
 			return errors.New("角色名称已存在")
 		}
+
+		// 设置创建时间和更新时间
+		now := time.Now().Unix()
+		role.CreateTime = now
+		role.UpdateTime = now
+		role.IsDeleted = constant.DeletedNo
 
 		// 创建角色
 		if err := tx.Create(role).Error; err != nil {
@@ -76,7 +91,7 @@ func (r *RoleDao) GetRoleById(ctx context.Context, id int) (*model.Role, error) 
 	var role model.Role
 	if err := r.db.WithContext(ctx).Where("id = ? AND is_deleted = ?", id, constant.DeletedNo).First(&role).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
-			return nil, fmt.Errorf("角色不存在: %v", err)
+			return nil, nil
 		}
 		return nil, fmt.Errorf("查询角色失败: %v", err)
 	}
@@ -91,6 +106,20 @@ func (r *RoleDao) UpdateRole(ctx context.Context, role *model.Role) error {
 	}
 	if role.ID <= 0 {
 		return errors.New("无效的角色ID")
+	}
+	if role.Name == "" {
+		return errors.New("角色名称不能为空")
+	}
+
+	// 检查角色名是否已被其他角色使用
+	var count int64
+	if err := r.db.WithContext(ctx).Model(&model.Role{}).
+		Where("name = ? AND id != ? AND is_deleted = ?", role.Name, role.ID, constant.DeletedNo).
+		Count(&count).Error; err != nil {
+		return fmt.Errorf("检查角色名称失败: %v", err)
+	}
+	if count > 0 {
+		return errors.New("角色名称已被使用")
 	}
 
 	updates := map[string]interface{}{
@@ -121,6 +150,19 @@ func (r *RoleDao) DeleteRole(ctx context.Context, id int) error {
 		return errors.New("无效的角色ID")
 	}
 
+	// 检查是否为默认角色
+	var role model.Role
+	if err := r.db.WithContext(ctx).Where("id = ? AND is_deleted = ?", id, constant.DeletedNo).First(&role).Error; err != nil {
+		if errors.Is(err, gorm.ErrRecordNotFound) {
+			return errors.New("角色不存在")
+		}
+		return fmt.Errorf("查询角色失败: %v", err)
+	}
+
+	if role.IsDefault == 1 {
+		return errors.New("默认角色不能删除")
+	}
+
 	updates := map[string]interface{}{
 		"is_deleted":  constant.DeletedYes,
 		"update_time": time.Now().Unix(),
@@ -132,6 +174,11 @@ func (r *RoleDao) DeleteRole(ctx context.Context, id int) error {
 	}
 	if result.RowsAffected == 0 {
 		return errors.New("角色不存在或已被删除")
+	}
+
+	// 删除角色关联的权限
+	if _, err := r.enforcer.DeleteRole(role.Name); err != nil {
+		return fmt.Errorf("删除角色权限失败: %v", err)
 	}
 
 	return nil
@@ -146,7 +193,7 @@ func (r *RoleDao) ListRoles(ctx context.Context, page, pageSize int) ([]*model.R
 	var roles []*model.Role
 	var total int64
 
-	db := r.db.WithContext(ctx).Model(&model.Role{}).Where("is_deleted = 0")
+	db := r.db.WithContext(ctx).Model(&model.Role{}).Where("is_deleted = ?", constant.DeletedNo)
 
 	// 获取总数
 	if err := db.Count(&total).Error; err != nil {
@@ -208,6 +255,10 @@ func (r *RoleDao) AssignPermissions(ctx context.Context, roleId int, menuIds []i
 
 // assignMenuPermissions 分配菜单权限
 func (r *RoleDao) assignMenuPermissions(roleName string, menuIds []int, batchSize int) error {
+	if roleName == "" {
+		return errors.New("角色名称不能为空")
+	}
+
 	// 如果菜单ID列表为空,直接返回
 	if len(menuIds) == 0 {
 		return nil
@@ -228,6 +279,10 @@ func (r *RoleDao) assignMenuPermissions(roleName string, menuIds []int, batchSiz
 
 // assignAPIPermissions 分配API权限
 func (r *RoleDao) assignAPIPermissions(ctx context.Context, roleName string, apiIds []int, batchSize int) error {
+	if roleName == "" {
+		return errors.New("角色名称不能为空")
+	}
+
 	// 如果API ID列表为空,直接返回
 	if len(apiIds) == 0 {
 		return nil
@@ -256,6 +311,7 @@ func (r *RoleDao) assignAPIPermissions(ctx context.Context, roleName string, api
 		if err != nil {
 			return fmt.Errorf("获取API信息失败: %v", err)
 		}
+
 		if api == nil {
 			return fmt.Errorf("API不存在: %d", apiId)
 		}
@@ -266,15 +322,118 @@ func (r *RoleDao) assignAPIPermissions(ctx context.Context, roleName string, api
 			return fmt.Errorf("无效的HTTP方法: %d", api.Method)
 		}
 
-		policies = append(policies, []string{roleName, api.Path, strings.ToLower(method)})
+		policies = append(policies, []string{roleName, api.Path, method})
 	}
 
 	// 批量添加策略
 	return r.batchAddPolicies(policies, batchSize)
 }
 
+// AssignRoleToUser 分配角色给用户
+func (r *RoleDao) AssignRoleToUser(ctx context.Context, userId int, roleIds []int) error {
+	if userId <= 0 {
+		return errors.New("无效的用户ID")
+	}
+
+	if len(roleIds) == 0 {
+		return nil
+	}
+
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// 获取角色信息
+		var roles []*model.Role
+		if err := tx.Where("id IN ? AND is_deleted = ?", roleIds, constant.DeletedNo).Find(&roles).Error; err != nil {
+			return fmt.Errorf("获取角色信息失败: %v", err)
+		}
+
+		if len(roles) == 0 {
+			return errors.New("未找到有效的角色")
+		}
+
+		// 构建casbin规则
+		policies := make([][]string, 0, len(roles))
+		for _, role := range roles {
+			policies = append(policies, []string{fmt.Sprintf("%d", userId), role.Name})
+		}
+
+		// 添加用户角色关联
+		if _, err := r.enforcer.AddGroupingPolicies(policies); err != nil {
+			return fmt.Errorf("添加用户角色关联失败: %v", err)
+		}
+
+		return nil
+	})
+}
+
+// RemoveUserPermissions 移除指定用户的权限
+func (r *RoleDao) RemoveUserPermissions(ctx context.Context, userId int) error {
+	if userId <= 0 {
+		return errors.New("无效的用户ID")
+	}
+
+	// 使用事务确保数据一致性
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// 移除用户所有角色关联
+		_, err := r.enforcer.RemoveFilteredGroupingPolicy(0, fmt.Sprintf("%d", userId))
+		if err != nil {
+			return fmt.Errorf("移除用户角色关联失败: %v", err)
+		}
+
+		// 刷新casbin策略
+		if err := r.enforcer.LoadPolicy(); err != nil {
+			return fmt.Errorf("刷新权限策略失败: %v", err)
+		}
+
+		return nil
+	})
+}
+
+// RemoveRoleFromUser 移除用户角色
+func (r *RoleDao) RemoveRoleFromUser(ctx context.Context, userId int, roleIds []int) error {
+	if userId <= 0 {
+		return errors.New("无效的用户ID")
+	}
+
+	if len(roleIds) == 0 {
+		return nil
+	}
+
+	return r.db.WithContext(ctx).Transaction(func(tx *gorm.DB) error {
+		// 获取角色信息
+		var roles []*model.Role
+		if err := tx.Where("id IN ? AND is_deleted = ?", roleIds, constant.DeletedNo).Find(&roles).Error; err != nil {
+			return fmt.Errorf("获取角色信息失败: %v", err)
+		}
+
+		if len(roles) == 0 {
+			return errors.New("未找到有效的角色")
+		}
+
+		// 构建需要移除的规则
+		policies := make([][]string, 0, len(roles))
+		for _, role := range roles {
+			policies = append(policies, []string{fmt.Sprintf("%d", userId), role.Name})
+		}
+
+		// 移除用户角色关联
+		if _, err := r.enforcer.RemoveGroupingPolicies(policies); err != nil {
+			return fmt.Errorf("移除用户角色关联失败: %v", err)
+		}
+
+		return nil
+	})
+}
+
 // batchAddPolicies 批量添加策略
 func (r *RoleDao) batchAddPolicies(policies [][]string, batchSize int) error {
+	if len(policies) == 0 {
+		return nil
+	}
+
+	if batchSize <= 0 {
+		return errors.New("无效的批次大小")
+	}
+
 	// 按批次处理策略规则
 	for i := 0; i < len(policies); i += batchSize {
 		end := i + batchSize

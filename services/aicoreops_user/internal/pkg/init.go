@@ -1,10 +1,3 @@
-package pkg
-
-import (
-	"aicoreops_user/internal/model"
-	"gorm.io/gorm"
-)
-
 /*
  * Copyright 2024 Bamboo
  *
@@ -21,8 +14,15 @@ import (
  * limitations under the License.
  *
  * File: init.go
- * Description:
  */
+
+package pkg
+
+import (
+	"aicoreops_user/internal/model"
+
+	"gorm.io/gorm"
+)
 
 func InitTables(db *gorm.DB) error {
 	return db.AutoMigrate(
