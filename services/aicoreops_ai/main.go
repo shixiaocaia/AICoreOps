@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"aicoreops_ai/aicoreops_ai"
 	"aicoreops_ai/internal/config"
 	"aicoreops_ai/internal/server"
 	"aicoreops_ai/internal/svc"
+	"aicoreops_ai/types"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
@@ -16,7 +16,7 @@ import (
 	"google.golang.org/grpc/reflection"
 )
 
-var configFile = flag.String("f", "etc/aicoreopsai.yaml", "the config file")
+var configFile = flag.String("f", "etc/config.yaml", "the config file")
 
 func main() {
 	flag.Parse()
@@ -26,7 +26,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		aicoreops_ai.RegisterAicoreopsAiServer(grpcServer, server.NewAicoreopsAiServer(ctx))
+		types.RegisterAIHelperServer(grpcServer, server.NewAicoreopsAiServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
