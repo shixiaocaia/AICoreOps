@@ -1,0 +1,15 @@
+Name: aicoreopsai.rpc
+ListenOn: 0.0.0.0:8083
+Timeout: 30000
+Etcd:
+  Hosts:
+  - 127.0.0.1:2379
+  Key: aicoreopsai.rpc
+LLM:
+  Url: "http://localhost:11434"
+  Model: "qwen2.5:latest"
+Qdrant:
+  Url: "http://localhost:6333"
+  CollectionName: "aicoreops"
+  Model: "nomic-embed-text:latest"
+  DocumentPath: "etc/test.txt"

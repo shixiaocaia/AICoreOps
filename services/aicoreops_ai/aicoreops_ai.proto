@@ -1,0 +1,116 @@
+syntax = "proto3";
+
+package ai;
+
+option go_package = "./types";
+
+// 对话式 AI 助手请求
+message AskQuestionRequest {
+  string question = 1;  // 用户提问内容
+  string session_id = 2; // 会话ID,用于追踪对话上下文
+}
+
+// 对话式 AI 助手响应
+message AskQuestionResponse {
+  int32 code = 1;        // 状态码，0 表示成功，非 0 表示错误
+  string message = 2;    // 错误信息或成功提示
+  AnswerData data = 3;   // 返回的数据
+
+  message AnswerData {
+    string answer = 1;   // AI 助手的回答内容
+    string session_id = 2; // 会话ID
+  }
+}
+
+// 获取聊天历史请求
+message GetChatHistoryRequest {
+  string session_id = 1; // 会话ID
+  int32 page = 2;       // 页码
+  int32 page_size = 3;  // 每页数量
+}
+
+// 获取聊天历史响应
+message GetChatHistoryResponse {
+  int32 code = 1;           // 状态码
+  string message = 2;       // 错误信息或成功提示
+  ChatHistoryData data = 3; // 返回的数据
+
+  message ChatHistoryData {
+    repeated ChatMessage messages = 1; // 聊天记录列表
+    int32 total = 2;                  // 总记录数
+  }
+
+  message ChatMessage {
+    string question = 1;  // 问题
+    string answer = 2;    // 回答
+    int64 create_time = 3; // 创建时间
+  }
+}
+
+// 上传文档请求
+message UploadDocumentRequest {
+  string title = 1;     // 文档标题
+  string content = 2;   // 文档内容
+  string doc_type = 3;  // 文档类型
+}
+
+// 上传文档响应
+message UploadDocumentResponse {
+  int32 code = 1;       // 状态码
+  string message = 2;   // 错误信息或成功提示
+  DocData data = 3;     // 返回的数据
+
+  message DocData {
+    string doc_id = 1;  // 文档ID
+  }
+}
+
+// 日志分析请求
+message AnalyzeLogsRequest {
+  string log_data = 1;  // 提交的日志内容
+}
+
+// 日志分析响应
+message AnalyzeLogsResponse {
+  int32 code = 1;            // 状态码
+  string message = 2;        // 错误信息或成功提示
+  SuggestionData data = 3;   // 返回的数据
+
+  message SuggestionData {
+    string suggestion = 1;   // 修复建议
+  }
+}
+
+// 自动修复任务请求
+message FixTaskRequest {
+  string task = 1;      // 修复任务类型（如 fixOOM）
+  string pod_id = 2;    // Pod ID
+}
+
+// 自动修复任务响应
+message FixTaskResponse {
+  int32 code = 1;          // 状态码
+  string message = 2;      // 错误信息或成功提示
+  FixStatusData data = 3;  // 返回的数据
+
+  message FixStatusData {
+    string status = 1;     // 修复任务状态
+  }
+}
+
+// 对话式 AI 助手接口
+service AIHelper {
+  rpc AskQuestion (AskQuestionRequest) returns (AskQuestionResponse);       // 用户提问，获取解答
+  rpc GetChatHistory (GetChatHistoryRequest) returns (GetChatHistoryResponse); // 获取聊天历史
+  rpc UploadDocument (UploadDocumentRequest) returns (UploadDocumentResponse); // 上传文档到知识库
+}
+
+// 日志分析与修复建议接口
+service LogAnalysis {
+  rpc AnalyzeLogs (AnalyzeLogsRequest) returns (AnalyzeLogsResponse);  // 分析日志，返回修复建议
+}
+
+// 自动修复任务接口
+service AutoFix {
+  rpc FixTask (FixTaskRequest) returns (FixTaskResponse);  // 执行修复任务
+}

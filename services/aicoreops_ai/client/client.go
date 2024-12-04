@@ -2,20 +2,20 @@
 // goctl 1.7.3
 // Source: aicoreops_ai.proto
 
-package aicoreopsaiclient
+package client
 
 import (
 	"context"
 
-	"aicoreops_ai/aicoreops_ai"
+	"aicoreops_ai/types"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"
 )
 
 type (
-	Request  = aicoreops_ai.Request
-	Response = aicoreops_ai.Response
+	Request  = types.Request
+	Response = types.Response
 
 	AicoreopsAi interface {
 		Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
@@ -33,6 +33,6 @@ func NewAicoreopsAi(cli zrpc.Client) AicoreopsAi {
 }
 
 func (m *defaultAicoreopsAi) Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
-	client := aicoreops_ai.NewAicoreopsAiClient(m.cli.Conn())
+	client := types.NewAicoreopsAiClient(m.cli.Conn())
 	return client.Ping(ctx, in, opts...)
 }
