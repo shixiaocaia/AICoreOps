@@ -74,6 +74,9 @@ func (l *UserLogic) CreateUser(ctx context.Context, req *types.CreateUserRequest
 	// 构建用户模型
 	user := l.domain.BuildUserModel(req, encryptedPwd)
 
+	// 生成雪花ID
+	user.ID = int(l.svcCtx.Snowflake.Generate().Int64())
+
 	// 注册用户
 	if err := l.domain.Register(ctx, user); err != nil {
 		l.Logger.Errorf("用户注册失败: %v", err)
