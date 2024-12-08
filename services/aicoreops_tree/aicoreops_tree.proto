@@ -1,0 +1,182 @@
+syntax = "proto3";
+
+package tree_rpc;
+option go_package="./types";
+
+// 资源树节点结构
+message ResourceTree {
+  int64 id = 1;                     // 节点ID
+  int64 create_time = 2;            // 创建时间
+  int64 update_time = 3;            // 更新时间 
+  int32 is_deleted = 4;             // 是否已删除(0-未删除,1-已删除)
+  string title = 5;                 // 节点标题
+  int32 pid = 6;                    // 父节点ID(0表示根节点)
+  int32 level = 7;                  // 节点层级(从1开始)
+  int32 is_leaf = 8;               // 是否为叶子节点(0-否,1-是)
+  string description = 9;           // 节点描述
+  repeated ResourceTree children = 10; // 子节点列表
+  string cmdb_id = 11;              // CMDB资源ID
+  string cmdb_type = 12;            // CMDB资源类型
+  map<string, string> cmdb_attrs = 13; // CMDB资源属性
+  string creator = 14;              // 创建者
+  string updater = 15;              // 更新者
+  string status = 16;               // 节点状态(normal-正常,disabled-禁用)
+}
+
+// 获取树节点列表
+message ListTreeNodeRequest {
+  int32 page_size = 1;             // 每页数量
+  int32 page_num = 2;              // 页码
+  string cmdb_type = 3;            // 按CMDB类型过滤
+  string status = 4;               // 按状态过滤
+  string keyword = 5;              // 搜索关键字
+}
+
+message ListTreeNodeResponse {
+  repeated ResourceTree nodes = 1;  // 节点列表
+  int32 total = 2;                 // 总数量
+}
+
+// 选择树节点
+message SelectTreeNodeRequest {
+  int64 id = 1;                    // 节点ID
+  string cmdb_id = 2;              // CMDB资源ID
+  bool with_children = 3;          // 是否返回子节点
+  bool with_parents = 4;           // 是否返回父节点路径
+}
+
+message SelectTreeNodeResponse {
+  ResourceTree node = 1;           // 节点信息
+  bool exists = 2;                 // 节点是否存在
+  map<string, string> cmdb_detail = 3; // CMDB详细信息
+  repeated ResourceTree parents = 4;    // 父节点路径
+}
+
+// 获取顶级树节点
+message GetTopTreeNodeRequest {
+  int32 limit = 1;                 // 限制返回数量
+  string cmdb_type = 2;            // CMDB资源类型
+  string status = 3;               // 状态过滤
+}
+
+message GetTopTreeNodeResponse {
+  repeated ResourceTree nodes = 1;  // 顶级节点列表
+  int32 total = 2;                 // 总数量
+}
+
+// 获取叶子节点
+message ListLeafTreeNodeRequest {
+  int32 page_size = 1;             // 每页数量
+  int32 page_num = 2;              // 页码
+  string cmdb_type = 3;            // CMDB资源类型
+  string status = 4;               // 状态过滤
+}
+
+message ListLeafTreeNodeResponse {
+  repeated ResourceTree nodes = 1;  // 叶子节点列表
+  int32 total = 2;                 // 总数量
+}
+
+// 创建树节点
+message CreateTreeNodeRequest {
+  string title = 1;                // 节点标题(必填)
+  int32 pid = 2;                   // 父节点ID(必填,0表示创建根节点)
+  string description = 3;          // 节点描述(选填)
+  int32 is_leaf = 4;              // 是否为叶子节点(必填,0-否,1-是)
+  string cmdb_id = 5;              // CMDB资源ID(选填)
+  string cmdb_type = 6;            // CMDB资源类型(选填)
+  map<string, string> cmdb_attrs = 7; // CMDB资源属性(选填)
+  string creator = 8;              // 创建者(必填)
+}
+
+message CreateTreeNodeResponse {
+  ResourceTree node = 1;           // 创建的节点信息
+  bool success = 2;                // 是否创建成功
+  string message = 3;              // 创建结果信息
+}
+
+// 删除树节点
+message DeleteTreeNodeRequest {
+  int64 id = 1;                    // 节点ID
+  bool force = 2;                  // 是否强制删除(会同时删除子节点)
+  bool sync_cmdb = 3;              // 是否同步删除CMDB资源
+  string operator = 4;             // 操作者
+  string reason = 5;               // 删除原因
+}
+
+message DeleteTreeNodeResponse {
+  bool success = 1;                // 是否删除成功
+  string message = 2;              // 删除结果信息
+  repeated string affected_ids = 3; // 受影响的节点ID列表
+}
+
+// 获取子节点
+message GetChildrenTreeNodeRequest {
+  int32 pid = 1;                   // 父节点ID
+  int32 page_size = 2;             // 每页数量
+  int32 page_num = 3;              // 页码
+  string cmdb_type = 4;            // CMDB资源类型
+  string status = 5;               // 状态过滤
+  bool recursive = 6;              // 是否递归获取所有子节点
+}
+
+message GetChildrenTreeNodeResponse {
+  repeated ResourceTree nodes = 1;  // 子节点列表
+  int32 total = 2;                 // 总数量
+}
+
+// 更新树节点
+message UpdateTreeNodeRequest {
+  int64 id = 1;                    // 节点ID(必填)
+  string title = 2;                // 节点标题(选填)
+  string description = 3;          // 节点描述(选填)
+  int32 is_leaf = 4;              // 是否为叶子节点(选填,0-否,1-是)
+  map<string, string> cmdb_attrs = 5; // 更新CMDB属性(选填)
+  string updater = 6;              // 更新者(必填)
+  string status = 7;               // 状态(选填)
+}
+
+message UpdateTreeNodeResponse {
+  ResourceTree node = 1;           // 更新后的节点信息
+  bool success = 2;                // 是否更新成功
+  string message = 3;              // 更新结果信息
+}
+
+// CMDB同步相关
+message SyncCMDBRequest {
+  string cmdb_type = 1;            // CMDB资源类型
+  bool force = 2;                  // 是否强制同步
+  string operator = 3;             // 操作者
+  bool dry_run = 4;                // 是否试运行
+  map<string, string> sync_options = 5; // 同步选项
+}
+
+message SyncCMDBResponse {
+  bool success = 1;                // 同步是否成功
+  string message = 2;              // 同步结果信息
+  int32 sync_count = 3;            // 同步资源数量
+  repeated string failed_ids = 4;   // 同步失败的资源ID列表
+  map<string, string> sync_stats = 5; // 同步统计信息
+}
+
+// 资源树服务
+service ResourceTreeService {
+  // 获取树节点列表
+  rpc ListTreeNode(ListTreeNodeRequest) returns (ListTreeNodeResponse);
+  // 选择树节点
+  rpc SelectTreeNode(SelectTreeNodeRequest) returns (SelectTreeNodeResponse);
+  // 获取顶级树节点
+  rpc GetTopTreeNode(GetTopTreeNodeRequest) returns (GetTopTreeNodeResponse);
+  // 获取叶子节点列表
+  rpc ListLeafTreeNode(ListLeafTreeNodeRequest) returns (ListLeafTreeNodeResponse);
+  // 创建树节点
+  rpc CreateTreeNode(CreateTreeNodeRequest) returns (CreateTreeNodeResponse);
+  // 删除树节点
+  rpc DeleteTreeNode(DeleteTreeNodeRequest) returns (DeleteTreeNodeResponse);
+  // 获取子节点
+  rpc GetChildrenTreeNode(GetChildrenTreeNodeRequest) returns (GetChildrenTreeNodeResponse);
+  // 更新树节点
+  rpc UpdateTreeNode(UpdateTreeNodeRequest) returns (UpdateTreeNodeResponse);
+  // 同步CMDB资源
+  rpc SyncCMDB(SyncCMDBRequest) returns (SyncCMDBResponse);
+}

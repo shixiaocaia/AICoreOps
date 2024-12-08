@@ -1,0 +1,109 @@
+syntax = "proto3";
+
+package tree_rpc;
+option go_package="./types";
+
+// ECS实例基础信息
+message EcsInstance {
+  string instance_id = 1;           // ECS实例ID
+  string instance_name = 2;         // 实例名称
+  string instance_type = 3;         // 实例规格
+  string status = 4;               // 实例状态
+  string private_ip = 5;           // 私网IP
+  string public_ip = 6;            // 公网IP
+  string region_id = 7;            // 地域ID
+  string zone_id = 8;              // 可用区ID
+  string vpc_id = 9;               // VPC ID
+  string os_type = 10;             // 操作系统类型
+  string os_name = 11;             // 操作系统名称
+  int64 create_time = 12;          // 创建时间
+  int64 expired_time = 13;         // 过期时间
+  map<string, string> tags = 14;    // 标签
+}
+
+// 获取未绑定的ECS列表请求
+message GetEcsUnbindListRequest {
+  int32 page_size = 1;             // 每页数量
+  int32 page_num = 2;              // 页码
+  string region_id = 3;            // 按地域筛选
+  string instance_type = 4;        // 按实例规格筛选
+  string keyword = 5;              // 搜索关键字(实例ID/名称/IP)
+}
+
+message GetEcsUnbindListResponse {
+  repeated EcsInstance instances = 1; // ECS实例列表
+  int32 total = 2;                  // 总数量
+}
+
+// 获取已绑定的ECS列表请求
+message GetEcsListRequest {
+  int32 page_size = 1;             // 每页数量
+  int32 page_num = 2;              // 页码
+  int64 node_id = 3;               // 资源树节点ID
+  string region_id = 4;            // 按地域筛选
+  string status = 5;               // 按状态筛选
+  string keyword = 6;              // 搜索关键字
+}
+
+message GetEcsListResponse {
+  repeated EcsInstance instances = 1; // ECS实例列表
+  int32 total = 2;                  // 总数量
+}
+
+// 绑定ECS请求
+message BindEcsRequest {
+  int64 node_id = 1;               // 资源树节点ID
+  repeated string instance_ids = 2; // ECS实例ID列表
+  string operator = 3;             // 操作人
+  map<string, string> bind_attrs = 4; // 绑定时附加的属性
+}
+
+message BindEcsResponse {
+  bool success = 1;                // 是否绑定成功
+  string message = 2;              // 绑定结果信息
+  repeated string failed_ids = 3;   // 绑定失败的实例ID列表
+}
+
+// 解绑ECS请求
+message UnBindEcsRequest {
+  int64 node_id = 1;               // 资源树节点ID
+  repeated string instance_ids = 2; // ECS实例ID列表
+  string operator = 3;             // 操作人
+  string reason = 4;               // 解绑原因
+}
+
+message UnBindEcsResponse {
+  bool success = 1;                // 是否解绑成功
+  string message = 2;              // 解绑结果信息
+  repeated string failed_ids = 3;   // 解绑失败的实例ID列表
+}
+
+// 批量操作ECS请求
+message BatchOperateEcsRequest {
+  repeated string instance_ids = 1; // ECS实例ID列表
+  string operation = 2;            // 操作类型(start/stop/restart)
+  string operator = 3;             // 操作人
+  bool force = 4;                  // 是否强制操作
+  map<string, string> options = 5;  // 操作选项
+}
+
+message BatchOperateEcsResponse {
+  bool success = 1;                // 是否操作成功
+  string message = 2;              // 操作结果信息
+  repeated string failed_ids = 3;   // 操作失败的实例ID列表
+  map<string, string> results = 4;  // 详细操作结果
+}
+
+// ECS资源服务
+service EcsService {
+  // 获取未绑定的ECS列表
+  rpc GetEcsUnbindList(GetEcsUnbindListRequest) returns (GetEcsUnbindListResponse);
+  // 获取已绑定的ECS列表
+  rpc GetEcsList(GetEcsListRequest) returns (GetEcsListResponse);
+  // 绑定ECS到资源树节点
+  rpc BindEcs(BindEcsRequest) returns (BindEcsResponse);
+  // 从资源树节点解绑ECS
+  rpc UnBindEcs(UnBindEcsRequest) returns (UnBindEcsResponse);
+  // 批量操作ECS实例
+  rpc BatchOperateEcs(BatchOperateEcsRequest) returns (BatchOperateEcsResponse);
+}
