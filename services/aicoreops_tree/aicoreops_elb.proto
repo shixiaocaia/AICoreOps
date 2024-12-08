@@ -1,0 +1,107 @@
+syntax = "proto3";
+
+package tree_rpc;
+option go_package="./types";
+
+// ELB实例基础信息
+message ElbInstance {
+  string instance_id = 1;           // ELB实例ID
+  string instance_name = 2;         // 实例名称
+  string instance_type = 3;         // 实例规格
+  string status = 4;               // 实例状态
+  string private_ip = 5;           // 私网IP
+  string public_ip = 6;            // 公网IP
+  string region_id = 7;            // 地域ID
+  string zone_id = 8;              // 可用区ID
+  string vpc_id = 9;               // VPC ID
+  int64 create_time = 10;          // 创建时间
+  int64 expired_time = 11;         // 过期时间
+  map<string, string> tags = 12;    // 标签
+}
+
+// 获取未绑定的ELB列表请求
+message GetElbUnbindListRequest {
+  int32 page_size = 1;             // 每页数量
+  int32 page_num = 2;              // 页码
+  string region_id = 3;            // 按地域筛选
+  string instance_type = 4;        // 按实例规格筛选
+  string keyword = 5;              // 搜索关键字(实例ID/名称/IP)
+}
+
+message GetElbUnbindListResponse {
+  repeated ElbInstance instances = 1; // ELB实例列表
+  int32 total = 2;                  // 总数量
+}
+
+// 获取已绑定的ELB列表请求
+message GetElbListRequest {
+  int32 page_size = 1;             // 每页数量
+  int32 page_num = 2;              // 页码
+  int64 node_id = 3;               // 资源树节点ID
+  string region_id = 4;            // 按地域筛选
+  string status = 5;               // 按状态筛选
+  string keyword = 6;              // 搜索关键字
+}
+
+message GetElbListResponse {
+  repeated ElbInstance instances = 1; // ELB实例列表
+  int32 total = 2;                  // 总数量
+}
+
+// 绑定ELB请求
+message BindElbRequest {
+  int64 node_id = 1;               // 资源树节点ID
+  repeated string instance_ids = 2; // ELB实例ID列表
+  string operator = 3;             // 操作人
+  map<string, string> bind_attrs = 4; // 绑定时附加的属性
+}
+
+message BindElbResponse {
+  bool success = 1;                // 是否绑定成功
+  string message = 2;              // 绑定结果信息
+  repeated string failed_ids = 3;   // 绑定失败的实例ID列表
+}
+
+// 解绑ELB请求
+message UnBindElbRequest {
+  int64 node_id = 1;               // 资源树节点ID
+  repeated string instance_ids = 2; // ELB实例ID列表
+  string operator = 3;             // 操作人
+  string reason = 4;               // 解绑原因
+}
+
+message UnBindElbResponse {
+  bool success = 1;                // 是否解绑成功
+  string message = 2;              // 解绑结果信息
+  repeated string failed_ids = 3;   // 解绑失败的实例ID列表
+}
+
+// 批量操作ELB请求
+message BatchOperateElbRequest {
+  repeated string instance_ids = 1; // ELB实例ID列表
+  string operation = 2;            // 操作类型(start/stop/restart)
+  string operator = 3;             // 操作人
+  bool force = 4;                  // 是否强制操作
+  map<string, string> options = 5;  // 操作选项
+}
+
+message BatchOperateElbResponse {
+  bool success = 1;                // 是否操作成功
+  string message = 2;              // 操作结果信息
+  repeated string failed_ids = 3;   // 操作失败的实例ID列表
+  map<string, string> results = 4;  // 详细操作结果
+}
+
+// ELB资源服务
+service ElbService {
+  // 获取未绑定的ELB列表
+  rpc GetElbUnbindList(GetElbUnbindListRequest) returns (GetElbUnbindListResponse);
+  // 获取已绑定的ELB列表
+  rpc GetElbList(GetElbListRequest) returns (GetElbListResponse);
+  // 绑定ELB到资源树节点
+  rpc BindElb(BindElbRequest) returns (BindElbResponse);
+  // 从资源树节点解绑ELB
+  rpc UnBindElb(UnBindElbRequest) returns (UnBindElbResponse);
+  // 批量操作ELB实例
+  rpc BatchOperateElb(BatchOperateElbRequest) returns (BatchOperateElbResponse);
+}

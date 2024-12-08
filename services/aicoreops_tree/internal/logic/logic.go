@@ -3,8 +3,8 @@ package logic
 import (
 	"context"
 
-	"aicoreops_tree/aicoreops_tree"
 	"aicoreops_tree/internal/svc"
+	"aicoreops_tree/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -23,8 +23,8 @@ func NewPingLogic(ctx context.Context, svcCtx *svc.ServiceContext) *PingLogic {
 	}
 }
 
-func (l *PingLogic) Ping(in *aicoreops_tree.Request) (*aicoreops_tree.Response, error) {
+func (l *PingLogic) Ping(in *types.Request) (*types.Response, error) {
 	// todo: add your logic here and delete this line
 
-	return &aicoreops_tree.Response{}, nil
+	return &types.Response{}, nil
 }

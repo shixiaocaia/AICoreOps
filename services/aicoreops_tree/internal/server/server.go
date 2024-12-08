@@ -7,14 +7,14 @@ package server
 import (
 	"context"
 
-	"aicoreops_tree/aicoreops_tree"
+	"aicoreops_tree/types"
 	"aicoreops_tree/internal/logic"
 	"aicoreops_tree/internal/svc"
 )
 
 type AicoreopsTreeServer struct {
 	svcCtx *svc.ServiceContext
-	aicoreops_tree.UnimplementedAicoreopsTreeServer
+	types.UnimplementedAicoreopsTreeServer
 }
 
 func NewAicoreopsTreeServer(svcCtx *svc.ServiceContext) *AicoreopsTreeServer {
@@ -23,7 +23,7 @@ func NewAicoreopsTreeServer(svcCtx *svc.ServiceContext) *AicoreopsTreeServer {
 	}
 }
 
-func (s *AicoreopsTreeServer) Ping(ctx context.Context, in *aicoreops_tree.Request) (*aicoreops_tree.Response, error) {
+func (s *AicoreopsTreeServer) Ping(ctx context.Context, in *types.Request) (*types.Response, error) {
 	l := logic.NewPingLogic(ctx, s.svcCtx)
 	return l.Ping(in)
 }
