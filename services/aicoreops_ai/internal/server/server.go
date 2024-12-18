@@ -25,6 +25,11 @@ func (s *AicoreopsAiServer) AskQuestion(ctx context.Context, req *types.AskQuest
 	return l.AskQuestion(req)
 }
 
+func (s *AicoreopsAiServer) UploadDocument(ctx context.Context, req *types.UploadDocumentRequest) (*types.UploadDocumentResponse, error) {
+	l := logic.NewAIHelperLogic(ctx, s.svcCtx)
+	return l.UploadDocument(req)
+}
+
 // mustEmbedUnimplementedAIHelperServiceServer implements types.AIHelperServiceServer.
 func (s *AicoreopsAiServer) mustEmbedUnimplementedAIHelperServiceServer() {
 	panic("unimplemented")

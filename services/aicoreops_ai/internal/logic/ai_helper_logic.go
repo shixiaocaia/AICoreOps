@@ -5,12 +5,12 @@ import (
 	"aicoreops_ai/internal/svc"
 	"aicoreops_ai/types"
 	"context"
+	"encoding/base64"
 	"fmt"
 	"strings"
 
 	"github.com/tmc/langchaingo/agents"
 	"github.com/tmc/langchaingo/chains"
-	"github.com/tmc/langchaingo/embeddings"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -30,28 +30,8 @@ func NewAIHelperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AIHelper
 
 // AskQuestion 实现 AI 助手的提问接口逻辑
 func (a *AIHelperLogic) AskQuestion(req *types.AskQuestionRequest) (*types.AskQuestionResponse, error) {
-	// 创建文档嵌入器
-	ollamaEmbedder, err := embeddings.NewEmbedder(a.svcCtx.Embedder)
-	if err != nil {
-		a.Logger.Errorf("创建文档嵌入器失败: %v", err)
-		return nil, fmt.Errorf("创建文档嵌入器失败: %v", err)
-	}
-
-	// 将文本文件拆分成文档块并存储
-	docs, err := domain.TextToChunks(a.svcCtx.Config.Qdrant.DocumentPath)
-	if err != nil {
-		a.Logger.Errorf("拆分文本失败: %v", err)
-		return nil, fmt.Errorf("拆分文本失败: %v", err)
-	}
-
-	store, err := domain.InitQdrantStore(docs, ollamaEmbedder, a.svcCtx.Config.Qdrant.Url, a.svcCtx.Config.Qdrant.CollectionName)
-	if err != nil {
-		a.Logger.Errorf("初始化文档存储失败: %v", err)
-		return nil, fmt.Errorf("初始化文档存储失败: %v", err)
-	}
-
 	// 检索相关文档
-	docRetrieved, err := domain.RetrieveRelevantDocs(store, req.Question)
+	docRetrieved, err := domain.RetrieveRelevantDocs(a.svcCtx.Qdrant, req.Question)
 	if err != nil {
 		a.Logger.Errorf("检索相关文档失败: %v", err)
 		return nil, fmt.Errorf("检索相关文档失败: %v", err)
@@ -95,6 +75,28 @@ func (a *AIHelperLogic) GetChatHistory(req *types.GetChatHistoryRequest) (*types
 
 // UploadDocument 上传运维文档，丰富 AI 助手的知识库
 func (a *AIHelperLogic) UploadDocument(req *types.UploadDocumentRequest) (*types.UploadDocumentResponse, error) {
-	// TODO: 实现文档上传和知识库更新的逻辑
+	// 解码 Base64 内容
+	fileBytes, err := base64.StdEncoding.DecodeString(req.Content)
+	if err != nil {
+		a.Logger.Errorf("解码 Base64 内容失败: %v", err)
+		return nil, fmt.Errorf("解码 Base64 内容失败: %v", err)
+	}
+
+	// TODO 存储 title
+
+	// 将文本文件拆分成文档块
+	docs, err := domain.TextToChunks(fileBytes)
+	if err != nil {
+		a.Logger.Errorf("拆分文本失败: %v", err)
+		return nil, fmt.Errorf("拆分文本失败: %v", err)
+	}
+
+	// 将文档存储到 Qdrant 向量存储中
+	err = domain.InsertDocsToQdrantStore(a.svcCtx.Qdrant, docs)
+	if err != nil {
+		a.Logger.Errorf("添加文档失败: %v", err)
+		return nil, fmt.Errorf("添加文档失败: %v", err)
+	}
+
 	return &types.UploadDocumentResponse{}, nil
 }
