@@ -12,7 +12,6 @@ type History struct {
 	Question  string `gorm:"type:text"`
 	Answer    string `gorm:"type:text"`
 	CreatedAt time.Time
-	UpdatedAt time.Time
 }
 
 // TableName 指定表名
