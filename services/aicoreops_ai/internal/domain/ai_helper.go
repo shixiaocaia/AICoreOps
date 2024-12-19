@@ -2,7 +2,6 @@ package domain
 
 import (
 	"aicoreops_ai/internal/config"
-	"aicoreops_ai/internal/pkg"
 	"bytes"
 	"context"
 	"fmt"
@@ -10,6 +9,7 @@ import (
 
 	"github.com/tmc/langchaingo/documentloaders"
 	"github.com/tmc/langchaingo/embeddings"
+	"github.com/tmc/langchaingo/llms/ollama"
 	"github.com/tmc/langchaingo/schema"
 	"github.com/tmc/langchaingo/textsplitter"
 	"github.com/tmc/langchaingo/vectorstores"
@@ -17,14 +17,13 @@ import (
 )
 
 // InitQdrantStore 初始化并配置Qdrant向量存储
-func InitQdrantStore(c config.QdrantConfig) (*qdrant.Store, error) {
+func InitQdrantStore(c config.QdrantConfig, llm *ollama.LLM) (*qdrant.Store, error) {
 	parsedURL, err := url.Parse(c.Url)
 	if err != nil {
 		return nil, fmt.Errorf("解析URL失败: %w", err)
 	}
 
-	embedder := pkg.InitEmbedderLLM(c)
-	ollamaEmbedder, err := embeddings.NewEmbedder(embedder)
+	ollamaEmbedder, err := embeddings.NewEmbedder(llm)
 	if err != nil {
 		return nil, fmt.Errorf("创建文档嵌入器失败: %w", err)
 	}
@@ -37,7 +36,6 @@ func InitQdrantStore(c config.QdrantConfig) (*qdrant.Store, error) {
 	if err != nil {
 		return nil, fmt.Errorf("创建Qdrant存储实例失败: %w", err)
 	}
-
 
 	return &vectorStore, nil
 }
