@@ -12,6 +12,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 var upgrader = websocket.Upgrader{
@@ -45,7 +46,10 @@ func handleWebSocket(w http.ResponseWriter, r *http.Request) {
 	defer grpcConn.Close()
 
 	client := types.NewAIHelperClient(grpcConn)
-	stream, err := client.AskQuestion(context.Background())
+	md := metadata.Pairs("sessionID", "1")
+	ctx := metadata.NewOutgoingContext(context.Background(), md)
+
+	stream, err := client.AskQuestion(ctx)
 	if err != nil {
 		log.Printf("无法创建 gRPC 流: %v", err)
 		return

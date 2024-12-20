@@ -13,7 +13,9 @@ import (
 	"strings"
 
 	"github.com/tmc/langchaingo/llms"
+	"github.com/tmc/langchaingo/memory"
 	"github.com/zeromicro/go-zero/core/logx"
+	"google.golang.org/grpc/metadata"
 )
 
 type AIHelperLogic struct {
@@ -32,6 +34,29 @@ func NewAIHelperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AIHelper
 
 // AskQuestion 实现 AI 助手的提问接口逻辑，使用双向流式 RPC
 func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) error {
+	// 从元数据中获取 sessionID, 加载历史记录
+	md, ok := metadata.FromIncomingContext(stream.Context())
+	if !ok {
+		a.Logger.Error("无法从上下文中获取元数据")
+		return fmt.Errorf("无法从上下文中获取元数据")
+	}
+
+	sessionIDs := md["sessionid"]
+	if len(sessionIDs) == 0 {
+		a.Logger.Error("sessionID 未设置或为空")
+		return fmt.Errorf("sessionID 未设置或为空")
+	}
+	sessionID := sessionIDs[0]
+
+	buf, ok := a.svcCtx.MemoryBuf[sessionID]
+	if !ok {
+		buf = memory.NewConversationTokenBuffer(
+			a.svcCtx.LLM,
+			10000,
+		)
+		a.svcCtx.MemoryBuf[sessionID] = buf
+	}
+
 	for {
 		// 从流中接收请求
 		req, err := stream.Recv()
@@ -43,7 +68,14 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 			a.Logger.Errorf("接收请求失败: %v", err)
 			return fmt.Errorf("接收请求失败: %v", err)
 		}
+		// 获取历史记录
+		history, err := buf.LoadMemoryVariables(context.Background(), map[string]any{})
+		if err != nil {
+			log.Println("Failed to load memory variables:", err)
+			return fmt.Errorf("获取历史记录失败: %v", err)
+		}
 
+		// 检索相关文档
 		docRetrieved, err := domain.RetrieveRelevantDocs(a.svcCtx.Qdrant, req.Question)
 		if err != nil {
 			a.Logger.Errorf("检索相关文档失败: %v", err)
@@ -54,6 +86,12 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 		var contextTexts []string
 		for _, doc := range docRetrieved {
 			contextTexts = append(contextTexts, doc.PageContent)
+			a.Logger.Infof("文档: %v", doc.PageContent)
+		}
+
+		for _, h := range history {
+			contextTexts = append(contextTexts, h.(string))
+			a.Logger.Infof("历史记录: %v", h.(string))
 		}
 
 		content := []llms.MessageContent{
@@ -63,8 +101,9 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 			// 问题
 			llms.TextParts(llms.ChatMessageTypeHuman, req.Question),
 		}
+
+		// 生成回答，流式发送回客户端
 		completion, err := a.svcCtx.LLM.GenerateContent(a.ctx, content, llms.WithStreamingFunc(func(ctx context.Context, chunk []byte) error {
-			// 将生成的内容流式发送回客户端
 			err := stream.Send(&types.AskQuestionResponse{
 				Code:    0,
 				Message: "success",
@@ -79,8 +118,26 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 
 		if err != nil {
 			log.Fatal(err)
+			return fmt.Errorf("生成回答失败: %v", err)
 		}
-		_ = completion
+
+		// 持久化历史记录
+		historyModel := model.NewHistoryModel(a.svcCtx.DB)
+		err = historyModel.Create(&model.History{
+			SessionID: req.SessionId,
+			Question:  req.Question,
+			Answer:    completion.Choices[0].Content,
+		})
+
+		if err != nil {
+			a.Logger.Errorf("持久化历史记录失败: %v", err)
+		}
+
+		// 保存历史记录到 memoryBuf
+		err = buf.SaveContext(a.ctx, map[string]any{"question": req.Question}, map[string]any{"answer": completion.Choices[0].Content})
+		if err != nil {
+			a.Logger.Errorf("保存历史记录失败: %v", err)
+		}
 	}
 }
 
@@ -93,6 +150,27 @@ func (a *AIHelperLogic) GetChatHistory(req *types.GetChatHistoryRequest) (*types
 		a.Logger.Errorf("查询历史记录失败: %v", err)
 		return nil, fmt.Errorf("查询历史记录失败: %v", err)
 	}
+
+	// 异步加载记录到 memoryBuf
+	// TODO 加载精简的一条关键信息，而不是全部
+	go func() {
+		if _, ok := a.svcCtx.MemoryBuf[req.SessionId]; ok {
+			a.Logger.Infof("历史记录已加载: %v", req.SessionId)
+			return
+		}
+		buf := memory.NewConversationTokenBuffer(
+			a.svcCtx.LLM,
+			10000,
+		)
+		for _, h := range histories {
+			err := buf.SaveContext(a.ctx, map[string]any{"question": h.Question}, map[string]any{"answer": h.Answer})
+			if err != nil {
+				a.Logger.Errorf("保存历史记录失败: %v", err)
+			}
+		}
+		a.svcCtx.MemoryBuf[req.SessionId] = buf
+		a.Logger.Infof("加载历史记录成功: %v", req.SessionId)
+	}()
 
 	// 构建返回历史
 	res := make([]*types.GetChatHistoryResponse_ChatMessage, 0, len(histories))

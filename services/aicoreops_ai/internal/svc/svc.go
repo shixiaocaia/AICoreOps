@@ -7,17 +7,19 @@ import (
 
 	"github.com/tmc/langchaingo/agents"
 	"github.com/tmc/langchaingo/llms/ollama"
+	"github.com/tmc/langchaingo/memory"
 	"github.com/tmc/langchaingo/tools"
 	"github.com/tmc/langchaingo/vectorstores/qdrant"
 	"gorm.io/gorm"
 )
 
 type ServiceContext struct {
-	Config   config.Config
-	LLM      *ollama.LLM
-	Executor *agents.Executor
-	Qdrant   *qdrant.Store
-	DB       *gorm.DB
+	Config    config.Config
+	LLM       *ollama.LLM
+	Executor  *agents.Executor
+	Qdrant    *qdrant.Store
+	DB        *gorm.DB
+	MemoryBuf map[string]*memory.ConversationTokenBuffer
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -37,10 +39,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 
 	return &ServiceContext{
-		Config:   c,
-		LLM:      llm,
-		Executor: executor,
-		Qdrant:   store,
-		DB:       db,
+		Config:    c,
+		LLM:       llm,
+		Executor:  executor,
+		Qdrant:    store,
+		DB:        db,
+		MemoryBuf: make(map[string]*memory.ConversationTokenBuffer),
 	}
 }
