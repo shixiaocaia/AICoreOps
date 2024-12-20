@@ -62,11 +62,11 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 		req, err := stream.Recv()
 		if err != nil {
 			if err == io.EOF {
-				a.Logger.Info("接收请求完成")
+				a.Logger.Info("释放流: %v", sessionID)
 				return nil
 			}
-			a.Logger.Errorf("接收请求失败: %v", err)
-			return fmt.Errorf("接收请求失败: %v", err)
+			a.Logger.Errorf("流: %v, 接收请求失败: %v", sessionID, err)
+			return fmt.Errorf("流: %v, 接收请求失败: %v", sessionID, err)
 		}
 		// 获取历史记录
 		history, err := buf.LoadMemoryVariables(context.Background(), map[string]any{})
@@ -122,9 +122,8 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 		}
 
 		// 持久化历史记录
-		historyModel := model.NewHistoryModel(a.svcCtx.DB)
-		err = historyModel.Create(&model.History{
-			SessionID: req.SessionId,
+		_, err = a.svcCtx.HistoryModel.Insert(a.ctx, &model.History{
+			SessionId: sessionID,
 			Question:  req.Question,
 			Answer:    completion.Choices[0].Content,
 		})
@@ -143,12 +142,10 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 
 // GetChatHistory 获取用户的对话历史记录
 func (a *AIHelperLogic) GetChatHistory(req *types.GetChatHistoryRequest) (*types.GetChatHistoryResponse, error) {
-	historyModel := model.NewHistoryModel(a.svcCtx.DB)
-
-	histories, err := historyModel.GetBySessionID(req.SessionId)
+	histories, err := a.svcCtx.HistoryModel.FindAll(a.ctx, req.SessionId)
 	if err != nil {
-		a.Logger.Errorf("查询历史记录失败: %v", err)
-		return nil, fmt.Errorf("查询历史记录失败: %v", err)
+		a.Logger.Errorf("获取历史记录失败: %v", err)
+		return nil, fmt.Errorf("获取历史记录失败: %v", err)
 	}
 
 	// 异步加载记录到 memoryBuf
@@ -172,7 +169,6 @@ func (a *AIHelperLogic) GetChatHistory(req *types.GetChatHistoryRequest) (*types
 		a.Logger.Infof("加载历史记录成功: %v", req.SessionId)
 	}()
 
-	// 构建返回历史
 	res := make([]*types.GetChatHistoryResponse_ChatMessage, 0, len(histories))
 	for _, h := range histories {
 		res = append(res, &types.GetChatHistoryResponse_ChatMessage{

@@ -3,23 +3,21 @@ package svc
 import (
 	"aicoreops_ai/internal/config"
 	"aicoreops_ai/internal/domain"
+	"aicoreops_ai/internal/model"
 	"aicoreops_ai/internal/pkg"
 
-	"github.com/tmc/langchaingo/agents"
 	"github.com/tmc/langchaingo/llms/ollama"
 	"github.com/tmc/langchaingo/memory"
-	"github.com/tmc/langchaingo/tools"
 	"github.com/tmc/langchaingo/vectorstores/qdrant"
-	"gorm.io/gorm"
+	"github.com/zeromicro/go-zero/core/stores/sqlx"
 )
 
 type ServiceContext struct {
-	Config    config.Config
-	LLM       *ollama.LLM
-	Executor  *agents.Executor
-	Qdrant    *qdrant.Store
-	DB        *gorm.DB
-	MemoryBuf map[string]*memory.ConversationTokenBuffer
+	Config       config.Config
+	LLM          *ollama.LLM
+	Qdrant       *qdrant.Store
+	HistoryModel model.HistoryModel
+	MemoryBuf    map[string]*memory.ConversationTokenBuffer
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
@@ -30,20 +28,13 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		panic(err)
 	}
 
-	agent := agents.NewConversationalAgent(llm, []tools.Tool{})
-	executor := agents.NewExecutor(agent)
-
-	db, err := pkg.InitGorm(c.MySQL)
-	if err != nil {
-		panic(err)
-	}
+	conn := sqlx.NewMysql(c.DataSource)
 
 	return &ServiceContext{
-		Config:    c,
-		LLM:       llm,
-		Executor:  executor,
-		Qdrant:    store,
-		DB:        db,
-		MemoryBuf: make(map[string]*memory.ConversationTokenBuffer),
+		Config:       c,
+		LLM:          llm,
+		Qdrant:       store,
+		HistoryModel: model.NewHistoryModel(conn),
+		MemoryBuf:    make(map[string]*memory.ConversationTokenBuffer),
 	}
 }

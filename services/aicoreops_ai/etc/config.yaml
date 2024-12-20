@@ -13,9 +13,4 @@ Qdrant:
   CollectionName: "aicoreops"
   Model: "nomic-embed-text:latest"
   DocumentPath: "etc/test.txt"
-MySQL:
-  Host: "localhost"
-  Port: 3306
-  User: "root"
-  Password: "root"
-  Database: "aicoreops"
+DataSource: "root:root@tcp(localhost:3306)/aicoreops?charset=utf8mb4&parseTime=True&loc=Local"

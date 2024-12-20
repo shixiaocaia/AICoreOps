@@ -4,9 +4,9 @@ import "github.com/zeromicro/go-zero/zrpc"
 
 type Config struct {
 	zrpc.RpcServerConf
-	LLM    MyLLMConfig
-	Qdrant QdrantConfig
-	MySQL  MySQLConfig
+	LLM        MyLLMConfig
+	Qdrant     QdrantConfig
+	DataSource string
 }
 
 type MyLLMConfig struct {
@@ -19,12 +19,4 @@ type QdrantConfig struct {
 	CollectionName string
 	Model          string
 	DocumentPath   string
-}
-
-type MySQLConfig struct {
-	Host     string
-	Port     int
-	User     string
-	Password string
-	Database string
 }
