@@ -4,35 +4,4 @@
 
 package client
 
-import (
-	"context"
 
-	"aicoreops_ai/types"
-
-	"github.com/zeromicro/go-zero/zrpc"
-	"google.golang.org/grpc"
-)
-
-type (
-	Request  = types.Request
-	Response = types.Response
-
-	AicoreopsAi interface {
-		Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error)
-	}
-
-	defaultAicoreopsAi struct {
-		cli zrpc.Client
-	}
-)
-
-func NewAicoreopsAi(cli zrpc.Client) AicoreopsAi {
-	return &defaultAicoreopsAi{
-		cli: cli,
-	}
-}
-
-func (m *defaultAicoreopsAi) Ping(ctx context.Context, in *Request, opts ...grpc.CallOption) (*Response, error) {
-	client := types.NewAicoreopsAiClient(m.cli.Conn())
-	return client.Ping(ctx, in, opts...)
-}

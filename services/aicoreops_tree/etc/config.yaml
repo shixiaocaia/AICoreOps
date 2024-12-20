@@ -1,6 +1,8 @@
 Name: aicoreopstree.rpc
-ListenOn: 0.0.0.0:8080
+ListenOn: 0.0.0.0:8084
 Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: aicoreopstree.rpc
+Mysql:
+  Addr: root:root@tcp(127.0.0.1:3306)/AICoreOps?charset=utf8mb4&parseTime=True&loc=Local
