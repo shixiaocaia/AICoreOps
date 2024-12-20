@@ -4,8 +4,9 @@ import "github.com/zeromicro/go-zero/zrpc"
 
 type Config struct {
 	zrpc.RpcServerConf
-	LLM    MyLLMConfig
-	Qdrant QdrantConfig
+	LLM        MyLLMConfig
+	Qdrant     QdrantConfig
+	DataSource string
 }
 
 type MyLLMConfig struct {
