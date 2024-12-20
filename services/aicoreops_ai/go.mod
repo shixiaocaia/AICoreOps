@@ -5,6 +5,7 @@ go 1.22.1
 toolchain go1.22.8
 
 require (
+	github.com/gorilla/websocket v1.5.0
 	github.com/tmc/langchaingo v0.1.12
 	github.com/zeromicro/go-zero v1.7.4
 	google.golang.org/grpc v1.65.0

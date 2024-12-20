@@ -8,9 +8,11 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"io"
+	"log"
 	"strings"
 
-	"github.com/tmc/langchaingo/chains"
+	"github.com/tmc/langchaingo/llms"
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
@@ -28,43 +30,58 @@ func NewAIHelperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AIHelper
 	}
 }
 
-// AskQuestion 实现 AI 助手的提问接口逻辑
-// TODO 1. 保存历史对话 2. 流式对话
-func (a *AIHelperLogic) AskQuestion(req *types.AskQuestionRequest) (*types.AskQuestionResponse, error) {
-	// 查询历史文档，并构建上下文存入 memoryBuf
+// AskQuestion 实现 AI 助手的提问接口逻辑，使用双向流式 RPC
+func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) error {
+	for {
+		// 从流中接收请求
+		req, err := stream.Recv()
+		if err != nil {
+			if err == io.EOF {
+				a.Logger.Info("接收请求完成")
+				return nil
+			}
+			a.Logger.Errorf("接收请求失败: %v", err)
+			return fmt.Errorf("接收请求失败: %v", err)
+		}
 
-	// 升级为流式对话
+		docRetrieved, err := domain.RetrieveRelevantDocs(a.svcCtx.Qdrant, req.Question)
+		if err != nil {
+			a.Logger.Errorf("检索相关文档失败: %v", err)
+			return fmt.Errorf("检索相关文档失败: %v", err)
+		}
 
-	// 检索相关文档
-	// 每一次问题都检索知识库吗
-	docRetrieved, err := domain.RetrieveRelevantDocs(a.svcCtx.Qdrant, req.Question)
-	if err != nil {
-		a.Logger.Errorf("检索相关文档失败: %v", err)
-		return nil, fmt.Errorf("检索相关文档失败: %v", err)
+		// 构建上下文
+		var contextTexts []string
+		for _, doc := range docRetrieved {
+			contextTexts = append(contextTexts, doc.PageContent)
+		}
+
+		content := []llms.MessageContent{
+			llms.TextParts(llms.ChatMessageTypeSystem, "你是AICoreOps的AI助手，请你仔细思考，读取上下文内容给出高质量的回答"),
+			// 上下文
+			llms.TextParts(llms.ChatMessageTypeHuman, strings.Join(contextTexts, "\n")),
+			// 问题
+			llms.TextParts(llms.ChatMessageTypeHuman, req.Question),
+		}
+		completion, err := a.svcCtx.LLM.GenerateContent(a.ctx, content, llms.WithStreamingFunc(func(ctx context.Context, chunk []byte) error {
+			// 将生成的内容流式发送回客户端
+			err := stream.Send(&types.AskQuestionResponse{
+				Code:    0,
+				Message: "success",
+				Data:    &types.AskQuestionResponse_AnswerData{Answer: string(chunk)},
+			})
+			if err != nil {
+				a.Logger.Errorf("发送响应失败: %v", err)
+				return fmt.Errorf("发送响应失败: %v", err)
+			}
+			return nil
+		}))
+
+		if err != nil {
+			log.Fatal(err)
+		}
+		_ = completion
 	}
-
-	// 构建上下文
-	var contextTexts []string
-	for _, doc := range docRetrieved {
-		contextTexts = append(contextTexts, doc.PageContent)
-	}
-
-	// 构建完整提示词
-	// TODO 检索用户设置的提示词
-	fullPrompt := fmt.Sprintf("你是AICoreOps的AI助手，请你仔细思考，读取上下文内容给出高质量的回答:\n\n上下文:\n%s\n\n问题: %s",
-		strings.Join(contextTexts, "\n"), req.Question)
-
-	answer, err := chains.Run(a.ctx, a.svcCtx.Executor, fullPrompt)
-	if err != nil {
-		a.Logger.Errorf("生成回答失败: %v", err)
-		return nil, fmt.Errorf("生成回答失败: %v", err)
-	}
-
-	return &types.AskQuestionResponse{
-		Code:    0,
-		Message: "success",
-		Data:    &types.AskQuestionResponse_AnswerData{Answer: answer},
-	}, nil
 }
 
 // GetChatHistory 获取用户的对话历史记录

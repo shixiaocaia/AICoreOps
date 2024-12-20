@@ -32,12 +32,7 @@ func (s *AicoreopsAiServer) UploadDocument(ctx context.Context, req *types.Uploa
 }
 
 // AskQuestion 实现 AI 助手的提问接口逻辑
-func (s *AicoreopsAiServer) AskQuestion(ctx context.Context, req *types.AskQuestionRequest) (*types.AskQuestionResponse, error) {
-	l := logic.NewAIHelperLogic(ctx, s.svcCtx)
-	return l.AskQuestion(req)
-}
-
-// mustEmbedUnimplementedAIHelperServiceServer implements types.AIHelperServiceServer.
-func (s *AicoreopsAiServer) mustEmbedUnimplementedAIHelperServiceServer() {
-	panic("unimplemented")
+func (s *AicoreopsAiServer) AskQuestion(stream types.AIHelper_AskQuestionServer) error {
+	l := logic.NewAIHelperLogic(stream.Context(), s.svcCtx)
+	return l.AskQuestion(stream)
 }
