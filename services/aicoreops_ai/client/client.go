@@ -3,10 +3,6 @@
 // Source: aicoreops_ai.proto
 
 package client
-
-import (
-	"context"
-
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/types"
 
 	"github.com/zeromicro/go-zero/zrpc"
@@ -36,3 +32,4 @@ func (m *defaultAicoreopsAi) Ping(ctx context.Context, in *Request, opts ...grpc
 	client := types.NewAicoreopsAiClient(m.cli.Conn())
 	return client.Ping(ctx, in, opts...)
 }
+
