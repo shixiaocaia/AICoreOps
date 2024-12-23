@@ -20,6 +20,8 @@ package svc
 
 import (
 	"fmt"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/api"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/menu"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/config"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/ai"
@@ -38,8 +40,8 @@ import (
 type ServiceContext struct {
 	Config   config.Config
 	UserRpc  user.UserServiceClient
-	ApiRpc   role.ApiServiceClient
-	MenuRpc  role.MenuServiceClient
+	ApiRpc   api.ApiServiceClient
+	MenuRpc  menu.MenuServiceClient
 	RoleRpc  role.RoleServiceClient
 	AiRpc    ai.AIHelperClient
 	RDB      redis.Cmdable
@@ -56,8 +58,8 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	// 初始化用户RPC客户端
 	userRpc := user.NewUserServiceClient(zrpc.MustNewClient(c.UserRpc).Conn())
-	apiRpc := role.NewApiServiceClient(zrpc.MustNewClient(c.ApiRpc).Conn())
-	menuRpc := role.NewMenuServiceClient(zrpc.MustNewClient(c.MenuRpc).Conn())
+	apiRpc := api.NewApiServiceClient(zrpc.MustNewClient(c.ApiRpc).Conn())
+	menuRpc := menu.NewMenuServiceClient(zrpc.MustNewClient(c.MenuRpc).Conn())
 	roleRpc := role.NewRoleServiceClient(zrpc.MustNewClient(c.RoleRpc).Conn())
 	aiRpc := ai.NewAIHelperClient(zrpc.MustNewClient(c.AiRpc).Conn())
 

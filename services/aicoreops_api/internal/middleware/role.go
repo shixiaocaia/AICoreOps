@@ -19,10 +19,10 @@
 package middleware
 
 import (
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/tools"
 	"net/http"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common"
-	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/tools"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -41,7 +41,7 @@ func NewCasbinMiddleware(enforcer *casbin.Enforcer) *CasbinMiddleware {
 
 func (m *CasbinMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		response := tools.NewResultResponse()
+		response := aicoreops_common.NewResultResponse()
 
 		// 从上下文获取用户ID
 		uidValue := r.Context().Value(userIDKey)
