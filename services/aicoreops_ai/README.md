@@ -21,7 +21,7 @@ ollama run qwen2.5:latest
 
 
 # 安装mysql, 执行 model/sql 建库建表
-docker run --name aicoreops -e MYSQL_ROOT_PASSWORD=root -d -p 3306:3306 -v /my/own/datadir:/var/lib/mysql mysql:latest
+docker run --name aicoreops -e MYSQL_ROOT_PASSWORD=root -d -p 3306:3306 mysql:latest
 
 # etcd
 

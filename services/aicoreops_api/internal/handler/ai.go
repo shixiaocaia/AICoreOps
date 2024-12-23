@@ -21,6 +21,7 @@ package handler
 import (
 	"net/http"
 
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/logic"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/types"
 
@@ -47,4 +48,16 @@ func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	l := logic.NewAiLogic(r.Context(), h.svcCtx)
+	resp, err := l.AskQuestion(w, r, &req)
+	if err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+	resp.Code = http.StatusOK
+
+	httpx.OkJsonCtx(r.Context(), w, resp)
 }

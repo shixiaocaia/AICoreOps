@@ -6,6 +6,7 @@ require (
 	github.com/GoSimplicity/AICoreOps/services/aicoreops_common v0.0.0-20241223095948-b8f0c14e2bd0
 	github.com/casbin/casbin/v2 v2.102.0
 	github.com/casbin/gorm-adapter/v3 v3.32.0
+	github.com/gorilla/websocket v1.5.0
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/zeromicro/go-zero v1.7.4
 	gorm.io/driver/mysql v1.5.7

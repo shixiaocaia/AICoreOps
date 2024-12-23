@@ -31,6 +31,7 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	api := NewApiHandler(serverCtx)
 	role := NewRoleHandler(serverCtx)
 	menu := NewMenuHandler(serverCtx)
+	ai := NewAiHandler(serverCtx)
 
 	// 初始化中间件
 	authMiddleware := middleware.NewAuthMiddleware(serverCtx.Config.JWT.Secret, serverCtx.RDB)
@@ -81,4 +82,9 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	menuGroup.Post("/menu/update", menu.UpdateMenu)
 	menuGroup.Delete("/menu/delete", menu.DeleteMenu)
 	menuGroup.Get("/menu/list", menu.ListMenus)
+
+	// AI相关接口
+	aiGroup := group.Group("")
+	// TODO aiGroup.Use(authMiddleware.Handle, casbinMiddleware.Handle)
+	aiGroup.Post("/ai/ask", ai.AskQuestion)
 }
