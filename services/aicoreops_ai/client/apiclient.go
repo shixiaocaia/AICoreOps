@@ -1,4 +1,4 @@
-package main
+package client
 
 import (
 	"context"
@@ -11,8 +11,7 @@ import (
 	"sync"
 	"time"
 
-	"aicoreops_ai/types"
-
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/types"
 	"github.com/gorilla/websocket"
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/metadata"

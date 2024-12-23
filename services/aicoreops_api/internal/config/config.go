@@ -29,6 +29,7 @@ type Config struct {
 	ApiRpc  zrpc.RpcClientConf
 	MenuRpc zrpc.RpcClientConf
 	RoleRpc zrpc.RpcClientConf
+	AiRpc   zrpc.RpcClientConf
 	JWT     JWTConfig
 	MyRedis MyRedis
 	Casbin  CasbinConfig

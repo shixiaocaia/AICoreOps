@@ -19,8 +19,8 @@
 package handler
 
 import (
-	"aicoreops_api/internal/middleware"
-	"aicoreops_api/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/middleware"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
 )
 
 func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {

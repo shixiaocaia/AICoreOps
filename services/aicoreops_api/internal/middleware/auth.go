@@ -19,10 +19,11 @@
 package middleware
 
 import (
-	"aicoreops_common"
-	"aicoreops_common/tools"
 	"context"
 	"net/http"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/tools"
 
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"

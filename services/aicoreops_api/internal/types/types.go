@@ -190,3 +190,14 @@ type RemoveRoleFromUserRequest struct {
 type RemoveUserPermissionsRequest struct {
 	UserId int `json:"user_id"`
 }
+
+// AI相关
+type AskQuestionRequest struct {
+	SessionId string `json:"session_id"`
+	Question  string `json:"question"`
+}
+
+type AskQuestionResponse struct {
+	Answer    string `json:"answer"`
+	SessionId string `json:"session_id"`
+}

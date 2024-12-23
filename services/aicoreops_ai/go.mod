@@ -1,4 +1,4 @@
-module aicoreops_ai
+module github.com/GoSimplicity/AICoreOps/services/aicoreops_ai
 
 go 1.22.1
 

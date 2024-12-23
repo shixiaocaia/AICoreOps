@@ -1,7 +1,7 @@
 package pkg
 
 import (
-	"aicoreops_ai/internal/config"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/config"
 
 	"github.com/tmc/langchaingo/llms/ollama"
 )
