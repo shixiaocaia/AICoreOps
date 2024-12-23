@@ -1,7 +1,7 @@
 ## 环境准备
 ```shell
 # 安装向量数据库
-docker run -p 6333:6333 qdrant/qdrant:latest
+docker run -d -p 6333:6333 qdrant/qdrant:latest
 
 curl -X PUT <http://localhost:6333/collections/aicoreops> \\
 -H "Content-Type: application/json" \\
@@ -17,10 +17,13 @@ curl -X PUT <http://localhost:6333/collections/aicoreops> \\
 
 ollama pull qwen:7b
 ollama pull nomic-embed-text:latest
+ollama run qwen2.5:latest
 
 
-# 安装mysql
+# 安装mysql, 执行 model/sql 建库建表
 docker run --name my-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d -p 3306:3306 -v /my/own/datadir:/var/lib/mysql mysql:latest
+
+# etcd
 
 ```
 

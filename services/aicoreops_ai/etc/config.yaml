@@ -13,4 +13,4 @@ Qdrant:
   CollectionName: "aicoreops"
   Model: "nomic-embed-text:latest"
   DocumentPath: "etc/test.txt"
-DataSource: "root:root@tcp(localhost:3306)/aicoreops?charset=utf8mb4&parseTime=True&loc=Local"
+DataSource: "root:123456@tcp(localhost:3306)/aicoreops?charset=utf8mb4&parseTime=True&loc=Local"
