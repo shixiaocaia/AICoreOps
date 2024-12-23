@@ -4,10 +4,10 @@ import (
 	"flag"
 	"fmt"
 
-	"aicoreops_ai/internal/config"
-	"aicoreops_ai/internal/server"
-	"aicoreops_ai/internal/svc"
-	"aicoreops_ai/types"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/config"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/server"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/types"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"

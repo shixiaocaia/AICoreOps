@@ -51,7 +51,6 @@ message GetChatHistoryResponse {
 message UploadDocumentRequest {
   string title = 1;     // 文档标题
   string content = 2;   // 文档内容
-  string doc_type = 3;  // 文档类型
 }
 
 // 上传文档响应
@@ -100,7 +99,7 @@ message FixTaskResponse {
 
 // 对话式 AI 助手接口
 service AIHelper {
-  rpc AskQuestion (AskQuestionRequest) returns (AskQuestionResponse);       // 用户提问，获取解答
+  rpc AskQuestion (stream AskQuestionRequest) returns (stream AskQuestionResponse);       // 用户提问，获取解答
   rpc GetChatHistory (GetChatHistoryRequest) returns (GetChatHistoryResponse); // 获取聊天历史
   rpc UploadDocument (UploadDocumentRequest) returns (UploadDocumentResponse); // 上传文档到知识库
 }

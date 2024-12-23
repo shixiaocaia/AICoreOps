@@ -3,9 +3,9 @@ package server
 import (
 	"context"
 
-	"aicoreops_ai/internal/logic"
-	"aicoreops_ai/internal/svc"
-	"aicoreops_ai/types"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/logic"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/types"
 )
 
 type AicoreopsAiServer struct {
@@ -19,13 +19,20 @@ func NewAicoreopsAiServer(svcCtx *svc.ServiceContext) *AicoreopsAiServer {
 	}
 }
 
-// AskQuestion 实现 AI 助手的提问接口逻辑
-func (s *AicoreopsAiServer) AskQuestion(ctx context.Context, req *types.AskQuestionRequest) (*types.AskQuestionResponse, error) {
+// GetChatHistory 获取聊天历史
+func (s *AicoreopsAiServer) GetChatHistory(ctx context.Context, req *types.GetChatHistoryRequest) (*types.GetChatHistoryResponse, error) {
 	l := logic.NewAIHelperLogic(ctx, s.svcCtx)
-	return l.AskQuestion(req)
+	return l.GetChatHistory(req)
 }
 
-// mustEmbedUnimplementedAIHelperServiceServer implements types.AIHelperServiceServer.
-func (s *AicoreopsAiServer) mustEmbedUnimplementedAIHelperServiceServer() {
-	panic("unimplemented")
+// UploadDocument 上传文档
+func (s *AicoreopsAiServer) UploadDocument(ctx context.Context, req *types.UploadDocumentRequest) (*types.UploadDocumentResponse, error) {
+	l := logic.NewAIHelperLogic(ctx, s.svcCtx)
+	return l.UploadDocument(req)
+}
+
+// AskQuestion 实现 AI 助手的提问接口逻辑
+func (s *AicoreopsAiServer) AskQuestion(stream types.AIHelper_AskQuestionServer) error {
+	l := logic.NewAIHelperLogic(stream.Context(), s.svcCtx)
+	return l.AskQuestion(stream)
 }

@@ -17,7 +17,7 @@ message ResourceTree {
   repeated ResourceTree children = 10; // 子节点列表
   string cmdb_id = 11;              // CMDB资源ID
   string cmdb_type = 12;            // CMDB资源类型
-  map<string, string> cmdb_attrs = 13; // CMDB资源属性
+  repeated string cmdb_attrs = 13; // CMDB资源属性
   string creator = 14;              // 创建者
   string updater = 15;              // 更新者
   string status = 16;               // 节点状态(normal-正常,disabled-禁用)
@@ -48,7 +48,7 @@ message SelectTreeNodeRequest {
 message SelectTreeNodeResponse {
   ResourceTree node = 1;           // 节点信息
   bool exists = 2;                 // 节点是否存在
-  map<string, string> cmdb_detail = 3; // CMDB详细信息
+  repeated string cmdb_detail = 3; // CMDB详细信息
   repeated ResourceTree parents = 4;    // 父节点路径
 }
 
@@ -85,7 +85,7 @@ message CreateTreeNodeRequest {
   int32 is_leaf = 4;              // 是否为叶子节点(必填,0-否,1-是)
   string cmdb_id = 5;              // CMDB资源ID(选填)
   string cmdb_type = 6;            // CMDB资源类型(选填)
-  map<string, string> cmdb_attrs = 7; // CMDB资源属性(选填)
+  repeated string cmdb_attrs = 7; // CMDB资源属性(选填)
   string creator = 8;              // 创建者(必填)
 }
 
@@ -131,7 +131,7 @@ message UpdateTreeNodeRequest {
   string title = 2;                // 节点标题(选填)
   string description = 3;          // 节点描述(选填)
   int32 is_leaf = 4;              // 是否为叶子节点(选填,0-否,1-是)
-  map<string, string> cmdb_attrs = 5; // 更新CMDB属性(选填)
+  repeated string cmdb_attrs = 5; // 更新CMDB属性(选填)
   string updater = 6;              // 更新者(必填)
   string status = 7;               // 状态(选填)
 }
@@ -148,7 +148,7 @@ message SyncCMDBRequest {
   bool force = 2;                  // 是否强制同步
   string operator = 3;             // 操作者
   bool dry_run = 4;                // 是否试运行
-  map<string, string> sync_options = 5; // 同步选项
+  repeated string sync_options = 5; // 同步选项
 }
 
 message SyncCMDBResponse {
@@ -156,7 +156,7 @@ message SyncCMDBResponse {
   string message = 2;              // 同步结果信息
   int32 sync_count = 3;            // 同步资源数量
   repeated string failed_ids = 4;   // 同步失败的资源ID列表
-  map<string, string> sync_stats = 5; // 同步统计信息
+  repeated string sync_stats = 5; // 同步统计信息
 }
 
 // 资源树服务

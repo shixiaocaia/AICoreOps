@@ -26,8 +26,10 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		types.RegisterAicoreopsTreeServer(grpcServer, server.NewAicoreopsTreeServer(ctx))
-
+		types.RegisterResourceTreeServiceServer(grpcServer, server.NewResourceTreeServiceServer(ctx))
+		types.RegisterEcsServiceServer(grpcServer, server.NewEcsServiceServer(ctx))
+		types.RegisterRdsServiceServer(grpcServer, server.NewRdsServiceServer(ctx))
+		types.RegisterElbServiceServer(grpcServer, server.NewElbServiceServer(ctx))
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)
 		}

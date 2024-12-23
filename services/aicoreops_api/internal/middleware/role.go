@@ -19,9 +19,10 @@
 package middleware
 
 import (
-	"aicoreops_common"
-	"aicoreops_common/tools"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/tools"
 	"net/http"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common"
 
 	"github.com/casbin/casbin/v2"
 	"github.com/zeromicro/go-zero/core/logx"

@@ -22,9 +22,9 @@ import (
 	"flag"
 	"fmt"
 
-	"aicoreops_api/internal/config"
-	"aicoreops_api/internal/handler"
-	"aicoreops_api/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/config"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/handler"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
 
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/logx"

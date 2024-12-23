@@ -19,10 +19,14 @@
 package svc
 
 import (
-	"aicoreops_api/internal/config"
-	"aicoreops_common/types/role"
-	"aicoreops_common/types/user"
 	"fmt"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/api"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/menu"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/config"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/ai"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/role"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/user"
 
 	"github.com/casbin/casbin/v2"
 	gormadapter "github.com/casbin/gorm-adapter/v3"
@@ -36,9 +40,10 @@ import (
 type ServiceContext struct {
 	Config   config.Config
 	UserRpc  user.UserServiceClient
-	ApiRpc   role.ApiServiceClient
-	MenuRpc  role.MenuServiceClient
+	ApiRpc   api.ApiServiceClient
+	MenuRpc  menu.MenuServiceClient
 	RoleRpc  role.RoleServiceClient
+	AiRpc    ai.AIHelperClient
 	RDB      redis.Cmdable
 	Enforcer *casbin.Enforcer
 }
@@ -53,9 +58,10 @@ func NewServiceContext(c config.Config) *ServiceContext {
 
 	// 初始化用户RPC客户端
 	userRpc := user.NewUserServiceClient(zrpc.MustNewClient(c.UserRpc).Conn())
-	apiRpc := role.NewApiServiceClient(zrpc.MustNewClient(c.ApiRpc).Conn())
-	menuRpc := role.NewMenuServiceClient(zrpc.MustNewClient(c.MenuRpc).Conn())
+	apiRpc := api.NewApiServiceClient(zrpc.MustNewClient(c.ApiRpc).Conn())
+	menuRpc := menu.NewMenuServiceClient(zrpc.MustNewClient(c.MenuRpc).Conn())
 	roleRpc := role.NewRoleServiceClient(zrpc.MustNewClient(c.RoleRpc).Conn())
+	aiRpc := ai.NewAIHelperClient(zrpc.MustNewClient(c.AiRpc).Conn())
 
 	// 初始化数据库连接
 	db, err := gorm.Open(mysql.Open(c.Mysql.Addr), &gorm.Config{
@@ -88,6 +94,7 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		ApiRpc:   apiRpc,
 		MenuRpc:  menuRpc,
 		RoleRpc:  roleRpc,
+		AiRpc:    aiRpc,
 		RDB:      rdb,
 		Enforcer: enforcer,
 	}

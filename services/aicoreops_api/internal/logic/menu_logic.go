@@ -19,11 +19,12 @@
 package logic
 
 import (
-	"aicoreops_api/internal/svc"
-	"aicoreops_api/internal/types"
-	"aicoreops_common/types/role"
 	"context"
 	"time"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/types"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/menu"
 
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -44,11 +45,11 @@ func NewMenuLogic(ctx context.Context, svcCtx *svc.ServiceContext) *MenuLogic {
 }
 
 // CreateMenu 创建菜单
-func (l *MenuLogic) CreateMenu(req *types.CreateMenuRequest) (*role.CreateMenuResponse, error) {
+func (l *MenuLogic) CreateMenu(req *types.CreateMenuRequest) (*menu.CreateMenuResponse, error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
-	createReq := &role.CreateMenuRequest{}
+	createReq := &menu.CreateMenuRequest{}
 	if err := copier.Copy(createReq, req); err != nil {
 		return nil, err
 	}
@@ -62,11 +63,11 @@ func (l *MenuLogic) CreateMenu(req *types.CreateMenuRequest) (*role.CreateMenuRe
 }
 
 // GetMenu 获取菜单详情
-func (l *MenuLogic) GetMenu(req *types.GetMenuRequest) (*role.GetMenuResponse, error) {
+func (l *MenuLogic) GetMenu(req *types.GetMenuRequest) (*menu.GetMenuResponse, error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
-	getReq := &role.GetMenuRequest{}
+	getReq := &menu.GetMenuRequest{}
 	if err := copier.Copy(getReq, req); err != nil {
 		return nil, err
 	}
@@ -80,11 +81,11 @@ func (l *MenuLogic) GetMenu(req *types.GetMenuRequest) (*role.GetMenuResponse, e
 }
 
 // UpdateMenu 更新菜单
-func (l *MenuLogic) UpdateMenu(req *types.UpdateMenuRequest) (*role.UpdateMenuResponse, error) {
+func (l *MenuLogic) UpdateMenu(req *types.UpdateMenuRequest) (*menu.UpdateMenuResponse, error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
-	updateReq := &role.UpdateMenuRequest{}
+	updateReq := &menu.UpdateMenuRequest{}
 	if err := copier.Copy(updateReq, req); err != nil {
 		return nil, err
 	}
@@ -98,11 +99,11 @@ func (l *MenuLogic) UpdateMenu(req *types.UpdateMenuRequest) (*role.UpdateMenuRe
 }
 
 // DeleteMenu 删除菜单
-func (l *MenuLogic) DeleteMenu(req *types.DeleteMenuRequest) (*role.DeleteMenuResponse, error) {
+func (l *MenuLogic) DeleteMenu(req *types.DeleteMenuRequest) (*menu.DeleteMenuResponse, error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
-	deleteReq := &role.DeleteMenuRequest{}
+	deleteReq := &menu.DeleteMenuRequest{}
 	if err := copier.Copy(deleteReq, req); err != nil {
 		return nil, err
 	}
@@ -116,11 +117,11 @@ func (l *MenuLogic) DeleteMenu(req *types.DeleteMenuRequest) (*role.DeleteMenuRe
 }
 
 // ListMenus 获取菜单列表
-func (l *MenuLogic) ListMenus(req *types.ListMenusRequest) (*role.ListMenusResponse, error) {
+func (l *MenuLogic) ListMenus(req *types.ListMenusRequest) (*menu.ListMenusResponse, error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
-	listReq := &role.ListMenusRequest{}
+	listReq := &menu.ListMenusRequest{}
 	if err := copier.Copy(listReq, req); err != nil {
 		return nil, err
 	}
