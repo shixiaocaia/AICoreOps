@@ -1,10 +1,10 @@
 package svc
 
 import (
-	"aicoreops_ai/internal/config"
-	"aicoreops_ai/internal/domain"
-	"aicoreops_ai/internal/model"
-	"aicoreops_ai/internal/pkg"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/config"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/domain"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/model"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/pkg"
 
 	"github.com/tmc/langchaingo/llms/ollama"
 	"github.com/tmc/langchaingo/memory"

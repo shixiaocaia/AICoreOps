@@ -19,10 +19,11 @@
 package handler
 
 import (
-	"aicoreops_api/internal/logic"
-	"aicoreops_api/internal/svc"
-	"aicoreops_api/internal/types"
 	"net/http"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/logic"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/types"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 )

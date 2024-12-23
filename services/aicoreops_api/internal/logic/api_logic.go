@@ -19,11 +19,12 @@
 package logic
 
 import (
-	"aicoreops_api/internal/svc"
-	"aicoreops_api/internal/types"
-	"aicoreops_common/types/role"
 	"context"
 	"time"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/types"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/api"
 
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -44,11 +45,11 @@ func NewApiLogic(ctx context.Context, svcCtx *svc.ServiceContext) *ApiLogic {
 }
 
 // CreateApi 创建接口
-func (l *ApiLogic) CreateApi(req *types.CreateApiRequest) (*role.CreateApiResponse, error) {
+func (l *ApiLogic) CreateApi(req *types.CreateApiRequest) (*api.CreateApiResponse, error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
-	createReq := &role.CreateApiRequest{}
+	createReq := &api.CreateApiRequest{}
 	if err := copier.Copy(createReq, req); err != nil {
 		return nil, err
 	}
@@ -62,11 +63,11 @@ func (l *ApiLogic) CreateApi(req *types.CreateApiRequest) (*role.CreateApiRespon
 }
 
 // GetApi 获取接口详情
-func (l *ApiLogic) GetApi(req *types.GetApiRequest) (*role.GetApiResponse, error) {
+func (l *ApiLogic) GetApi(req *types.GetApiRequest) (*api.GetApiResponse, error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
-	getReq := &role.GetApiRequest{}
+	getReq := &api.GetApiRequest{}
 	if err := copier.Copy(getReq, req); err != nil {
 		return nil, err
 	}
@@ -80,11 +81,11 @@ func (l *ApiLogic) GetApi(req *types.GetApiRequest) (*role.GetApiResponse, error
 }
 
 // UpdateApi 更新接口
-func (l *ApiLogic) UpdateApi(req *types.UpdateApiRequest) (*role.UpdateApiResponse, error) {
+func (l *ApiLogic) UpdateApi(req *types.UpdateApiRequest) (*api.UpdateApiResponse, error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
-	updateReq := &role.UpdateApiRequest{}
+	updateReq := &api.UpdateApiRequest{}
 	if err := copier.Copy(updateReq, req); err != nil {
 		return nil, err
 	}
@@ -98,11 +99,11 @@ func (l *ApiLogic) UpdateApi(req *types.UpdateApiRequest) (*role.UpdateApiRespon
 }
 
 // DeleteApi 删除接口
-func (l *ApiLogic) DeleteApi(req *types.DeleteApiRequest) (*role.DeleteApiResponse, error) {
+func (l *ApiLogic) DeleteApi(req *types.DeleteApiRequest) (*api.DeleteApiResponse, error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
-	deleteReq := &role.DeleteApiRequest{}
+	deleteReq := &api.DeleteApiRequest{}
 	if err := copier.Copy(deleteReq, req); err != nil {
 		return nil, err
 	}
@@ -116,11 +117,11 @@ func (l *ApiLogic) DeleteApi(req *types.DeleteApiRequest) (*role.DeleteApiRespon
 }
 
 // ListApis 获取接口列表
-func (l *ApiLogic) ListApis(req *types.ListApisRequest) (*role.ListApisResponse, error) {
+func (l *ApiLogic) ListApis(req *types.ListApisRequest) (*api.ListApisResponse, error) {
 	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
 	defer cancel()
 
-	listReq := &role.ListApisRequest{}
+	listReq := &api.ListApisRequest{}
 	if err := copier.Copy(listReq, req); err != nil {
 		return nil, err
 	}

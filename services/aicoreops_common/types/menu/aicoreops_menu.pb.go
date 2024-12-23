@@ -4,7 +4,7 @@
 // 	protoc        v5.27.1
 // source: aicoreops_menu.proto
 
-package role
+package menu
 
 import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"

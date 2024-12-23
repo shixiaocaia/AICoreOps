@@ -1,16 +1,17 @@
 package logic
 
 import (
-	"aicoreops_ai/internal/domain"
-	"aicoreops_ai/internal/model"
-	"aicoreops_ai/internal/svc"
-	"aicoreops_ai/types"
 	"context"
 	"encoding/base64"
 	"fmt"
 	"io"
 	"log"
 	"strings"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/domain"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/model"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/types"
 
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/memory"

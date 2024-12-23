@@ -22,9 +22,9 @@ import (
 	"context"
 	"time"
 
-	"aicoreops_api/internal/svc"
-	"aicoreops_api/internal/types"
-	"aicoreops_common/types/user"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/types"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/user"
 
 	"github.com/jinzhu/copier"
 	"github.com/zeromicro/go-zero/core/logx"

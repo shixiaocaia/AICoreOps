@@ -3,9 +3,9 @@ package server
 import (
 	"context"
 
-	"aicoreops_ai/internal/logic"
-	"aicoreops_ai/internal/svc"
-	"aicoreops_ai/types"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/logic"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/types"
 )
 
 type AicoreopsAiServer struct {

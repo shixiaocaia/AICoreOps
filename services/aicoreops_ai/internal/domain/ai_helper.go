@@ -1,11 +1,12 @@
 package domain
 
 import (
-	"aicoreops_ai/internal/config"
 	"bytes"
 	"context"
 	"fmt"
 	"net/url"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/config"
 
 	"github.com/tmc/langchaingo/documentloaders"
 	"github.com/tmc/langchaingo/embeddings"
