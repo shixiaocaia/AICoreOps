@@ -24,7 +24,6 @@ import (
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/tools"
-
 	"github.com/redis/go-redis/v9"
 	"github.com/zeromicro/go-zero/core/logx"
 	"github.com/zeromicro/go-zero/rest/httpx"
