@@ -19,9 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AIHelper_AskQuestion_FullMethodName    = "/ai.AIHelper/AskQuestion"
-	AIHelper_GetChatHistory_FullMethodName = "/ai.AIHelper/GetChatHistory"
-	AIHelper_UploadDocument_FullMethodName = "/ai.AIHelper/UploadDocument"
+	AIHelper_AskQuestion_FullMethodName       = "/ai.AIHelper/AskQuestion"
+	AIHelper_GetChatHistory_FullMethodName    = "/ai.AIHelper/GetChatHistory"
+	AIHelper_UploadDocument_FullMethodName    = "/ai.AIHelper/UploadDocument"
+	AIHelper_GetHistorySession_FullMethodName = "/ai.AIHelper/GetHistorySession"
 )
 
 // AIHelperClient is the client API for AIHelper service.
@@ -33,6 +34,7 @@ type AIHelperClient interface {
 	AskQuestion(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AskQuestionRequest, AskQuestionResponse], error)
 	GetChatHistory(ctx context.Context, in *GetChatHistoryRequest, opts ...grpc.CallOption) (*GetChatHistoryResponse, error)
 	UploadDocument(ctx context.Context, in *UploadDocumentRequest, opts ...grpc.CallOption) (*UploadDocumentResponse, error)
+	GetHistorySession(ctx context.Context, in *GetHistorySessionRequest, opts ...grpc.CallOption) (*GetHistorySessionResponse, error)
 }
 
 type aIHelperClient struct {
@@ -76,6 +78,16 @@ func (c *aIHelperClient) UploadDocument(ctx context.Context, in *UploadDocumentR
 	return out, nil
 }
 
+func (c *aIHelperClient) GetHistorySession(ctx context.Context, in *GetHistorySessionRequest, opts ...grpc.CallOption) (*GetHistorySessionResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetHistorySessionResponse)
+	err := c.cc.Invoke(ctx, AIHelper_GetHistorySession_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AIHelperServer is the server API for AIHelper service.
 // All implementations must embed UnimplementedAIHelperServer
 // for forward compatibility.
@@ -85,6 +97,7 @@ type AIHelperServer interface {
 	AskQuestion(grpc.BidiStreamingServer[AskQuestionRequest, AskQuestionResponse]) error
 	GetChatHistory(context.Context, *GetChatHistoryRequest) (*GetChatHistoryResponse, error)
 	UploadDocument(context.Context, *UploadDocumentRequest) (*UploadDocumentResponse, error)
+	GetHistorySession(context.Context, *GetHistorySessionRequest) (*GetHistorySessionResponse, error)
 	mustEmbedUnimplementedAIHelperServer()
 }
 
@@ -103,6 +116,9 @@ func (UnimplementedAIHelperServer) GetChatHistory(context.Context, *GetChatHisto
 }
 func (UnimplementedAIHelperServer) UploadDocument(context.Context, *UploadDocumentRequest) (*UploadDocumentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadDocument not implemented")
+}
+func (UnimplementedAIHelperServer) GetHistorySession(context.Context, *GetHistorySessionRequest) (*GetHistorySessionResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetHistorySession not implemented")
 }
 func (UnimplementedAIHelperServer) mustEmbedUnimplementedAIHelperServer() {}
 func (UnimplementedAIHelperServer) testEmbeddedByValue()                  {}
@@ -168,6 +184,24 @@ func _AIHelper_UploadDocument_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AIHelper_GetHistorySession_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetHistorySessionRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AIHelperServer).GetHistorySession(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AIHelper_GetHistorySession_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AIHelperServer).GetHistorySession(ctx, req.(*GetHistorySessionRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AIHelper_ServiceDesc is the grpc.ServiceDesc for AIHelper service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -182,6 +216,10 @@ var AIHelper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UploadDocument",
 			Handler:    _AIHelper_UploadDocument_Handler,
+		},
+		{
+			MethodName: "GetHistorySession",
+			Handler:    _AIHelper_GetHistorySession_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

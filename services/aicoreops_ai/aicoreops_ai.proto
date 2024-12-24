@@ -119,8 +119,9 @@ message FixTaskResponse {
 // 对话式 AI 助手接口
 service AIHelper {
   rpc AskQuestion (stream AskQuestionRequest) returns (stream AskQuestionResponse);       // 用户提问，获取解答
-  rpc GetChatHistory (GetChatHistoryRequest) returns (GetChatHistoryResponse); // 获取聊天历史
+  rpc GetChatHistory (GetChatHistoryRequest) returns (GetChatHistoryResponse); // 获取具体会话历史
   rpc UploadDocument (UploadDocumentRequest) returns (UploadDocumentResponse); // 上传文档到知识库
+  rpc GetHistorySession (GetHistorySessionRequest) returns (GetHistorySessionResponse); // 获取历史会话列表
 }
 
 // 日志分析与修复建议接口
