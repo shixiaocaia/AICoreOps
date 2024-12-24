@@ -5,6 +5,7 @@ go 1.22.1
 toolchain go1.22.8
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/tmc/langchaingo v0.1.12
 	github.com/zeromicro/go-zero v1.7.4
 	google.golang.org/grpc v1.65.0
@@ -41,7 +42,6 @@ require (
 	github.com/google/go-cmp v0.6.0 // indirect
 	github.com/google/go-querystring v1.1.0 // indirect
 	github.com/google/gofuzz v1.2.0 // indirect
-	github.com/google/uuid v1.6.0 // indirect
 	github.com/gorilla/css v1.0.0 // indirect
 	github.com/grpc-ecosystem/grpc-gateway/v2 v2.20.0 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
