@@ -19,7 +19,13 @@ func NewAicoreopsAiServer(svcCtx *svc.ServiceContext) *AicoreopsAiServer {
 	}
 }
 
-// GetChatHistory 获取聊天历史
+// GetHistorySession 获取历史会话
+func (s *AicoreopsAiServer) GetHistorySession(ctx context.Context, req *types.GetHistorySessionRequest) (*types.GetHistorySessionResponse, error) {
+	l := logic.NewAIHelperLogic(ctx, s.svcCtx)
+	return l.GetHistorySession(req)
+}
+
+// GetChatHistory 获取单个聊天历史
 func (s *AicoreopsAiServer) GetChatHistory(ctx context.Context, req *types.GetChatHistoryRequest) (*types.GetChatHistoryResponse, error) {
 	l := logic.NewAIHelperLogic(ctx, s.svcCtx)
 	return l.GetChatHistory(req)

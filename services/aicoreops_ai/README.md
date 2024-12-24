@@ -48,3 +48,4 @@ TODO
 - 管理 memoryBuf，及时释放，避免 OOM
     - 现有memoryBuf 取决于 model，没有实现 token 有效管理
 - 管理 streaming RPC 连接
+- 增加 api 层鉴权，ctx 传递 userId

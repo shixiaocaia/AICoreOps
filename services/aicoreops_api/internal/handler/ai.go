@@ -48,14 +48,11 @@ var upgrader = websocket.Upgrader{
 
 func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
 	l := logic.NewAiLogic(r.Context(), h.svcCtx)
-	l.Logger.Debugf("请求头信息: %v", r.Header)
-	// 从 url 中获取 session_id
+
 	sessionId := r.URL.Query().Get("session_id")
-
-	// l := logic.NewAiLogic(r.Context(), h.svcCtx)
-
-	l.Logger.Infof("%s 建立 ws 连接", sessionId)
-	// l.Logger.Debugf("请求头信息: %v", r.Header)
+	if sessionId == "" {
+		l.Logger.Info("sessionId 为空, 新建会话")
+	}
 
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
