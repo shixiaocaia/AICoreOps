@@ -3,8 +3,8 @@
 # 安装向量数据库
 docker run -d -p 6333:6333 qdrant/qdrant:latest
 
-curl -X PUT <http://localhost:6333/collections/aicoreops> \\
--H "Content-Type: application/json" \\
+curl -X PUT http://localhost:6333/collections/aicoreops \
+-H "Content-Type: application/json" \
 -d '{
   "vectors": {
     "size": 3584,

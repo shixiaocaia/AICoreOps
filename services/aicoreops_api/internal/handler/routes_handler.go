@@ -86,5 +86,5 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	// AI相关接口
 	aiGroup := group.Group("")
 	// TODO aiGroup.Use(authMiddleware.Handle, casbinMiddleware.Handle)
-	aiGroup.Post("/ai/ask", ai.AskQuestion)
+	aiGroup.Get("/ai/ask", ai.AskQuestion)
 }

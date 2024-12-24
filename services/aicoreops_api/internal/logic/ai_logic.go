@@ -23,14 +23,13 @@ import (
 	"fmt"
 	"io"
 	"log"
-	"net/http"
 	"sync"
 	"time"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
-	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/types"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/ai"
 	"github.com/gorilla/websocket"
+	"google.golang.org/grpc/metadata"
 
 	"github.com/zeromicro/go-zero/core/logx"
 )
@@ -53,26 +52,16 @@ const (
 	timeoutDuration = 60 * time.Second
 )
 
-var upgrader = websocket.Upgrader{
-	CheckOrigin: func(r *http.Request) bool {
-		// 根据需要调整跨域策略
-		return true
-	},
-}
-
 // AskQuestion 提问
-func (l *AiLogic) AskQuestion(w http.ResponseWriter, r *http.Request, req *types.AskQuestionRequest) (*ai.AskQuestionResponse, error) {
+func (l *AiLogic) AskQuestion(conn *websocket.Conn, sessionId string) (*ai.AskQuestionResponse, error) {
 	// 1. 建立 ws 连接，stream 双向流 RPC
-	l.Logger.Infof("%s 建立 ws 连接", req.SessionId)
+	md := metadata.Pairs("sessionId", sessionId)
+	ctx, cancel := context.WithCancel(metadata.NewOutgoingContext(l.ctx, md))
+	defer cancel()
 
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		l.Logger.Errorf("建立 ws 连接失败: %v", err)
-		return nil, err
-	}
-	defer conn.Close()
+	l.Logger.Debugf("请求头信息: %v", md)
 
-	stream, err := l.svcCtx.AiRpc.AskQuestion(l.ctx)
+	stream, err := l.svcCtx.AiRpc.AskQuestion(ctx)
 	if err != nil {
 		l.Logger.Errorf("建立 gRPC 双向流失败: %v", err)
 		return nil, err
@@ -82,7 +71,7 @@ func (l *AiLogic) AskQuestion(w http.ResponseWriter, r *http.Request, req *types
 	wg.Add(2)
 
 	// 创建一个用于取消所有操作的上下文
-	opCtx, opCancel := context.WithCancel(l.ctx)
+	opCtx, opCancel := context.WithCancel(ctx)
 	defer opCancel()
 
 	// 设置超时计时器
@@ -92,33 +81,33 @@ func (l *AiLogic) AskQuestion(w http.ResponseWriter, r *http.Request, req *types
 	// 接收 gRPC 响应并发送到 WebSocket
 	go func() {
 		defer wg.Done()
-		l.receiveResponses(conn, stream, opCancel, req.SessionId)
+		l.receiveResponses(conn, stream, opCancel, sessionId)
 	}()
 
 	// 从 WebSocket 接收消息并发送到 gRPC
 	go func() {
 		defer wg.Done()
-		l.sendMessages(conn, stream, opCtx, timeout, req.SessionId)
+		l.sendMessages(conn, stream, opCtx, timeout, sessionId)
 	}()
 
 	// 监控超时
 	go func() {
 		select {
 		case <-timeout.C:
-			l.Logger.Infof("%s 连接超时", req.SessionId)
+			l.Logger.Infof("%s 连接超时", sessionId)
 			sendWebSocketError(conn, "连接超时")
 			opCancel()
 			conn.Close()
 			stream.CloseSend()
 		case <-opCtx.Done():
-			l.Logger.Infof("%s 正常结束", req.SessionId)
+			l.Logger.Infof("%s 正常结束", sessionId)
 		}
 	}()
 
 	// 等待所有 goroutine 完成
 	wg.Wait()
 
-	l.Logger.Infof("%s 连接已关闭", req.SessionId)
+	l.Logger.Infof("%s 连接已关闭", sessionId)
 	return nil, nil
 }
 

@@ -42,10 +42,12 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 		return fmt.Errorf("无法从上下文中获取元数据")
 	}
 
+	a.Logger.Debugf("请求头信息: %v", md)
+
 	sessionIDs := md["sessionid"]
 	if len(sessionIDs) == 0 {
-		a.Logger.Error("sessionID 未设置或为空")
-		return fmt.Errorf("sessionID 未设置或为空")
+		a.Logger.Error("sessionId 未设置或为空")
+		return fmt.Errorf("sessionId 未设置或为空")
 	}
 	sessionID := sessionIDs[0]
 

@@ -24,6 +24,7 @@ import (
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/logic"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/types"
+	"github.com/gorilla/websocket"
 
 	"github.com/zeromicro/go-zero/rest/httpx"
 )
@@ -38,18 +39,32 @@ func NewAiHandler(svcCtx *svc.ServiceContext) *AiHandler {
 	}
 }
 
+var upgrader = websocket.Upgrader{
+	CheckOrigin: func(r *http.Request) bool {
+		// 根据需要调整跨域策略
+		return true
+	},
+}
+
 func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
-	var req types.AskQuestionRequest
-	if err := httpx.Parse(r, &req); err != nil {
-		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
-		})
+	l := logic.NewAiLogic(r.Context(), h.svcCtx)
+	l.Logger.Debugf("请求头信息: %v", r.Header)
+	// 从 url 中获取 session_id
+	sessionId := r.URL.Query().Get("session_id")
+
+	// l := logic.NewAiLogic(r.Context(), h.svcCtx)
+
+	l.Logger.Infof("%s 建立 ws 连接", sessionId)
+	// l.Logger.Debugf("请求头信息: %v", r.Header)
+
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		l.Logger.Errorf("建立 ws 连接失败: %v", err)
 		return
 	}
+	defer conn.Close()
 
-	l := logic.NewAiLogic(r.Context(), h.svcCtx)
-	resp, err := l.AskQuestion(w, r, &req)
+	resp, err := l.AskQuestion(conn, sessionId)
 	if err != nil {
 		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
 			Code:    http.StatusInternalServerError,
