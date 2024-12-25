@@ -22,6 +22,7 @@ const (
 	AIHelper_AskQuestion_FullMethodName    = "/ai.AIHelper/AskQuestion"
 	AIHelper_GetChatHistory_FullMethodName = "/ai.AIHelper/GetChatHistory"
 	AIHelper_UploadDocument_FullMethodName = "/ai.AIHelper/UploadDocument"
+	AIHelper_GetHistoryList_FullMethodName = "/ai.AIHelper/GetHistoryList"
 )
 
 // AIHelperClient is the client API for AIHelper service.
@@ -33,6 +34,7 @@ type AIHelperClient interface {
 	AskQuestion(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AskQuestionRequest, AskQuestionResponse], error)
 	GetChatHistory(ctx context.Context, in *GetChatHistoryRequest, opts ...grpc.CallOption) (*GetChatHistoryResponse, error)
 	UploadDocument(ctx context.Context, in *UploadDocumentRequest, opts ...grpc.CallOption) (*UploadDocumentResponse, error)
+	GetHistoryList(ctx context.Context, in *GetHistoryListRequest, opts ...grpc.CallOption) (*GetHistoryListResponse, error)
 }
 
 type aIHelperClient struct {
@@ -76,6 +78,16 @@ func (c *aIHelperClient) UploadDocument(ctx context.Context, in *UploadDocumentR
 	return out, nil
 }
 
+func (c *aIHelperClient) GetHistoryList(ctx context.Context, in *GetHistoryListRequest, opts ...grpc.CallOption) (*GetHistoryListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetHistoryListResponse)
+	err := c.cc.Invoke(ctx, AIHelper_GetHistoryList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AIHelperServer is the server API for AIHelper service.
 // All implementations must embed UnimplementedAIHelperServer
 // for forward compatibility.
@@ -85,6 +97,7 @@ type AIHelperServer interface {
 	AskQuestion(grpc.BidiStreamingServer[AskQuestionRequest, AskQuestionResponse]) error
 	GetChatHistory(context.Context, *GetChatHistoryRequest) (*GetChatHistoryResponse, error)
 	UploadDocument(context.Context, *UploadDocumentRequest) (*UploadDocumentResponse, error)
+	GetHistoryList(context.Context, *GetHistoryListRequest) (*GetHistoryListResponse, error)
 	mustEmbedUnimplementedAIHelperServer()
 }
 
@@ -103,6 +116,9 @@ func (UnimplementedAIHelperServer) GetChatHistory(context.Context, *GetChatHisto
 }
 func (UnimplementedAIHelperServer) UploadDocument(context.Context, *UploadDocumentRequest) (*UploadDocumentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadDocument not implemented")
+}
+func (UnimplementedAIHelperServer) GetHistoryList(context.Context, *GetHistoryListRequest) (*GetHistoryListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetHistoryList not implemented")
 }
 func (UnimplementedAIHelperServer) mustEmbedUnimplementedAIHelperServer() {}
 func (UnimplementedAIHelperServer) testEmbeddedByValue()                  {}
@@ -168,6 +184,24 @@ func _AIHelper_UploadDocument_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AIHelper_GetHistoryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetHistoryListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AIHelperServer).GetHistoryList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AIHelper_GetHistoryList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AIHelperServer).GetHistoryList(ctx, req.(*GetHistoryListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AIHelper_ServiceDesc is the grpc.ServiceDesc for AIHelper service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -182,6 +216,10 @@ var AIHelper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UploadDocument",
 			Handler:    _AIHelper_UploadDocument_Handler,
+		},
+		{
+			MethodName: "GetHistoryList",
+			Handler:    _AIHelper_GetHistoryList_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
