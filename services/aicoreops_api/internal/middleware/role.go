@@ -19,8 +19,9 @@
 package middleware
 
 import (
-	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/tools"
 	"net/http"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/tools"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common"
 
@@ -44,7 +45,7 @@ func (m *CasbinMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		response := aicoreops_common.NewResultResponse()
 
 		// 从上下文获取用户ID
-		uidValue := r.Context().Value(userIDKey)
+		uidValue := r.Context().Value(UidKey{})
 		uid, ok := uidValue.(int64)
 		if !ok || uid <= 0 {
 			logx.Error("无效的用户ID类型或未找到用户ID")

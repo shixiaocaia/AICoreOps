@@ -19,7 +19,7 @@
 package pkg
 
 import (
-	"aicoreops_user/internal/config"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/config"
 
 	"github.com/redis/go-redis/v9"
 )

@@ -3,8 +3,8 @@
 # 安装向量数据库
 docker run -d -p 6333:6333 qdrant/qdrant:latest
 
-curl -X PUT <http://localhost:6333/collections/aicoreops> \\
--H "Content-Type: application/json" \\
+curl -X PUT http://localhost:6333/collections/aicoreops \
+-H "Content-Type: application/json" \
 -d '{
   "vectors": {
     "size": 3584,
@@ -21,7 +21,7 @@ ollama run qwen2.5:latest
 
 
 # 安装mysql, 执行 model/sql 建库建表
-docker run --name my-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d -p 3306:3306 -v /my/own/datadir:/var/lib/mysql mysql:latest
+docker run --name aicoreops -e MYSQL_ROOT_PASSWORD=root -d -p 3306:3306 mysql:latest
 
 # etcd
 
@@ -48,3 +48,4 @@ TODO
 - 管理 memoryBuf，及时释放，避免 OOM
     - 现有memoryBuf 取决于 model，没有实现 token 有效管理
 - 管理 streaming RPC 连接
+- 增加 api 层鉴权，ctx 传递 userId

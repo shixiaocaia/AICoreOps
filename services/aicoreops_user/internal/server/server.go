@@ -19,11 +19,11 @@
 package server
 
 import (
-	"aicoreops_user/internal/logic"
 	"context"
 
-	"aicoreops_user/internal/svc"
-	"aicoreops_user/types"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/logic"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/types"
 )
 
 type AicoreopsUserServer struct {

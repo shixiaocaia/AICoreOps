@@ -6,12 +6,15 @@ import (
 	"fmt"
 	"io"
 	"log"
+	"strconv"
 	"strings"
+	"time"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/domain"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/model"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/svc"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/types"
+	"github.com/google/uuid"
 
 	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/memory"
@@ -36,18 +39,36 @@ func NewAIHelperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AIHelper
 // AskQuestion 实现 AI 助手的提问接口逻辑，使用双向流式 RPC
 func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) error {
 	// 从元数据中获取 sessionID, 加载历史记录
+	var sessionID string
+	var userId int64
+	var newSession bool
+
 	md, ok := metadata.FromIncomingContext(stream.Context())
 	if !ok {
-		a.Logger.Error("无法从上下文中获取元数据")
-		return fmt.Errorf("无法从上下文中获取元数据")
+		a.Logger.Error("获取 metadata 失败")
+		return fmt.Errorf("获取 metadata 失败")
 	}
 
 	sessionIDs := md["sessionid"]
-	if len(sessionIDs) == 0 {
-		a.Logger.Error("sessionID 未设置或为空")
-		return fmt.Errorf("sessionID 未设置或为空")
+	if len(sessionIDs) == 0 || sessionIDs[0] == "" {
+		a.Logger.Info("sessionId 为空，创建新会话")
+		sessionID = uuid.New().String()
+		newSession = true
+	} else {
+		sessionID = sessionIDs[0]
 	}
-	sessionID := sessionIDs[0]
+
+	userIDs := md["userid"]
+	if len(userIDs) == 0 {
+		a.Logger.Error("userId 为空, 非法对话请求")
+		return fmt.Errorf("userId 为空, 非法对话请求")
+	}
+
+	userId, err := strconv.ParseInt(userIDs[0], 10, 64)
+	if err != nil {
+		a.Logger.Error("userId 不合法")
+		return fmt.Errorf("userId 不合法")
+	}
 
 	buf, ok := a.svcCtx.MemoryBuf[sessionID]
 	if !ok {
@@ -108,7 +129,7 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 			err := stream.Send(&types.AskQuestionResponse{
 				Code:    0,
 				Message: "success",
-				Data:    &types.AskQuestionResponse_AnswerData{Answer: string(chunk)},
+				Data:    &types.AskQuestionResponse_AnswerData{Answer: string(chunk), SessionId: sessionID},
 			})
 			if err != nil {
 				a.Logger.Errorf("发送响应失败: %v", err)
@@ -138,6 +159,21 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 		if err != nil {
 			a.Logger.Errorf("保存历史记录失败: %v", err)
 		}
+
+		// 创建新会话
+		if newSession {
+			_, err = a.svcCtx.HistorySessionModel.Insert(a.ctx, &model.HistorySession{
+				UserId:    userId,
+				SessionId: sessionID,
+				Title:     req.Question,
+				CreatedAt: time.Now(),
+			})
+			if err != nil {
+				a.Logger.Errorf("创建新会话失败: %v", err)
+			}
+			a.Logger.Infof("创建新会话成功: %v", sessionID)
+			newSession = false // 避免重复
+		}
 	}
 }
 
@@ -150,7 +186,7 @@ func (a *AIHelperLogic) GetChatHistory(req *types.GetChatHistoryRequest) (*types
 	}
 
 	// 异步加载记录到 memoryBuf
-	// TODO 加载精简的一条关键信息，而不是全部
+	// TODO 加载精简的一条关键记录，而不是全部
 	go func() {
 		if _, ok := a.svcCtx.MemoryBuf[req.SessionId]; ok {
 			a.Logger.Infof("历史记录已加载: %v", req.SessionId)
@@ -214,5 +250,28 @@ func (a *AIHelperLogic) UploadDocument(req *types.UploadDocumentRequest) (*types
 	return &types.UploadDocumentResponse{
 		Code:    0,
 		Message: "success",
+	}, nil
+}
+
+// GetHistoryList 获取历史会话
+func (a *AIHelperLogic) GetHistoryList(req *types.GetHistoryListRequest) (*types.GetHistoryListResponse, error) {
+	histories, err := a.svcCtx.HistorySessionModel.FindAll(a.ctx, req.UserId)
+	if err != nil {
+		a.Logger.Errorf("获取历史会话失败: %v", err)
+		return nil, fmt.Errorf("获取历史会话失败: %v", err)
+	}
+
+	res := make([]*types.HistorySession, 0, len(histories))
+	for _, h := range histories {
+		res = append(res, &types.HistorySession{
+			SessionId: h.SessionId,
+			Title:     h.Title,
+		})
+	}
+
+	return &types.GetHistoryListResponse{
+		Code:    0,
+		Message: "success",
+		Data:    res,
 	}, nil
 }

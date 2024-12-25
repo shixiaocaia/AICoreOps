@@ -192,9 +192,31 @@ type RemoveUserPermissionsRequest struct {
 }
 
 // AI相关
+type GetHistoryListRequest struct {
+}
+
+type GetHistoryListResponse struct {
+}
+
+type GetChatHistoryRequest struct {
+	SessionId string `json:"session_id"`
+}
+
+type GetChatHistoryResponse struct {
+	// History []string `json:"history"`
+}
+
+type UploadDocumentRequest struct {
+	Title   string `json:"title"`
+	Content string `json:"content"`
+}
+
+type UploadDocumentResponse struct {
+	// DocumentId string `json:"document_id"`
+}
+
 type AskQuestionRequest struct {
 	SessionId string `json:"session_id"`
-	Question  string `json:"question"`
 }
 
 type AskQuestionResponse struct {
