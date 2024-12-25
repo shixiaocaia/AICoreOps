@@ -21,7 +21,7 @@ package client
 import (
 	"context"
 
-	"aicoreops_user/types"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/types"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

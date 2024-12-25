@@ -1,4 +1,4 @@
-module aicoreops_user
+module github.com/GoSimplicity/AICoreOps/services/aicoreops_user
 
 go 1.22.7
 

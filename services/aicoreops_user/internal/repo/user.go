@@ -19,8 +19,9 @@
 package repo
 
 import (
-	"aicoreops_user/internal/model"
 	"context"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/model"
 )
 
 type UserRepo interface {

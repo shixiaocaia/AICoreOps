@@ -71,12 +71,12 @@ message HistorySession {
 }
 
 // 获取历史会话
-message GetHistorySessionRequest {
+message GetHistoryListRequest {
   string user_id = 1; // 用户ID
 }
 
 // 获取历史会话响应
-message GetHistorySessionResponse {
+message GetHistoryListResponse {
   int32 code = 1; // 状态码
   string message = 2; // 错误信息或成功提示
   repeated HistorySession data = 3; // 返回的数据
@@ -121,7 +121,7 @@ service AIHelper {
   rpc AskQuestion (stream AskQuestionRequest) returns (stream AskQuestionResponse);       // 用户提问，获取解答
   rpc GetChatHistory (GetChatHistoryRequest) returns (GetChatHistoryResponse); // 获取具体会话历史
   rpc UploadDocument (UploadDocumentRequest) returns (UploadDocumentResponse); // 上传文档到知识库
-  rpc GetHistorySession (GetHistorySessionRequest) returns (GetHistorySessionResponse); // 获取历史会话列表
+  rpc GetHistoryList (GetHistoryListRequest) returns (GetHistoryListResponse); // 获取历史会话列表
 }
 
 // 日志分析与修复建议接口

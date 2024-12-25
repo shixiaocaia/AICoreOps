@@ -26,7 +26,9 @@ import (
 	"sync"
 	"time"
 
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/middleware"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/types"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/ai"
 	"github.com/gorilla/websocket"
 	"google.golang.org/grpc/metadata"
@@ -52,19 +54,58 @@ const (
 	timeoutDuration = 60 * time.Second
 )
 
+// GetHistoryList 获取历史记录列表
+func (l *AiLogic) GetHistoryList(ctx context.Context) (*ai.GetHistoryListResponse, error) {
+	uidValue := ctx.Value(middleware.UidKey{})
+	uid, ok := uidValue.(int64)
+	if !ok {
+		return nil, fmt.Errorf("无效的用户ID类型或未找到用户ID")
+	}
+
+	resp, err := l.svcCtx.AiRpc.GetHistoryList(l.ctx, &ai.GetHistoryListRequest{
+		UserId: strconv.FormatInt(uid, 10),
+	})
+	if err != nil {
+		return nil, fmt.Errorf("获取历史会话失败: %v", err)
+	}
+
+	return resp, nil
+}
+
+// GetChatHistory 获取聊天历史
+func (l *AiLogic) GetChatHistory(req *types.GetChatHistoryRequest) (*ai.GetChatHistoryResponse, error) {
+	resp, err := l.svcCtx.AiRpc.GetChatHistory(l.ctx, &ai.GetChatHistoryRequest{
+		SessionId: req.SessionId,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("获取聊天历史失败: %v", err)
+	}
+	return resp, nil
+}
+
+// UploadDocument 上传文档
+func (l *AiLogic) UploadDocument(req *types.UploadDocumentRequest) (*ai.UploadDocumentResponse, error) {
+	resp, err := l.svcCtx.AiRpc.UploadDocument(l.ctx, &ai.UploadDocumentRequest{
+		Title:   req.Title,
+		Content: req.Content,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("上传文档失败: %v", err)
+	}
+	return resp, nil
+}
+
 // AskQuestion 提问
 func (l *AiLogic) AskQuestion(conn *websocket.Conn, sessionId string) (*ai.AskQuestionResponse, error) {
 	// 1. 验证会话有效性
-	var userId int64
-	if userId, ok := l.validateSession(sessionId); !ok {
-		l.Logger.Errorf("无效的 sessionId: %s, userId: %d", sessionId, userId)
-		l.sendWebSocketError(conn, "无效的会话")
-		conn.Close()
-		return nil, fmt.Errorf("无效的会话")
+	uidValue := l.ctx.Value(middleware.UidKey{})
+	uid, ok := uidValue.(int64)
+	if !ok {
+		return nil, fmt.Errorf("无效的用户ID类型或未找到用户ID")
 	}
 
 	// 2. 建立 ws 连接，stream 双向流 RPC
-	md := metadata.Pairs("sessionId", sessionId, "userId", strconv.FormatInt(userId, 10))
+	md := metadata.Pairs("sessionId", sessionId, "userId", strconv.FormatInt(uid, 10))
 	ctx, cancel := context.WithCancel(metadata.NewOutgoingContext(l.ctx, md))
 	defer cancel()
 
@@ -112,13 +153,6 @@ func (l *AiLogic) AskQuestion(conn *websocket.Conn, sessionId string) (*ai.AskQu
 	wg.Wait()
 	l.Logger.Infof("sessionId: %s, 连接已关闭", sessionId)
 	return nil, nil
-}
-
-// validateSession 验证会话有效性
-func (l *AiLogic) validateSession(sessionId string) (int64, bool) {
-	// TODO: 实现会话验证逻辑
-	l.Logger.Debugf("sessionId: %s, 会话验证成功", sessionId)
-	return 0, true
 }
 
 func (l *AiLogic) receiveResponses(conn *websocket.Conn, stream ai.AIHelper_AskQuestionClient, cancel context.CancelFunc, sessionId string) {

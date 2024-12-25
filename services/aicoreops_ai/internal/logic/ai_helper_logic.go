@@ -186,7 +186,7 @@ func (a *AIHelperLogic) GetChatHistory(req *types.GetChatHistoryRequest) (*types
 	}
 
 	// 异步加载记录到 memoryBuf
-	// TODO 加载精简的一条关键信���，而不是全部
+	// TODO 加载精简的一条关键记录，而不是全部
 	go func() {
 		if _, ok := a.svcCtx.MemoryBuf[req.SessionId]; ok {
 			a.Logger.Infof("历史记录已加载: %v", req.SessionId)
@@ -253,8 +253,8 @@ func (a *AIHelperLogic) UploadDocument(req *types.UploadDocumentRequest) (*types
 	}, nil
 }
 
-// GetHistorySession 获取历史会话
-func (a *AIHelperLogic) GetHistorySession(req *types.GetHistorySessionRequest) (*types.GetHistorySessionResponse, error) {
+// GetHistoryList 获取历史会话
+func (a *AIHelperLogic) GetHistoryList(req *types.GetHistoryListRequest) (*types.GetHistoryListResponse, error) {
 	histories, err := a.svcCtx.HistorySessionModel.FindAll(a.ctx, req.UserId)
 	if err != nil {
 		a.Logger.Errorf("获取历史会话失败: %v", err)
@@ -269,7 +269,7 @@ func (a *AIHelperLogic) GetHistorySession(req *types.GetHistorySessionRequest) (
 		})
 	}
 
-	return &types.GetHistorySessionResponse{
+	return &types.GetHistoryListResponse{
 		Code:    0,
 		Message: "success",
 		Data:    res,

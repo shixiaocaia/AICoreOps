@@ -19,9 +19,10 @@
 package dao
 
 import (
-	"aicoreops_user/internal/model"
 	"context"
 	"time"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/model"
 
 	"gorm.io/gorm"
 )

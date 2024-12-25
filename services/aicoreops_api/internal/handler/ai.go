@@ -46,14 +46,85 @@ var upgrader = websocket.Upgrader{
 	},
 }
 
-func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
+func setWsHeader(r *http.Request) {
+	r.Header.Set("Sec-Websocket-Version", "13")
+	r.Header.Set("Sec-Websocket-Key", "permessage-deflate")
+	r.Header.Set("Connection", "Upgrade")
+	r.Header.Set("Upgrade", "websocket")
+}
+
+func (h *AiHandler) GetHistoryList(w http.ResponseWriter, r *http.Request) {
 	l := logic.NewAiLogic(r.Context(), h.svcCtx)
-
-	sessionId := r.URL.Query().Get("session_id")
-	if sessionId == "" {
-		l.Logger.Info("sessionId 为空, 新建会话")
+	resp, err := l.GetHistoryList(r.Context())
+	if err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
 	}
+	resp.Code = http.StatusOK
 
+	httpx.OkJsonCtx(r.Context(), w, resp)
+}
+
+func (h *AiHandler) GetChatHistory(w http.ResponseWriter, r *http.Request) {
+	var req types.GetChatHistoryRequest
+	if err := httpx.Parse(r, &req); err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	}
+	l := logic.NewAiLogic(r.Context(), h.svcCtx)
+	resp, err := l.GetChatHistory(&req)
+	if err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+	resp.Code = http.StatusOK
+
+	httpx.OkJsonCtx(r.Context(), w, resp)
+}
+
+func (h *AiHandler) UploadDocument(w http.ResponseWriter, r *http.Request) {
+	var req types.UploadDocumentRequest
+	if err := httpx.Parse(r, &req); err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	}
+	l := logic.NewAiLogic(r.Context(), h.svcCtx)
+	resp, err := l.UploadDocument(&req)
+	if err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+	resp.Code = http.StatusOK
+
+	httpx.OkJsonCtx(r.Context(), w, resp)
+}
+
+func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
+	var req types.AskQuestionRequest
+	if err := httpx.Parse(r, &req); err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusBadRequest,
+			Message: err.Error(),
+		})
+		return
+	}
+	l := logic.NewAiLogic(r.Context(), h.svcCtx)
+	setWsHeader(r)
 	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		l.Logger.Errorf("建立 ws 连接失败: %v", err)
@@ -61,7 +132,7 @@ func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
 	}
 	defer conn.Close()
 
-	resp, err := l.AskQuestion(conn, sessionId)
+	resp, err := l.AskQuestion(conn, req.SessionId)
 	if err != nil {
 		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
 			Code:    http.StatusInternalServerError,

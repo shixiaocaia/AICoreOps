@@ -19,11 +19,12 @@
 package pkg
 
 import (
-	"aicoreops_user/internal/config"
 	"context"
 	"errors"
 	"fmt"
 	"time"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/config"
 
 	"github.com/golang-jwt/jwt/v4"
 	"github.com/google/uuid"

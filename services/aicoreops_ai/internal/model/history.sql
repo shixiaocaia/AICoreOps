@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS history (
 
 CREATE TABLE IF NOT EXISTS history_session (
     id bigint AUTO_INCREMENT,
-    user_id int NOT NULL,
+    user_id bigint NOT NULL,
     session_id varchar(255) NOT NULL,
     title varchar(255) NOT NULL,
     created_at timestamp DEFAULT CURRENT_TIMESTAMP,

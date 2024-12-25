@@ -22,9 +22,9 @@ import (
 	"context"
 	"errors"
 
-	"aicoreops_user/internal/domain"
-	"aicoreops_user/internal/svc"
-	"aicoreops_user/types"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/domain"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/types"
 
 	"github.com/zeromicro/go-zero/core/logx"
 	"gorm.io/gorm"
