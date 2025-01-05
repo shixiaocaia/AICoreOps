@@ -4,11 +4,11 @@ import (
 	"flag"
 	"fmt"
 
-	"aicoreops_prometheus/aicoreops_prometheus"
-	"aicoreops_prometheus/internal/config"
-	"aicoreops_prometheus/internal/server"
-	"aicoreops_prometheus/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/config"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/server"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/svc"
 
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/types"
 	"github.com/zeromicro/go-zero/core/conf"
 	"github.com/zeromicro/go-zero/core/service"
 	"github.com/zeromicro/go-zero/zrpc"
@@ -26,7 +26,7 @@ func main() {
 	ctx := svc.NewServiceContext(c)
 
 	s := zrpc.MustNewServer(c.RpcServerConf, func(grpcServer *grpc.Server) {
-		aicoreops_prometheus.RegisterAicoreopsPrometheusServer(grpcServer, server.NewAicoreopsPrometheusServer(ctx))
+		types.RegisterPrometheusRpcServer(grpcServer, server.NewAicoreopsPrometheusServer(ctx))
 
 		if c.Mode == service.DevMode || c.Mode == service.TestMode {
 			reflection.Register(grpcServer)

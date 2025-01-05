@@ -5,16 +5,13 @@
 package server
 
 import (
-	"context"
-
-	"aicoreops_prometheus/aicoreops_prometheus"
-	"aicoreops_prometheus/internal/logic"
-	"aicoreops_prometheus/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/types"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/svc"
 )
 
 type AicoreopsPrometheusServer struct {
 	svcCtx *svc.ServiceContext
-	aicoreops_prometheus.UnimplementedAicoreopsPrometheusServer
+	types.UnimplementedPrometheusRpcServer
 }
 
 func NewAicoreopsPrometheusServer(svcCtx *svc.ServiceContext) *AicoreopsPrometheusServer {
@@ -23,7 +20,3 @@ func NewAicoreopsPrometheusServer(svcCtx *svc.ServiceContext) *AicoreopsPromethe
 	}
 }
 
-func (s *AicoreopsPrometheusServer) Ping(ctx context.Context, in *aicoreops_prometheus.Request) (*aicoreops_prometheus.Response, error) {
-	l := logic.NewPingLogic(ctx, s.svcCtx)
-	return l.Ping(in)
-}
