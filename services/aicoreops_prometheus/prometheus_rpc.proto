@@ -5,7 +5,7 @@ option go_package="./types";
 
 service Prometheus_rpc {
   // Alertmanager 相关接口
-  rpc GetAlertmanagerPoolList(GetAlertmanagerPoolListRequest) returns(GetAlertmanagerPoolListResponse);
+  rpc GetMonitorAlertmanagerPoolList(GetAlertmanagerPoolListRequest) returns(GetAlertmanagerPoolListResponse);
   rpc CreateMonitorAlertManagerPool(CreateMonitorAlertManagerPoolRequest) returns(CreateMonitorAlertManagerPoolResponse);
   rpc UpdateMonitorAlertManagerPool(UpdateMonitorAlertManagerPoolRequest) returns(UpdateMonitorAlertManagerPoolResponse);
   rpc DeleteMonitorAlertManagerPool(DeleteMonitorAlertManagerPoolRequest) returns(DeleteMonitorAlertManagerPoolResponse);
@@ -46,13 +46,19 @@ message CreateMonitorAlertManagerPoolResponse {
 }
 
 message UpdateMonitorAlertManagerPoolRequest {
+  AlertmanagerPool pool = 1;
 }
 
 message UpdateMonitorAlertManagerPoolResponse {
+  int32 code = 1;
+  string message = 2;
 }
 
 message DeleteMonitorAlertManagerPoolRequest {
+  int64 id = 1;
 }
 
 message DeleteMonitorAlertManagerPoolResponse {
+  int32 code = 1;
+  string message = 2;
 }

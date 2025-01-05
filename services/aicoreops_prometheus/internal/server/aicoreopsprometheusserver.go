@@ -19,14 +19,14 @@ func NewAicoreopsPrometheusServer(svcCtx *svc.ServiceContext) *AicoreopsPromethe
 	}
 }
 
-func (s *AicoreopsPrometheusServer) GetMonitorAlertmanagerPoolList(ctx context.Context, req *types.GetAlertmanagerPoolListRequest) (*types.GetAlertmanagerPoolListResponse, error) {
-	l := logic.NewAlertmanagerLogic(ctx, s.svcCtx)
-	return l.GetMonitorAlertmanagerPoolList(ctx, req)
-}
-
 func (s *AicoreopsPrometheusServer) CreateMonitorAlertManagerPool(ctx context.Context, req *types.CreateMonitorAlertManagerPoolRequest) (*types.CreateMonitorAlertManagerPoolResponse, error) {
 	l := logic.NewAlertmanagerLogic(ctx, s.svcCtx)
 	return l.CreateMonitorAlertManagerPool(ctx, req)
+}
+
+func (s *AicoreopsPrometheusServer) GetMonitorAlertmanagerPoolList(ctx context.Context, req *types.GetAlertmanagerPoolListRequest) (*types.GetAlertmanagerPoolListResponse, error) {
+	l := logic.NewAlertmanagerLogic(ctx, s.svcCtx)
+	return l.GetMonitorAlertmanagerPoolList(ctx)
 }
 
 func (s *AicoreopsPrometheusServer) UpdateMonitorAlertManagerPool(ctx context.Context, req *types.UpdateMonitorAlertManagerPoolRequest) (*types.UpdateMonitorAlertManagerPoolResponse, error) {

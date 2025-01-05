@@ -19,10 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	PrometheusRpc_GetAlertmanagerPoolList_FullMethodName       = "/prometheus_rpc.Prometheus_rpc/GetAlertmanagerPoolList"
-	PrometheusRpc_CreateMonitorAlertManagerPool_FullMethodName = "/prometheus_rpc.Prometheus_rpc/CreateMonitorAlertManagerPool"
-	PrometheusRpc_UpdateMonitorAlertManagerPool_FullMethodName = "/prometheus_rpc.Prometheus_rpc/UpdateMonitorAlertManagerPool"
-	PrometheusRpc_DeleteMonitorAlertManagerPool_FullMethodName = "/prometheus_rpc.Prometheus_rpc/DeleteMonitorAlertManagerPool"
+	PrometheusRpc_GetMonitorAlertmanagerPoolList_FullMethodName = "/prometheus_rpc.Prometheus_rpc/GetMonitorAlertmanagerPoolList"
+	PrometheusRpc_CreateMonitorAlertManagerPool_FullMethodName  = "/prometheus_rpc.Prometheus_rpc/CreateMonitorAlertManagerPool"
+	PrometheusRpc_UpdateMonitorAlertManagerPool_FullMethodName  = "/prometheus_rpc.Prometheus_rpc/UpdateMonitorAlertManagerPool"
+	PrometheusRpc_DeleteMonitorAlertManagerPool_FullMethodName  = "/prometheus_rpc.Prometheus_rpc/DeleteMonitorAlertManagerPool"
 )
 
 // PrometheusRpcClient is the client API for PrometheusRpc service.
@@ -30,7 +30,7 @@ const (
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PrometheusRpcClient interface {
 	// Alertmanager 相关接口
-	GetAlertmanagerPoolList(ctx context.Context, in *GetAlertmanagerPoolListRequest, opts ...grpc.CallOption) (*GetAlertmanagerPoolListResponse, error)
+	GetMonitorAlertmanagerPoolList(ctx context.Context, in *GetAlertmanagerPoolListRequest, opts ...grpc.CallOption) (*GetAlertmanagerPoolListResponse, error)
 	CreateMonitorAlertManagerPool(ctx context.Context, in *CreateMonitorAlertManagerPoolRequest, opts ...grpc.CallOption) (*CreateMonitorAlertManagerPoolResponse, error)
 	UpdateMonitorAlertManagerPool(ctx context.Context, in *UpdateMonitorAlertManagerPoolRequest, opts ...grpc.CallOption) (*UpdateMonitorAlertManagerPoolResponse, error)
 	DeleteMonitorAlertManagerPool(ctx context.Context, in *DeleteMonitorAlertManagerPoolRequest, opts ...grpc.CallOption) (*DeleteMonitorAlertManagerPoolResponse, error)
@@ -44,10 +44,10 @@ func NewPrometheusRpcClient(cc grpc.ClientConnInterface) PrometheusRpcClient {
 	return &prometheusRpcClient{cc}
 }
 
-func (c *prometheusRpcClient) GetAlertmanagerPoolList(ctx context.Context, in *GetAlertmanagerPoolListRequest, opts ...grpc.CallOption) (*GetAlertmanagerPoolListResponse, error) {
+func (c *prometheusRpcClient) GetMonitorAlertmanagerPoolList(ctx context.Context, in *GetAlertmanagerPoolListRequest, opts ...grpc.CallOption) (*GetAlertmanagerPoolListResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
 	out := new(GetAlertmanagerPoolListResponse)
-	err := c.cc.Invoke(ctx, PrometheusRpc_GetAlertmanagerPoolList_FullMethodName, in, out, cOpts...)
+	err := c.cc.Invoke(ctx, PrometheusRpc_GetMonitorAlertmanagerPoolList_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -89,7 +89,7 @@ func (c *prometheusRpcClient) DeleteMonitorAlertManagerPool(ctx context.Context,
 // for forward compatibility.
 type PrometheusRpcServer interface {
 	// Alertmanager 相关接口
-	GetAlertmanagerPoolList(context.Context, *GetAlertmanagerPoolListRequest) (*GetAlertmanagerPoolListResponse, error)
+	GetMonitorAlertmanagerPoolList(context.Context, *GetAlertmanagerPoolListRequest) (*GetAlertmanagerPoolListResponse, error)
 	CreateMonitorAlertManagerPool(context.Context, *CreateMonitorAlertManagerPoolRequest) (*CreateMonitorAlertManagerPoolResponse, error)
 	UpdateMonitorAlertManagerPool(context.Context, *UpdateMonitorAlertManagerPoolRequest) (*UpdateMonitorAlertManagerPoolResponse, error)
 	DeleteMonitorAlertManagerPool(context.Context, *DeleteMonitorAlertManagerPoolRequest) (*DeleteMonitorAlertManagerPoolResponse, error)
@@ -103,8 +103,8 @@ type PrometheusRpcServer interface {
 // pointer dereference when methods are called.
 type UnimplementedPrometheusRpcServer struct{}
 
-func (UnimplementedPrometheusRpcServer) GetAlertmanagerPoolList(context.Context, *GetAlertmanagerPoolListRequest) (*GetAlertmanagerPoolListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetAlertmanagerPoolList not implemented")
+func (UnimplementedPrometheusRpcServer) GetMonitorAlertmanagerPoolList(context.Context, *GetAlertmanagerPoolListRequest) (*GetAlertmanagerPoolListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMonitorAlertmanagerPoolList not implemented")
 }
 func (UnimplementedPrometheusRpcServer) CreateMonitorAlertManagerPool(context.Context, *CreateMonitorAlertManagerPoolRequest) (*CreateMonitorAlertManagerPoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateMonitorAlertManagerPool not implemented")
@@ -136,20 +136,20 @@ func RegisterPrometheusRpcServer(s grpc.ServiceRegistrar, srv PrometheusRpcServe
 	s.RegisterService(&PrometheusRpc_ServiceDesc, srv)
 }
 
-func _PrometheusRpc_GetAlertmanagerPoolList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+func _PrometheusRpc_GetMonitorAlertmanagerPoolList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetAlertmanagerPoolListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PrometheusRpcServer).GetAlertmanagerPoolList(ctx, in)
+		return srv.(PrometheusRpcServer).GetMonitorAlertmanagerPoolList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PrometheusRpc_GetAlertmanagerPoolList_FullMethodName,
+		FullMethod: PrometheusRpc_GetMonitorAlertmanagerPoolList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PrometheusRpcServer).GetAlertmanagerPoolList(ctx, req.(*GetAlertmanagerPoolListRequest))
+		return srv.(PrometheusRpcServer).GetMonitorAlertmanagerPoolList(ctx, req.(*GetAlertmanagerPoolListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -216,8 +216,8 @@ var PrometheusRpc_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*PrometheusRpcServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "GetAlertmanagerPoolList",
-			Handler:    _PrometheusRpc_GetAlertmanagerPoolList_Handler,
+			MethodName: "GetMonitorAlertmanagerPoolList",
+			Handler:    _PrometheusRpc_GetMonitorAlertmanagerPoolList_Handler,
 		},
 		{
 			MethodName: "CreateMonitorAlertManagerPool",
