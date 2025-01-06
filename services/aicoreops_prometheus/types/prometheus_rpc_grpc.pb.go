@@ -23,6 +23,10 @@ const (
 	PrometheusRpc_CreateMonitorAlertManagerPool_FullMethodName  = "/prometheus_rpc.Prometheus_rpc/CreateMonitorAlertManagerPool"
 	PrometheusRpc_UpdateMonitorAlertManagerPool_FullMethodName  = "/prometheus_rpc.Prometheus_rpc/UpdateMonitorAlertManagerPool"
 	PrometheusRpc_DeleteMonitorAlertManagerPool_FullMethodName  = "/prometheus_rpc.Prometheus_rpc/DeleteMonitorAlertManagerPool"
+	PrometheusRpc_GetMonitorScrapeJobList_FullMethodName        = "/prometheus_rpc.Prometheus_rpc/GetMonitorScrapeJobList"
+	PrometheusRpc_CreateMonitorScrapeJob_FullMethodName         = "/prometheus_rpc.Prometheus_rpc/CreateMonitorScrapeJob"
+	PrometheusRpc_UpdateMonitorScrapeJob_FullMethodName         = "/prometheus_rpc.Prometheus_rpc/UpdateMonitorScrapeJob"
+	PrometheusRpc_DeleteMonitorScrapeJob_FullMethodName         = "/prometheus_rpc.Prometheus_rpc/DeleteMonitorScrapeJob"
 )
 
 // PrometheusRpcClient is the client API for PrometheusRpc service.
@@ -34,6 +38,11 @@ type PrometheusRpcClient interface {
 	CreateMonitorAlertManagerPool(ctx context.Context, in *CreateMonitorAlertManagerPoolRequest, opts ...grpc.CallOption) (*CreateMonitorAlertManagerPoolResponse, error)
 	UpdateMonitorAlertManagerPool(ctx context.Context, in *UpdateMonitorAlertManagerPoolRequest, opts ...grpc.CallOption) (*UpdateMonitorAlertManagerPoolResponse, error)
 	DeleteMonitorAlertManagerPool(ctx context.Context, in *DeleteMonitorAlertManagerPoolRequest, opts ...grpc.CallOption) (*DeleteMonitorAlertManagerPoolResponse, error)
+	// 采集任务
+	GetMonitorScrapeJobList(ctx context.Context, in *GetMonitorScrapeJobListRequest, opts ...grpc.CallOption) (*GetMonitorScrapeJobListResponse, error)
+	CreateMonitorScrapeJob(ctx context.Context, in *CreateMonitorScrapeJobRequest, opts ...grpc.CallOption) (*CreateMonitorScrapeJobResponse, error)
+	UpdateMonitorScrapeJob(ctx context.Context, in *UpdateMonitorScrapeJobRequest, opts ...grpc.CallOption) (*UpdateMonitorScrapeJobResponse, error)
+	DeleteMonitorScrapeJob(ctx context.Context, in *DeleteMonitorScrapeJobRequest, opts ...grpc.CallOption) (*DeleteMonitorScrapeJobResponse, error)
 }
 
 type prometheusRpcClient struct {
@@ -84,6 +93,46 @@ func (c *prometheusRpcClient) DeleteMonitorAlertManagerPool(ctx context.Context,
 	return out, nil
 }
 
+func (c *prometheusRpcClient) GetMonitorScrapeJobList(ctx context.Context, in *GetMonitorScrapeJobListRequest, opts ...grpc.CallOption) (*GetMonitorScrapeJobListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMonitorScrapeJobListResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_GetMonitorScrapeJobList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *prometheusRpcClient) CreateMonitorScrapeJob(ctx context.Context, in *CreateMonitorScrapeJobRequest, opts ...grpc.CallOption) (*CreateMonitorScrapeJobResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateMonitorScrapeJobResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_CreateMonitorScrapeJob_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *prometheusRpcClient) UpdateMonitorScrapeJob(ctx context.Context, in *UpdateMonitorScrapeJobRequest, opts ...grpc.CallOption) (*UpdateMonitorScrapeJobResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateMonitorScrapeJobResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_UpdateMonitorScrapeJob_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *prometheusRpcClient) DeleteMonitorScrapeJob(ctx context.Context, in *DeleteMonitorScrapeJobRequest, opts ...grpc.CallOption) (*DeleteMonitorScrapeJobResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteMonitorScrapeJobResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_DeleteMonitorScrapeJob_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PrometheusRpcServer is the server API for PrometheusRpc service.
 // All implementations must embed UnimplementedPrometheusRpcServer
 // for forward compatibility.
@@ -93,6 +142,11 @@ type PrometheusRpcServer interface {
 	CreateMonitorAlertManagerPool(context.Context, *CreateMonitorAlertManagerPoolRequest) (*CreateMonitorAlertManagerPoolResponse, error)
 	UpdateMonitorAlertManagerPool(context.Context, *UpdateMonitorAlertManagerPoolRequest) (*UpdateMonitorAlertManagerPoolResponse, error)
 	DeleteMonitorAlertManagerPool(context.Context, *DeleteMonitorAlertManagerPoolRequest) (*DeleteMonitorAlertManagerPoolResponse, error)
+	// 采集任务
+	GetMonitorScrapeJobList(context.Context, *GetMonitorScrapeJobListRequest) (*GetMonitorScrapeJobListResponse, error)
+	CreateMonitorScrapeJob(context.Context, *CreateMonitorScrapeJobRequest) (*CreateMonitorScrapeJobResponse, error)
+	UpdateMonitorScrapeJob(context.Context, *UpdateMonitorScrapeJobRequest) (*UpdateMonitorScrapeJobResponse, error)
+	DeleteMonitorScrapeJob(context.Context, *DeleteMonitorScrapeJobRequest) (*DeleteMonitorScrapeJobResponse, error)
 	mustEmbedUnimplementedPrometheusRpcServer()
 }
 
@@ -114,6 +168,18 @@ func (UnimplementedPrometheusRpcServer) UpdateMonitorAlertManagerPool(context.Co
 }
 func (UnimplementedPrometheusRpcServer) DeleteMonitorAlertManagerPool(context.Context, *DeleteMonitorAlertManagerPoolRequest) (*DeleteMonitorAlertManagerPoolResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteMonitorAlertManagerPool not implemented")
+}
+func (UnimplementedPrometheusRpcServer) GetMonitorScrapeJobList(context.Context, *GetMonitorScrapeJobListRequest) (*GetMonitorScrapeJobListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMonitorScrapeJobList not implemented")
+}
+func (UnimplementedPrometheusRpcServer) CreateMonitorScrapeJob(context.Context, *CreateMonitorScrapeJobRequest) (*CreateMonitorScrapeJobResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMonitorScrapeJob not implemented")
+}
+func (UnimplementedPrometheusRpcServer) UpdateMonitorScrapeJob(context.Context, *UpdateMonitorScrapeJobRequest) (*UpdateMonitorScrapeJobResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMonitorScrapeJob not implemented")
+}
+func (UnimplementedPrometheusRpcServer) DeleteMonitorScrapeJob(context.Context, *DeleteMonitorScrapeJobRequest) (*DeleteMonitorScrapeJobResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteMonitorScrapeJob not implemented")
 }
 func (UnimplementedPrometheusRpcServer) mustEmbedUnimplementedPrometheusRpcServer() {}
 func (UnimplementedPrometheusRpcServer) testEmbeddedByValue()                       {}
@@ -208,6 +274,78 @@ func _PrometheusRpc_DeleteMonitorAlertManagerPool_Handler(srv interface{}, ctx c
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PrometheusRpc_GetMonitorScrapeJobList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMonitorScrapeJobListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).GetMonitorScrapeJobList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_GetMonitorScrapeJobList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).GetMonitorScrapeJobList(ctx, req.(*GetMonitorScrapeJobListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PrometheusRpc_CreateMonitorScrapeJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateMonitorScrapeJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).CreateMonitorScrapeJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_CreateMonitorScrapeJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).CreateMonitorScrapeJob(ctx, req.(*CreateMonitorScrapeJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PrometheusRpc_UpdateMonitorScrapeJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateMonitorScrapeJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).UpdateMonitorScrapeJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_UpdateMonitorScrapeJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).UpdateMonitorScrapeJob(ctx, req.(*UpdateMonitorScrapeJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PrometheusRpc_DeleteMonitorScrapeJob_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteMonitorScrapeJobRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).DeleteMonitorScrapeJob(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_DeleteMonitorScrapeJob_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).DeleteMonitorScrapeJob(ctx, req.(*DeleteMonitorScrapeJobRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PrometheusRpc_ServiceDesc is the grpc.ServiceDesc for PrometheusRpc service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -230,6 +368,22 @@ var PrometheusRpc_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "DeleteMonitorAlertManagerPool",
 			Handler:    _PrometheusRpc_DeleteMonitorAlertManagerPool_Handler,
+		},
+		{
+			MethodName: "GetMonitorScrapeJobList",
+			Handler:    _PrometheusRpc_GetMonitorScrapeJobList_Handler,
+		},
+		{
+			MethodName: "CreateMonitorScrapeJob",
+			Handler:    _PrometheusRpc_CreateMonitorScrapeJob_Handler,
+		},
+		{
+			MethodName: "UpdateMonitorScrapeJob",
+			Handler:    _PrometheusRpc_UpdateMonitorScrapeJob_Handler,
+		},
+		{
+			MethodName: "DeleteMonitorScrapeJob",
+			Handler:    _PrometheusRpc_DeleteMonitorScrapeJob_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

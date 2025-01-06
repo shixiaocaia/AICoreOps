@@ -1,5 +1,6 @@
 package model
 
+// MonitorAlertManagerPool 采集池
 type MonitorAlertManagerPool struct {
 	ID                    int        `json:"id" gorm:"primaryKey;autoIncrement;comment:主键ID"`
 	Name                  string     `json:"name" binding:"required,min=1,max=50" gorm:"uniqueIndex;size:100;comment:AlertManager实例名称，支持使用通配符*进行模糊搜索"`

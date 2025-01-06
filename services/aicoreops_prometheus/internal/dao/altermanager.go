@@ -19,6 +19,10 @@ func NewAltermanagerDao(db *gorm.DB) *AltermanagerDao {
 }
 
 func (d *AltermanagerDao) CreateMonitorAlertmanagerPool(ctx context.Context, pool *model.MonitorAlertManagerPool) error {
+	if pool == nil {
+		return errors.New("pool 不能为空")
+	}
+
 	return d.db.WithContext(ctx).Create(pool).Error
 }
 

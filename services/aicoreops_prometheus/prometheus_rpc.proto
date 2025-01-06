@@ -9,6 +9,26 @@ service Prometheus_rpc {
   rpc CreateMonitorAlertManagerPool(CreateMonitorAlertManagerPoolRequest) returns(CreateMonitorAlertManagerPoolResponse);
   rpc UpdateMonitorAlertManagerPool(UpdateMonitorAlertManagerPoolRequest) returns(UpdateMonitorAlertManagerPoolResponse);
   rpc DeleteMonitorAlertManagerPool(DeleteMonitorAlertManagerPoolRequest) returns(DeleteMonitorAlertManagerPoolResponse);
+
+  // 采集任务
+  rpc GetMonitorScrapeJobList(GetMonitorScrapeJobListRequest) returns(GetMonitorScrapeJobListResponse);
+  rpc CreateMonitorScrapeJob(CreateMonitorScrapeJobRequest) returns(CreateMonitorScrapeJobResponse);
+  rpc UpdateMonitorScrapeJob(UpdateMonitorScrapeJobRequest) returns(UpdateMonitorScrapeJobResponse);
+  rpc DeleteMonitorScrapeJob(DeleteMonitorScrapeJobRequest) returns(DeleteMonitorScrapeJobResponse);
+
+  // alertmanager 告警池
+
+  // 告警规则
+
+  // 告警事件
+
+  // 预聚合
+
+  // 配置文件
+
+  // 值班组
+
+  // 发送组
 }
 
 message AlertmanagerPool {
@@ -26,7 +46,6 @@ message AlertmanagerPool {
 
 
 // Alertmanager 相关接口
-
 message GetAlertmanagerPoolListRequest {
 }
 
@@ -59,6 +78,66 @@ message DeleteMonitorAlertManagerPoolRequest {
 }
 
 message DeleteMonitorAlertManagerPoolResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// 采集任务
+message ScrapeJob {
+  int64 id = 1;
+  string name = 2;
+  int64 user_id = 3;
+  int32 enable = 4;
+  string service_discovery_type = 5;
+  string metrics_path = 6;
+  string scheme = 7;
+  int32 scrape_interval = 8;
+  int32 scrape_timeout = 9;
+  int64 pool_id = 10;
+  string relabel_configs_yaml_string = 11;
+  int32 refresh_interval = 12;
+  int32 port = 13;
+  repeated int64 tree_node_ids = 14;
+  string kube_config_file_path = 15;
+  string tls_ca_file_path = 16;
+  string tls_ca_content = 17;
+  string bearer_token = 18;
+  string bearer_token_file = 19;
+  string kubernetes_sd_role = 20;
+}
+
+message GetMonitorScrapeJobListRequest {
+}
+
+message GetMonitorScrapeJobListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated ScrapeJob data = 3;
+}
+
+message CreateMonitorScrapeJobRequest {
+  ScrapeJob job = 1;
+}
+
+message CreateMonitorScrapeJobResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message UpdateMonitorScrapeJobRequest {
+  ScrapeJob job = 1;
+}
+
+message UpdateMonitorScrapeJobResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message DeleteMonitorScrapeJobRequest {
+  int64 id = 1;
+}
+
+message DeleteMonitorScrapeJobResponse {
   int32 code = 1;
   string message = 2;
 }
