@@ -12,4 +12,5 @@ type MonitorScrapeJobRepo interface {
 	UpdateMonitorScrapeJob(ctx context.Context, job *model.MonitorScrapeJob) error
 	DeleteMonitorScrapeJob(ctx context.Context, id int64) error
 	SearchMonitorScrapeJobByName(ctx context.Context, name string) ([]*model.MonitorScrapeJob, error)
+	SearchMonitorScrapeJobByID(ctx context.Context, id int64) ([]*model.MonitorScrapeJob, error)
 }

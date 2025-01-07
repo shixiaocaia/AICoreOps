@@ -5,6 +5,7 @@ go 1.22
 toolchain go1.23.4
 
 require (
+	github.com/redis/go-redis/v9 v9.7.0
 	github.com/zeromicro/go-zero v1.7.6
 	google.golang.org/grpc v1.69.2
 	google.golang.org/protobuf v1.36.1
@@ -55,7 +56,6 @@ require (
 	github.com/prometheus/client_model v0.6.1 // indirect
 	github.com/prometheus/common v0.55.0 // indirect
 	github.com/prometheus/procfs v0.15.1 // indirect
-	github.com/redis/go-redis/v9 v9.7.0 // indirect
 	github.com/spaolacci/murmur3 v1.1.0 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.15 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.15 // indirect

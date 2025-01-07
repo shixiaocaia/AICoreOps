@@ -19,6 +19,10 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
+	PrometheusRpc_GetMonitorScrapePoolList_FullMethodName       = "/prometheus_rpc.Prometheus_rpc/GetMonitorScrapePoolList"
+	PrometheusRpc_CreateMonitorScrapePool_FullMethodName        = "/prometheus_rpc.Prometheus_rpc/CreateMonitorScrapePool"
+	PrometheusRpc_UpdateMonitorScrapePool_FullMethodName        = "/prometheus_rpc.Prometheus_rpc/UpdateMonitorScrapePool"
+	PrometheusRpc_DeleteMonitorScrapePool_FullMethodName        = "/prometheus_rpc.Prometheus_rpc/DeleteMonitorScrapePool"
 	PrometheusRpc_GetMonitorAlertmanagerPoolList_FullMethodName = "/prometheus_rpc.Prometheus_rpc/GetMonitorAlertmanagerPoolList"
 	PrometheusRpc_CreateMonitorAlertManagerPool_FullMethodName  = "/prometheus_rpc.Prometheus_rpc/CreateMonitorAlertManagerPool"
 	PrometheusRpc_UpdateMonitorAlertManagerPool_FullMethodName  = "/prometheus_rpc.Prometheus_rpc/UpdateMonitorAlertManagerPool"
@@ -33,7 +37,12 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type PrometheusRpcClient interface {
-	// Alertmanager 相关接口
+	// 采集池
+	GetMonitorScrapePoolList(ctx context.Context, in *GetMonitorScrapePoolListRequest, opts ...grpc.CallOption) (*GetMonitorScrapePoolListResponse, error)
+	CreateMonitorScrapePool(ctx context.Context, in *CreateMonitorScrapePoolRequest, opts ...grpc.CallOption) (*CreateMonitorScrapePoolResponse, error)
+	UpdateMonitorScrapePool(ctx context.Context, in *UpdateMonitorScrapePoolRequest, opts ...grpc.CallOption) (*UpdateMonitorScrapePoolResponse, error)
+	DeleteMonitorScrapePool(ctx context.Context, in *DeleteMonitorScrapePoolRequest, opts ...grpc.CallOption) (*DeleteMonitorScrapePoolResponse, error)
+	// Alertmanager
 	GetMonitorAlertmanagerPoolList(ctx context.Context, in *GetAlertmanagerPoolListRequest, opts ...grpc.CallOption) (*GetAlertmanagerPoolListResponse, error)
 	CreateMonitorAlertManagerPool(ctx context.Context, in *CreateMonitorAlertManagerPoolRequest, opts ...grpc.CallOption) (*CreateMonitorAlertManagerPoolResponse, error)
 	UpdateMonitorAlertManagerPool(ctx context.Context, in *UpdateMonitorAlertManagerPoolRequest, opts ...grpc.CallOption) (*UpdateMonitorAlertManagerPoolResponse, error)
@@ -51,6 +60,46 @@ type prometheusRpcClient struct {
 
 func NewPrometheusRpcClient(cc grpc.ClientConnInterface) PrometheusRpcClient {
 	return &prometheusRpcClient{cc}
+}
+
+func (c *prometheusRpcClient) GetMonitorScrapePoolList(ctx context.Context, in *GetMonitorScrapePoolListRequest, opts ...grpc.CallOption) (*GetMonitorScrapePoolListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetMonitorScrapePoolListResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_GetMonitorScrapePoolList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *prometheusRpcClient) CreateMonitorScrapePool(ctx context.Context, in *CreateMonitorScrapePoolRequest, opts ...grpc.CallOption) (*CreateMonitorScrapePoolResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateMonitorScrapePoolResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_CreateMonitorScrapePool_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *prometheusRpcClient) UpdateMonitorScrapePool(ctx context.Context, in *UpdateMonitorScrapePoolRequest, opts ...grpc.CallOption) (*UpdateMonitorScrapePoolResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateMonitorScrapePoolResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_UpdateMonitorScrapePool_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *prometheusRpcClient) DeleteMonitorScrapePool(ctx context.Context, in *DeleteMonitorScrapePoolRequest, opts ...grpc.CallOption) (*DeleteMonitorScrapePoolResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteMonitorScrapePoolResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_DeleteMonitorScrapePool_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
 func (c *prometheusRpcClient) GetMonitorAlertmanagerPoolList(ctx context.Context, in *GetAlertmanagerPoolListRequest, opts ...grpc.CallOption) (*GetAlertmanagerPoolListResponse, error) {
@@ -137,7 +186,12 @@ func (c *prometheusRpcClient) DeleteMonitorScrapeJob(ctx context.Context, in *De
 // All implementations must embed UnimplementedPrometheusRpcServer
 // for forward compatibility.
 type PrometheusRpcServer interface {
-	// Alertmanager 相关接口
+	// 采集池
+	GetMonitorScrapePoolList(context.Context, *GetMonitorScrapePoolListRequest) (*GetMonitorScrapePoolListResponse, error)
+	CreateMonitorScrapePool(context.Context, *CreateMonitorScrapePoolRequest) (*CreateMonitorScrapePoolResponse, error)
+	UpdateMonitorScrapePool(context.Context, *UpdateMonitorScrapePoolRequest) (*UpdateMonitorScrapePoolResponse, error)
+	DeleteMonitorScrapePool(context.Context, *DeleteMonitorScrapePoolRequest) (*DeleteMonitorScrapePoolResponse, error)
+	// Alertmanager
 	GetMonitorAlertmanagerPoolList(context.Context, *GetAlertmanagerPoolListRequest) (*GetAlertmanagerPoolListResponse, error)
 	CreateMonitorAlertManagerPool(context.Context, *CreateMonitorAlertManagerPoolRequest) (*CreateMonitorAlertManagerPoolResponse, error)
 	UpdateMonitorAlertManagerPool(context.Context, *UpdateMonitorAlertManagerPoolRequest) (*UpdateMonitorAlertManagerPoolResponse, error)
@@ -157,6 +211,18 @@ type PrometheusRpcServer interface {
 // pointer dereference when methods are called.
 type UnimplementedPrometheusRpcServer struct{}
 
+func (UnimplementedPrometheusRpcServer) GetMonitorScrapePoolList(context.Context, *GetMonitorScrapePoolListRequest) (*GetMonitorScrapePoolListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetMonitorScrapePoolList not implemented")
+}
+func (UnimplementedPrometheusRpcServer) CreateMonitorScrapePool(context.Context, *CreateMonitorScrapePoolRequest) (*CreateMonitorScrapePoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateMonitorScrapePool not implemented")
+}
+func (UnimplementedPrometheusRpcServer) UpdateMonitorScrapePool(context.Context, *UpdateMonitorScrapePoolRequest) (*UpdateMonitorScrapePoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateMonitorScrapePool not implemented")
+}
+func (UnimplementedPrometheusRpcServer) DeleteMonitorScrapePool(context.Context, *DeleteMonitorScrapePoolRequest) (*DeleteMonitorScrapePoolResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteMonitorScrapePool not implemented")
+}
 func (UnimplementedPrometheusRpcServer) GetMonitorAlertmanagerPoolList(context.Context, *GetAlertmanagerPoolListRequest) (*GetAlertmanagerPoolListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetMonitorAlertmanagerPoolList not implemented")
 }
@@ -200,6 +266,78 @@ func RegisterPrometheusRpcServer(s grpc.ServiceRegistrar, srv PrometheusRpcServe
 		t.testEmbeddedByValue()
 	}
 	s.RegisterService(&PrometheusRpc_ServiceDesc, srv)
+}
+
+func _PrometheusRpc_GetMonitorScrapePoolList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetMonitorScrapePoolListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).GetMonitorScrapePoolList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_GetMonitorScrapePoolList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).GetMonitorScrapePoolList(ctx, req.(*GetMonitorScrapePoolListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PrometheusRpc_CreateMonitorScrapePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateMonitorScrapePoolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).CreateMonitorScrapePool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_CreateMonitorScrapePool_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).CreateMonitorScrapePool(ctx, req.(*CreateMonitorScrapePoolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PrometheusRpc_UpdateMonitorScrapePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateMonitorScrapePoolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).UpdateMonitorScrapePool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_UpdateMonitorScrapePool_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).UpdateMonitorScrapePool(ctx, req.(*UpdateMonitorScrapePoolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PrometheusRpc_DeleteMonitorScrapePool_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteMonitorScrapePoolRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).DeleteMonitorScrapePool(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_DeleteMonitorScrapePool_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).DeleteMonitorScrapePool(ctx, req.(*DeleteMonitorScrapePoolRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
 func _PrometheusRpc_GetMonitorAlertmanagerPoolList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
@@ -353,6 +491,22 @@ var PrometheusRpc_ServiceDesc = grpc.ServiceDesc{
 	ServiceName: "prometheus_rpc.Prometheus_rpc",
 	HandlerType: (*PrometheusRpcServer)(nil),
 	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "GetMonitorScrapePoolList",
+			Handler:    _PrometheusRpc_GetMonitorScrapePoolList_Handler,
+		},
+		{
+			MethodName: "CreateMonitorScrapePool",
+			Handler:    _PrometheusRpc_CreateMonitorScrapePool_Handler,
+		},
+		{
+			MethodName: "UpdateMonitorScrapePool",
+			Handler:    _PrometheusRpc_UpdateMonitorScrapePool_Handler,
+		},
+		{
+			MethodName: "DeleteMonitorScrapePool",
+			Handler:    _PrometheusRpc_DeleteMonitorScrapePool_Handler,
+		},
 		{
 			MethodName: "GetMonitorAlertmanagerPoolList",
 			Handler:    _PrometheusRpc_GetMonitorAlertmanagerPoolList_Handler,

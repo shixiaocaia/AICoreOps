@@ -35,7 +35,7 @@ func (s *ScrapeJobLogic) GetMonitorScrapeJobList(ctx context.Context) (*types.Ge
 	return &types.GetMonitorScrapeJobListResponse{
 		Code:    0,
 		Message: "获取 ScrapeJob 列表成功",
-		Data:    s.domain.BuildMonitorScrapeJobRespModel(jobs),
+		Data:    s.domain.BuildScrapeJobRespModel(jobs),
 	}, nil
 }
 

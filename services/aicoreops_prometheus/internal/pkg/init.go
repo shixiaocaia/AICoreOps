@@ -26,7 +26,8 @@ import (
 
 func InitTables(db *gorm.DB) error {
 	return db.AutoMigrate(
-		model.MonitorAlertManagerPool{},
+		model.MonitorScrapePool{},
 		model.MonitorScrapeJob{},
+		model.MonitorAlertManagerPool{},
 	)
 }

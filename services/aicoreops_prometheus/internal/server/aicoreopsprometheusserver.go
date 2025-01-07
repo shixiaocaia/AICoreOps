@@ -19,6 +19,27 @@ func NewAicoreopsPrometheusServer(svcCtx *svc.ServiceContext) *AicoreopsPromethe
 	}
 }
 
+// ScrapePool
+func (s *AicoreopsPrometheusServer) GetMonitorScrapePoolList(ctx context.Context, req *types.GetMonitorScrapePoolListRequest) (*types.GetMonitorScrapePoolListResponse, error) {
+	l := logic.NewScrapePoolLogic(ctx, s.svcCtx)
+	return l.GetMonitorScrapePoolList(req)
+}
+
+func (s *AicoreopsPrometheusServer) CreateMonitorScrapePool(ctx context.Context, req *types.CreateMonitorScrapePoolRequest) (*types.CreateMonitorScrapePoolResponse, error) {
+	l := logic.NewScrapePoolLogic(ctx, s.svcCtx)
+	return l.CreateMonitorScrapePool(req)
+}
+
+func (s *AicoreopsPrometheusServer) UpdateMonitorScrapePool(ctx context.Context, req *types.UpdateMonitorScrapePoolRequest) (*types.UpdateMonitorScrapePoolResponse, error) {
+	l := logic.NewScrapePoolLogic(ctx, s.svcCtx)
+	return l.UpdateMonitorScrapePool(req)
+}
+
+func (s *AicoreopsPrometheusServer) DeleteMonitorScrapePool(ctx context.Context, req *types.DeleteMonitorScrapePoolRequest) (*types.DeleteMonitorScrapePoolResponse, error) {
+	l := logic.NewScrapePoolLogic(ctx, s.svcCtx)
+	return l.DeleteMonitorScrapePool(req)
+}
+
 // Alertmanager
 func (s *AicoreopsPrometheusServer) CreateMonitorAlertManagerPool(ctx context.Context, req *types.CreateMonitorAlertManagerPoolRequest) (*types.CreateMonitorAlertManagerPoolResponse, error) {
 	l := logic.NewAlertmanagerLogic(ctx, s.svcCtx)

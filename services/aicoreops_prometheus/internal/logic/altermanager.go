@@ -35,7 +35,7 @@ func (a *AlertmanagerLogic) GetMonitorAlertmanagerPoolList(ctx context.Context) 
 	return &types.GetAlertmanagerPoolListResponse{
 		Code:    0,
 		Message: "获取 Alertmanager 集群池列表成功",
-		Data:    a.domain.BuildMonitorAlertmanagerPoolRespModel(pools),
+		Data:    a.domain.BuildAlertmanagerPoolRespModel(pools),
 	}, nil
 }
 

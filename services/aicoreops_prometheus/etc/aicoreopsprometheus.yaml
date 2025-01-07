@@ -5,3 +5,4 @@ Etcd:
   - 127.0.0.1:2379
   Key: aicoreopsprometheus.rpc
 Mysql: "root:root@tcp(localhost:3306)/AICoreOps?charset=utf8mb4&parseTime=True&loc=Local"
+XRedis: "127.0.0.1:6379"

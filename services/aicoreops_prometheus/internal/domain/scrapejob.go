@@ -18,7 +18,7 @@ type ScrapeJobDomain struct {
 
 func NewScrapeJobDomain(svcCtx *svc.ServiceContext) *ScrapeJobDomain {
 	return &ScrapeJobDomain{
-		repo: dao.NewScrapeJobDao(svcCtx.DB),
+		repo: dao.NewMonitorScrapeJobDAO(svcCtx.DB),
 	}
 }
 
@@ -48,7 +48,6 @@ func (d *ScrapeJobDomain) DeleteMonitorScrapeJob(ctx context.Context, id int64) 
 }
 
 func (d *ScrapeJobDomain) BuildMonitorScrapeJobModel(job *types.ScrapeJob) *model.MonitorScrapeJob {
-	// 将 tree_node_ids 转换为 JSON 字符串
 	treeNodeIDsJSON, _ := json.Marshal(job.TreeNodeIds)
 
 	return &model.MonitorScrapeJob{
@@ -75,10 +74,9 @@ func (d *ScrapeJobDomain) BuildMonitorScrapeJobModel(job *types.ScrapeJob) *mode
 	}
 }
 
-func (d *ScrapeJobDomain) BuildMonitorScrapeJobRespModel(jobs []*model.MonitorScrapeJob) []*types.ScrapeJob {
+func (d *ScrapeJobDomain) BuildScrapeJobRespModel(jobs []*model.MonitorScrapeJob) []*types.ScrapeJob {
 	var result []*types.ScrapeJob
 	for _, job := range jobs {
-		// 将 JSON 字符串转换为 []int64
 		var treeNodeIDs []int64
 		_ = json.Unmarshal([]byte(job.TreeNodeIDs), &treeNodeIDs)
 

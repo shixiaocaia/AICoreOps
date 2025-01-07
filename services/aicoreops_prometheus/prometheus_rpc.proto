@@ -4,7 +4,14 @@ package prometheus_rpc;
 option go_package="./types";
 
 service Prometheus_rpc {
-  // Alertmanager 相关接口
+  // 采集池
+  rpc GetMonitorScrapePoolList(GetMonitorScrapePoolListRequest) returns(GetMonitorScrapePoolListResponse);
+  rpc CreateMonitorScrapePool(CreateMonitorScrapePoolRequest) returns(CreateMonitorScrapePoolResponse);
+  rpc UpdateMonitorScrapePool(UpdateMonitorScrapePoolRequest) returns(UpdateMonitorScrapePoolResponse);
+  rpc DeleteMonitorScrapePool(DeleteMonitorScrapePoolRequest) returns(DeleteMonitorScrapePoolResponse);
+  
+
+  // Alertmanager
   rpc GetMonitorAlertmanagerPoolList(GetAlertmanagerPoolListRequest) returns(GetAlertmanagerPoolListResponse);
   rpc CreateMonitorAlertManagerPool(CreateMonitorAlertManagerPoolRequest) returns(CreateMonitorAlertManagerPoolResponse);
   rpc UpdateMonitorAlertManagerPool(UpdateMonitorAlertManagerPoolRequest) returns(UpdateMonitorAlertManagerPoolResponse);
@@ -31,6 +38,63 @@ service Prometheus_rpc {
   // 发送组
 }
 
+// 采集池相关接口
+message ScrapePool {
+  int64 id = 1;
+  string name = 2;
+  repeated string prometheus_instances = 3;
+  repeated string alertmanager_instances = 4;
+  int64 user_id = 5;
+  int32 scrape_interval = 6;
+  int32 scrape_timeout = 7;
+  repeated string external_labels = 8;
+  int32 support_alert = 9;
+  int32 support_record = 10;
+  string remote_read_url = 11;
+  string alertmanager_url = 12;
+  string rule_file_path = 13;
+  string record_file_path = 14;
+  string remote_write_url = 15;
+  int32 remote_timeout_seconds = 16;
+}
+
+message GetMonitorScrapePoolListRequest {
+}
+
+message GetMonitorScrapePoolListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated ScrapePool data = 3;
+}
+
+message CreateMonitorScrapePoolRequest {
+  ScrapePool pool = 1;
+}
+
+message CreateMonitorScrapePoolResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message UpdateMonitorScrapePoolRequest {
+  ScrapePool pool = 1;
+}
+
+message UpdateMonitorScrapePoolResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message DeleteMonitorScrapePoolRequest {
+  int64 id = 1;
+}
+
+message DeleteMonitorScrapePoolResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// Alertmanager 相关接口
 message AlertmanagerPool {
   int64 id = 1;
   string name = 2;
@@ -44,8 +108,6 @@ message AlertmanagerPool {
   string receiver = 10;
 }
 
-
-// Alertmanager 相关接口
 message GetAlertmanagerPoolListRequest {
 }
 

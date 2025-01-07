@@ -77,9 +77,7 @@ func (a *AltermanagerDomain) checkAlertmanagerIpExist(ctx context.Context, poolI
 			continue
 		}
 
-		for _, ip := range pool.AlertManagerInstances {
-			existIps = append(existIps, ip)
-		}
+		existIps = append(existIps, pool.AlertManagerInstances...)
 	}
 
 	for _, i := range ip {
@@ -105,7 +103,7 @@ func (a *AltermanagerDomain) BuildMonitorAlertmanagerPoolModel(pool *types.Alert
 	}
 }
 
-func (a *AltermanagerDomain) BuildMonitorAlertmanagerPoolRespModel(pools []*model.MonitorAlertManagerPool) []*types.AlertmanagerPool {
+func (a *AltermanagerDomain) BuildAlertmanagerPoolRespModel(pools []*model.MonitorAlertManagerPool) []*types.AlertmanagerPool {
 	list := make([]*types.AlertmanagerPool, 0)
 	for _, pool := range pools {
 		list = append(list, &types.AlertmanagerPool{
