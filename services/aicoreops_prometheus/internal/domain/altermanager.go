@@ -65,7 +65,7 @@ func (a *AltermanagerDomain) DeleteMonitorAlertmanagerPool(ctx context.Context, 
 	return a.repo.DeleteMonitorAlertmanagerPool(ctx, poolId)
 }
 
-func (a *AltermanagerDomain) checkAlertmanagerIpExist(ctx context.Context, poolId int, ip []string) (bool, error) {
+func (a *AltermanagerDomain) checkAlertmanagerIpExist(ctx context.Context, poolId int64, ip []string) (bool, error) {
 	pools, err := a.repo.GetMonitorAlertmanagerPoolList(ctx)
 	if err != nil {
 		return false, err
@@ -90,10 +90,10 @@ func (a *AltermanagerDomain) checkAlertmanagerIpExist(ctx context.Context, poolI
 
 func (a *AltermanagerDomain) BuildMonitorAlertmanagerPoolModel(pool *types.AlertmanagerPool) *model.MonitorAlertManagerPool {
 	return &model.MonitorAlertManagerPool{
-		ID:                    int(pool.Id),
+		ID:                    pool.Id,
 		Name:                  pool.Name,
 		AlertManagerInstances: pool.AlertmanagerInstances,
-		UserID:                int(pool.UserId),
+		UserID:                pool.UserId,
 		ResolveTimeout:        pool.ResolveTimeout,
 		GroupWait:             pool.GroupWait,
 		GroupInterval:         pool.GroupInterval,

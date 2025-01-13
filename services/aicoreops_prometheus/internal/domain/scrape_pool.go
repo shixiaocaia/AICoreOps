@@ -117,22 +117,22 @@ func (d *MonitorScrapePoolDomain) BuildScrapePoolRespModel(pools []*model.Monito
 	var data []*types.ScrapePool
 	for _, pool := range pools {
 		data = append(data, &types.ScrapePool{
-			Id:                    int64(pool.ID),
+			Id:                    pool.ID,
 			Name:                  pool.Name,
 			PrometheusInstances:   pool.PrometheusInstances,
 			AlertmanagerInstances: pool.AlertManagerInstances,
-			UserId:                int64(pool.UserID),
-			ScrapeInterval:        int32(pool.ScrapeInterval),
-			ScrapeTimeout:         int32(pool.ScrapeTimeout),
+			UserId:                pool.UserID,
+			ScrapeInterval:        pool.ScrapeInterval,
+			ScrapeTimeout:         pool.ScrapeTimeout,
 			ExternalLabels:        pool.ExternalLabels,
-			SupportAlert:          int32(pool.SupportAlert),
-			SupportRecord:         int32(pool.SupportRecord),
+			SupportAlert:          pool.SupportAlert,
+			SupportRecord:         pool.SupportRecord,
 			RemoteReadUrl:         pool.RemoteReadUrl,
 			AlertmanagerUrl:       pool.AlertManagerUrl,
 			RuleFilePath:          pool.RuleFilePath,
 			RecordFilePath:        pool.RecordFilePath,
 			RemoteWriteUrl:        pool.RemoteWriteUrl,
-			RemoteTimeoutSeconds:  int32(pool.RemoteTimeoutSeconds),
+			RemoteTimeoutSeconds:  pool.RemoteTimeoutSeconds,
 		})
 	}
 	return data
@@ -144,17 +144,17 @@ func BuildMonitorScrapePoolModel(pool *types.ScrapePool) *model.MonitorScrapePoo
 		Name:                  pool.Name,
 		PrometheusInstances:   pool.PrometheusInstances,
 		AlertManagerInstances: pool.AlertmanagerInstances,
-		UserID:                int(pool.UserId),
-		ScrapeInterval:        int(pool.ScrapeInterval),
-		ScrapeTimeout:         int(pool.ScrapeTimeout),
+		UserID:                pool.UserId,
+		ScrapeInterval:        pool.ScrapeInterval,
+		ScrapeTimeout:         pool.ScrapeTimeout,
 		ExternalLabels:        pool.ExternalLabels,
-		SupportAlert:          int(pool.SupportAlert),
-		SupportRecord:         int(pool.SupportRecord),
+		SupportAlert:          pool.SupportAlert,
+		SupportRecord:         pool.SupportRecord,
 		RemoteReadUrl:         pool.RemoteReadUrl,
 		AlertManagerUrl:       pool.AlertmanagerUrl,
 		RuleFilePath:          pool.RuleFilePath,
 		RecordFilePath:        pool.RecordFilePath,
 		RemoteWriteUrl:        pool.RemoteWriteUrl,
-		RemoteTimeoutSeconds:  int(pool.RemoteTimeoutSeconds),
+		RemoteTimeoutSeconds:  pool.RemoteTimeoutSeconds,
 	}
 }

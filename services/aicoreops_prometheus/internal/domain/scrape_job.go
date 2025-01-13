@@ -2,8 +2,8 @@ package domain
 
 import (
 	"context"
-	"encoding/json"
 	"errors"
+	"strconv"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/dao"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/model"
@@ -48,8 +48,10 @@ func (d *ScrapeJobDomain) DeleteMonitorScrapeJob(ctx context.Context, id int64) 
 }
 
 func (d *ScrapeJobDomain) BuildMonitorScrapeJobModel(job *types.ScrapeJob) *model.MonitorScrapeJob {
-	treeNodeIDsJSON, _ := json.Marshal(job.TreeNodeIds)
-
+	ids := make([]string, len(job.TreeNodeIds))
+	for i, id := range job.TreeNodeIds {
+		ids[i] = strconv.FormatInt(id, 10)
+	}
 	return &model.MonitorScrapeJob{
 		ID:                       job.Id,
 		Name:                     job.Name,
@@ -64,7 +66,7 @@ func (d *ScrapeJobDomain) BuildMonitorScrapeJobModel(job *types.ScrapeJob) *mode
 		RelabelConfigsYamlString: job.RelabelConfigsYamlString,
 		RefreshInterval:          job.RefreshInterval,
 		Port:                     job.Port,
-		TreeNodeIDs:              string(treeNodeIDsJSON),
+		TreeNodeIDs:              model.StringList(ids),
 		KubeConfigFilePath:       job.KubeConfigFilePath,
 		TlsCaFilePath:            job.TlsCaFilePath,
 		TlsCaContent:             job.TlsCaContent,
@@ -77,9 +79,10 @@ func (d *ScrapeJobDomain) BuildMonitorScrapeJobModel(job *types.ScrapeJob) *mode
 func (d *ScrapeJobDomain) BuildScrapeJobRespModel(jobs []*model.MonitorScrapeJob) []*types.ScrapeJob {
 	var result []*types.ScrapeJob
 	for _, job := range jobs {
-		var treeNodeIDs []int64
-		_ = json.Unmarshal([]byte(job.TreeNodeIDs), &treeNodeIDs)
-
+		ids := make([]int64, len(job.TreeNodeIDs))
+		for i, id := range job.TreeNodeIDs {
+			ids[i], _ = strconv.ParseInt(id, 10, 64)
+		}
 		result = append(result, &types.ScrapeJob{
 			Id:                       job.ID,
 			Name:                     job.Name,
@@ -94,7 +97,7 @@ func (d *ScrapeJobDomain) BuildScrapeJobRespModel(jobs []*model.MonitorScrapeJob
 			RelabelConfigsYamlString: job.RelabelConfigsYamlString,
 			RefreshInterval:          job.RefreshInterval,
 			Port:                     job.Port,
-			TreeNodeIds:              treeNodeIDs,
+			TreeNodeIds:              ids,
 			KubeConfigFilePath:       job.KubeConfigFilePath,
 			TlsCaFilePath:            job.TlsCaFilePath,
 			TlsCaContent:             job.TlsCaContent,
