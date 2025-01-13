@@ -22,9 +22,9 @@ type MonitorScrapeJob struct {
 	BearerToken              string     `gorm:"column:bearer_token;type:text;comment:Bearer Token"`
 	BearerTokenFile          string     `gorm:"column:bearer_token_file;type:varchar(255);comment:Bearer Token文件路径"`
 	KubernetesSdRole         string     `gorm:"column:kubernetes_sd_role;type:varchar(50);comment:k8s服务发现角色"`
-	CreatedAt                int64      `gorm:"column:created_at;type:timestamp;not null;default:CURRENT_TIMESTAMP"`
-	UpdatedAt                int64      `gorm:"column:updated_at;type:timestamp;not null;default:CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"`
-	IsDeleted                int32      `gorm:"column:is_deleted;type:tinyint;default:0;comment:软删除标志 0:否 1:是"`
+	CreateTime               int64      `gorm:"column:create_time;type:int;autoCreateTime" json:"create_time"` // 创建时间
+	UpdateTime               int64      `gorm:"column:update_time;type:int;autoUpdateTime" json:"update_time"` // 更新时间
+	IsDeleted                int        `gorm:"column:is_deleted;type:tinyint;default:0" json:"is_deleted"`    // 软删除标志（0:否, 1:是）
 
 	TreeNodeNames  []string `json:"treeNodeNames,omitempty" gorm:"-"`
 	CreateUserName string   `json:"createUserName,omitempty" gorm:"-"`

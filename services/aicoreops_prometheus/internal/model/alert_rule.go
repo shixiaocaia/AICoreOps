@@ -15,6 +15,9 @@ type MonitorAlertRule struct {
 	ForTime     string     `json:"forTime,omitempty" gorm:"size:50;comment:持续时间，达到此时间才触发告警"`
 	Labels      StringList `json:"labels,omitempty" gorm:"type:text;comment:标签组，格式为 key=v"`
 	Annotations StringList `json:"annotations,omitempty" gorm:"type:text;comment:注解，格式为 key=v"`
+	CreateTime  int64      `gorm:"column:create_time;type:int;autoCreateTime" json:"create_time"` // 创建时间
+	UpdateTime  int64      `gorm:"column:update_time;type:int;autoUpdateTime" json:"update_time"` // 更新时间
+	IsDeleted   int        `gorm:"column:is_deleted;type:tinyint;default:0" json:"is_deleted"`    // 软删除标志（0:否, 1:是）
 
 	// 前端使用字段
 	NodePath       string  `json:"nodePath,omitempty" gorm:"-"`

@@ -65,7 +65,9 @@ func NewPromConfigCache(ctx context.Context, db *gorm.DB, config *config.Config)
 }
 
 func (p *promConfigCache) GetPrometheusMainConfigByIP(ip string) string {
-	return ""
+	p.mu.RLock()
+	defer p.mu.RUnlock()
+	return p.PrometheusMainConfigMap[ip]
 }
 
 func (p *promConfigCache) GeneratePrometheusMainConfig(ctx context.Context) error {

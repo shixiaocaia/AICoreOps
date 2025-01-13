@@ -14,6 +14,9 @@ type MonitorAlertEvent struct {
 	SilenceID     string     `json:"silenceId,omitempty" gorm:"size:100;comment:AlertManager返回的静默ID"`
 	RenLingUserID int        `json:"renLingUserId" gorm:"comment:认领告警的用户ID"`
 	Labels        StringList `json:"labels,omitempty" gorm:"type:text;comment:标签组，格式为 key=v"`
+	CreateTime    int64      `gorm:"column:create_time;type:int;autoCreateTime" json:"create_time"` // 创建时间
+	UpdateTime    int64      `gorm:"column:update_time;type:int;autoUpdateTime" json:"update_time"` // 更新时间
+	IsDeleted     int        `gorm:"column:is_deleted;type:tinyint;default:0" json:"is_deleted"`    // 软删除标志（0:否, 1:是）
 
 	// 前端使用字段
 	Key           string            `json:"key" gorm:"-"`

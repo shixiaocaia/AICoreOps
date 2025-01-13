@@ -12,9 +12,9 @@ type MonitorAlertManagerPool struct {
 	RepeatInterval        string     `json:"repeatInterval,omitempty" gorm:"size:50;comment:默认重复发送时间"`
 	GroupBy               StringList `json:"groupBy,omitempty" gorm:"type:text;comment:分组的标签"`
 	Receiver              string     `json:"receiver,omitempty" gorm:"size:100;comment:兜底接收者"`
-	CreateTime            int64      `json:"createTime" gorm:"type:int;autoCreateTime;comment:创建时间"`
-	UpdateTime            int64      `json:"updateTime" gorm:"type:int;autoUpdateTime;comment:更新时间"`
-	IsDeleted             int32      `json:"isDeleted" gorm:"type:tinyint;default:0;comment:软删除标志 0:否 1:是"`
+	CreateTime            int64      `gorm:"column:create_time;type:int;autoCreateTime" json:"create_time"` // 创建时间
+	UpdateTime            int64      `gorm:"column:update_time;type:int;autoUpdateTime" json:"update_time"` // 更新时间
+	IsDeleted             int        `gorm:"column:is_deleted;type:tinyint;default:0" json:"is_deleted"`    // 软删除标志（0:否, 1:是）
 
 	// 前端使用字段
 	GroupByFront   string `json:"groupByFront,omitempty" gorm:"-"`
