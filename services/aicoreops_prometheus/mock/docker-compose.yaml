@@ -1,0 +1,47 @@
+services:
+  # 服务发现服务
+  sd-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.sd
+    container_name: sd-service
+    ports:
+      - "8888:8888"
+    networks:
+      - prom-network
+
+  # Prometheus 服务
+  prometheus:
+    build:
+      context: .
+      dockerfile: Dockerfile.prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    depends_on:
+      - sd-service
+    networks:
+      - prom-network
+
+  # 模拟的目标服务（提供 metrics）
+  target-service-1:
+    build:
+      context: .
+      dockerfile: Dockerfile.target
+    ports:
+      - "8081:9100"
+    networks:
+      - prom-network
+
+  target-service-2:
+    build:
+      context: .
+      dockerfile: Dockerfile.target
+    ports:
+      - "8082:9100"
+    networks:
+      - prom-network
+
+networks:
+  prom-network:
+    driver: bridge
