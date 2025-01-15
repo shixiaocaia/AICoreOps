@@ -64,3 +64,14 @@ func (d *MonitorScrapePoolDAO) SearchMonitorScrapePoolByName(ctx context.Context
 	}
 	return pools, nil
 }
+
+// CheckMonitorScrapePoolExist 检查采集池是否存在
+func (d *MonitorScrapePoolDAO) CheckMonitorScrapePoolExist(ctx context.Context, name string) (bool, error) {
+	var count int64
+	err := d.db.WithContext(ctx).Model(&model.MonitorScrapePool{}).Where("name = ?", name).Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+
+	return count > 0, nil
+}

@@ -17,7 +17,7 @@ services:
       dockerfile: Dockerfile.prometheus
     container_name: prometheus
     ports:
-      - "9090:9090"
+      - "9091:9090"
     depends_on:
       - sd-service
     networks:

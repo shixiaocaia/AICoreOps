@@ -13,4 +13,5 @@ type MonitorScrapePoolRepo interface {
 	UpdateMonitorScrapePool(ctx context.Context, pool *model.MonitorScrapePool) error
 	DeleteMonitorScrapePool(ctx context.Context, id int64) error
 	SearchMonitorScrapePoolByName(ctx context.Context, name string) ([]*model.MonitorScrapePool, error)
+	CheckMonitorScrapePoolExist(ctx context.Context, name string) (bool, error)
 }

@@ -2,7 +2,7 @@ package domain
 
 import (
 	"context"
-	"errors"
+	"fmt"
 	"slices"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/dao"
@@ -23,22 +23,19 @@ func NewAltermanagerDomain(ctx *svc.ServiceContext) *AltermanagerDomain {
 
 func (a *AltermanagerDomain) CreateMonitorAlertmanagerPool(ctx context.Context, pool *model.MonitorAlertManagerPool) error {
 	// 检查 AlertManagerPool是否存在
-	pools, err := a.repo.SearchMonitorAlertManagerPoolByName(ctx, pool.Name)
-	if err != nil {
-		return err
-	}
-	if len(pools) > 0 {
-		return errors.New("AlertmanagerPool 实例已存在")
-	}
-
-	// 检查 instances 是否存在
-	exist, err := a.checkAlertmanagerIpExist(ctx, pool.ID, pool.AlertManagerInstances)
+	exist, err := a.repo.CheckMonitorAlertmanagerPoolExist(ctx, pool.Name)
 	if err != nil {
 		return err
 	}
 	if exist {
-		return errors.New("instances 已存在其他 AlertmanagerPool 中")
+		return fmt.Errorf("AlertmanagerPool %s 已存在", pool.Name)
 	}
+
+	// 检查 instances 是否存在
+	if err := a.checkAlertmanagerIpExist(ctx, pool.ID, pool.AlertManagerInstances); err != nil {
+		return err
+	}
+
 	return a.repo.CreateMonitorAlertmanagerPool(ctx, pool)
 }
 
@@ -49,13 +46,18 @@ func (a *AltermanagerDomain) GetMonitorAlertmanagerPoolList(ctx context.Context,
 }
 
 func (a *AltermanagerDomain) UpdateMonitorAlertmanagerPool(ctx context.Context, pool *model.MonitorAlertManagerPool) error {
-	// 检查 instances 是否存在
-	exist, err := a.checkAlertmanagerIpExist(ctx, pool.ID, pool.AlertManagerInstances)
+	// 检查 AlertmanagerPool 是否存在
+	exist, err := a.repo.CheckMonitorAlertmanagerPoolExist(ctx, pool.Name)
 	if err != nil {
 		return err
 	}
-	if exist {
-		return errors.New("instances 已存在其他 AlertmanagerPool 中")
+	if !exist {
+		return fmt.Errorf("AlertmanagerPool %s 不存在", pool.Name)
+	}
+
+	// 检查 instances 是否存在
+	if err := a.checkAlertmanagerIpExist(ctx, pool.ID, pool.AlertManagerInstances); err != nil {
+		return err
 	}
 
 	return a.repo.UpdateMonitorAlertmanagerPool(ctx, pool)
@@ -65,27 +67,27 @@ func (a *AltermanagerDomain) DeleteMonitorAlertmanagerPool(ctx context.Context, 
 	return a.repo.DeleteMonitorAlertmanagerPool(ctx, poolId)
 }
 
-func (a *AltermanagerDomain) checkAlertmanagerIpExist(ctx context.Context, poolId int64, ip []string) (bool, error) {
+func (a *AltermanagerDomain) checkAlertmanagerIpExist(ctx context.Context, poolId int64, ip []string) error {
 	pools, err := a.repo.GetMonitorAlertmanagerPoolList(ctx)
 	if err != nil {
-		return false, err
+		return err
 	}
 
-	existIps := make([]string, 0)
+	ips := make([]string, 0)
 	for _, pool := range pools {
 		if pool.ID == poolId {
 			continue
 		}
 
-		existIps = append(existIps, pool.AlertManagerInstances...)
+		ips = append(ips, pool.AlertManagerInstances...)
 	}
 
 	for _, i := range ip {
-		if slices.Contains(existIps, i) {
-			return true, nil
+		if slices.Contains(ips, i) {
+			return fmt.Errorf("alertmanager 实例 %s 已存在", i)
 		}
 	}
-	return false, nil
+	return nil
 }
 
 func (a *AltermanagerDomain) BuildMonitorAlertmanagerPoolModel(pool *types.AlertmanagerPool) *model.MonitorAlertManagerPool {

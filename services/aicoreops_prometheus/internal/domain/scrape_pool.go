@@ -3,6 +3,7 @@ package domain
 import (
 	"context"
 	"errors"
+	"fmt"
 	"slices"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/dao"
@@ -29,41 +30,36 @@ func (d *MonitorScrapePoolDomain) GetMonitorScrapePoolList(ctx context.Context) 
 }
 
 func (d *MonitorScrapePoolDomain) CreateMonitorScrapePool(ctx context.Context, pool *model.MonitorScrapePool) error {
-	pools, err := d.repo.SearchMonitorScrapePoolByName(ctx, pool.Name)
+	// 检查采集池是否存在
+	exist, err := d.repo.CheckMonitorScrapePoolExist(ctx, pool.Name)
 	if err != nil {
 		return err
 	}
-
-	if len(pools) > 0 {
-		return errors.New("采集池已存在")
+	if exist {
+		return fmt.Errorf("采集池 %s 已存在", pool.Name)
 	}
 
 	// 检查实例是否存在
-	exist, err := d.checkInstanceExist(ctx, pool.ID, pool.PrometheusInstances, pool.AlertManagerInstances)
-	if err != nil {
+	if err = d.checkInstanceExist(ctx, pool.ID, pool.PrometheusInstances, pool.AlertManagerInstances); err != nil {
 		return err
-	}
-	if exist == 1 {
-		return errors.New("prometheus 实例已存在")
-	}
-	if exist == 2 {
-		return errors.New("alertmanager 实例已存在")
 	}
 
 	return d.repo.CreateMonitorScrapePool(ctx, pool)
 }
 
 func (d *MonitorScrapePoolDomain) UpdateMonitorScrapePool(ctx context.Context, pool *model.MonitorScrapePool) error {
-	// 检查实例是否存在
-	exist, err := d.checkInstanceExist(ctx, pool.ID, pool.PrometheusInstances, pool.AlertManagerInstances)
+	// 检查采集池是否存在
+	exist, err := d.repo.CheckMonitorScrapePoolExist(ctx, pool.Name)
 	if err != nil {
 		return err
 	}
-	if exist == 1 {
-		return errors.New("prometheus 实例已存在")
+	if !exist {
+		return fmt.Errorf("采集池 %s 不存在", pool.Name)
 	}
-	if exist == 2 {
-		return errors.New("alertmanager 实例已存在")
+
+	// 检查实例是否存在
+	if err := d.checkInstanceExist(ctx, pool.ID, pool.PrometheusInstances, pool.AlertManagerInstances); err != nil {
+		return err
 	}
 
 	return d.repo.UpdateMonitorScrapePool(ctx, pool)
@@ -82,35 +78,35 @@ func (d *MonitorScrapePoolDomain) DeleteMonitorScrapePool(ctx context.Context, i
 	return d.repo.DeleteMonitorScrapePool(ctx, id)
 }
 
-func (d *MonitorScrapePoolDomain) checkInstanceExist(ctx context.Context, pid int64, instancesP, instancesA []string) (int, error) {
+func (d *MonitorScrapePoolDomain) checkInstanceExist(ctx context.Context, pid int64, instancesP, instancesA []string) error {
 	pools, err := d.repo.GetMonitorScrapePoolList(ctx)
 	if err != nil {
-		return 0, err
+		return err
 	}
 
-	ipP := make([]string, 0)
-	ipA := make([]string, 0)
+	ipPrometheus := make([]string, 0)
+	ipAlertManager := make([]string, 0)
 	for _, pool := range pools {
 		if pool.ID == pid {
 			continue
 		}
 
-		ipP = append(ipP, pool.PrometheusInstances...)
-		ipA = append(ipA, pool.AlertManagerInstances...)
+		ipPrometheus = append(ipPrometheus, pool.PrometheusInstances...)
+		ipAlertManager = append(ipAlertManager, pool.AlertManagerInstances...)
 	}
 
-	for _, i := range instancesP {
-		if slices.Contains(ipP, i) {
-			return 1, nil
+	for _, ip := range instancesP {
+		if slices.Contains(ipPrometheus, ip) {
+			return fmt.Errorf("prometheus 实例 %s 已存在", ip)
 		}
 	}
 
-	for _, i := range instancesA {
-		if slices.Contains(ipA, i) {
-			return 2, nil
+	for _, ip := range instancesA {
+		if slices.Contains(ipAlertManager, ip) {
+			return fmt.Errorf("alertmanager 实例 %s 已存在", ip)
 		}
 	}
-	return 0, nil
+	return nil
 }
 
 func (d *MonitorScrapePoolDomain) BuildScrapePoolRespModel(pools []*model.MonitorScrapePool) []*types.ScrapePool {

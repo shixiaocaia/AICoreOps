@@ -12,4 +12,5 @@ type MonitorAltermanagerRepo interface {
 	GetMonitorAlertmanagerPoolList(ctx context.Context) ([]*model.MonitorAlertManagerPool, error)
 	UpdateMonitorAlertmanagerPool(ctx context.Context, pool *model.MonitorAlertManagerPool) error
 	DeleteMonitorAlertmanagerPool(ctx context.Context, poolId int64) error
+	CheckMonitorAlertmanagerPoolExist(ctx context.Context, name string) (bool, error)
 }

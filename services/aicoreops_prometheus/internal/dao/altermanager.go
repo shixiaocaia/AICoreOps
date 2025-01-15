@@ -65,3 +65,13 @@ func (d *AltermanagerDao) DeleteMonitorAlertmanagerPool(ctx context.Context, poo
 
 	return d.db.WithContext(ctx).Delete(&model.MonitorAlertManagerPool{}, poolId).Error
 }
+
+// CheckMonitorAlertmanagerPoolExist 检查 AlertmanagerPool 是否存在
+func (d *AltermanagerDao) CheckMonitorAlertmanagerPoolExist(ctx context.Context, name string) (bool, error) {
+	var count int64
+	err := d.db.WithContext(ctx).Model(&model.MonitorAlertManagerPool{}).Where("name = ?", name).Count(&count).Error
+	if err != nil {
+		return false, err
+	}
+	return count > 0, nil
+}
