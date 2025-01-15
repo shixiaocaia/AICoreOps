@@ -215,13 +215,10 @@ func (p *promConfigCache) CreateBasePrometheusConfig(pool *model.MonitorScrapePo
 		config.AlertingConfig = pc.AlertingConfig{
 			AlertmanagerConfigs: []*pc.AlertmanagerConfig{alertConfig},
 		}
-
-		// 添加告警规则文件
-		config.RuleFiles = append(config.RuleFiles, pool.RuleFilePath)
 	}
 
 	// 启用预聚合，添加规则文件
-	if pool.SupportRecord == 1 {
+	if pool.SupportRecord == 1 && pool.RecordFilePath != "" {
 		config.RuleFiles = append(config.RuleFiles, pool.RecordFilePath)
 	}
 
