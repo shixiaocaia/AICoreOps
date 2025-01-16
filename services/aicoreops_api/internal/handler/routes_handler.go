@@ -32,7 +32,6 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	role := NewRoleHandler(serverCtx)
 	menu := NewMenuHandler(serverCtx)
 	ai := NewAiHandler(serverCtx)
-
 	// 初始化中间件
 	authMiddleware := middleware.NewAuthMiddleware(serverCtx.Config.JWT.Secret, serverCtx.RDB)
 	casbinMiddleware := middleware.NewCasbinMiddleware(serverCtx.Enforcer)
@@ -47,11 +46,13 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 
 	// 用户相关接口
 	authGroup.Post("/user/logout", user.Logout)
+	authGroup.Get("/user/info", user.GetUserInfo)
 	authGroup.Get("/user/get", user.GetUser)
 	authGroup.Post("/user/update", user.UpdateUser)
 	authGroup.Delete("/user/delete", user.DeleteUser)
 	authGroup.Get("/user/list", user.ListUsers)
-
+	authGroup.Get("/user/refresh", user.RefreshToken)
+	authGroup.Get("/user/codes", user.GetAccessCodes)
 	// API相关接口
 	apiGroup := group.Group("")
 	apiGroup.Use(authMiddleware.Handle, casbinMiddleware.Handle)

@@ -58,6 +58,14 @@ type LogoutRequest struct {
 	RefreshToken string `json:"refresh_token"`
 }
 
+type RefreshTokenRequest struct {
+	RefreshToken string `json:"refresh_token"`
+}
+
+type GetAccessCodesRequest struct {
+	JWTToken string `json:"jwt_token"`
+}
+
 type GeneralResponse struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
@@ -222,4 +230,8 @@ type AskQuestionRequest struct {
 type AskQuestionResponse struct {
 	Answer    string `json:"answer"`
 	SessionId string `json:"session_id"`
+}
+
+type GetUserInfoRequest struct {
+	JWTToken string `json:"jwt_token"`
 }

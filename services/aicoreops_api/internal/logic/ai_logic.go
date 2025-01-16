@@ -24,12 +24,14 @@ import (
 	"io"
 	"strconv"
 	"sync"
+
 	"time"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/middleware"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/types"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/ai"
+
 	"github.com/gorilla/websocket"
 	"google.golang.org/grpc/metadata"
 
