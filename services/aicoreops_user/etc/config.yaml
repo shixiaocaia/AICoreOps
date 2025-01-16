@@ -10,4 +10,4 @@ MyRedis:
   Addr: 127.0.0.1:6379
 JWT:
   Secret: "aicoreops"
-  Expire: 15
+  Expire: 3600

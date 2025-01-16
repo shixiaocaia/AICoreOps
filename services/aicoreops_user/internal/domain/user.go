@@ -19,16 +19,17 @@
 package domain
 
 import (
-	"aicoreops_user/internal/dao"
-	"aicoreops_user/internal/model"
-	"aicoreops_user/internal/pkg"
-	"aicoreops_user/internal/repo"
-	"aicoreops_user/types"
 	"context"
 	"crypto/md5"
 	"encoding/hex"
 	"errors"
 	"fmt"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/dao"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/model"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/pkg"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/repo"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/types"
 
 	regexp "github.com/dlclark/regexp2"
 
@@ -167,6 +168,13 @@ func (u *UserDomain) UpdateLastLoginTime(ctx context.Context, id int) error {
 		return errors.New("无效的用户ID")
 	}
 	return u.repo.UpdateLastLoginTime(ctx, id)
+}
+
+func (u *UserDomain) GetUserAccessCodes(ctx context.Context, userId int) ([]string, error) {
+	if userId <= 0 {
+		return nil, errors.New("无效的用户ID")
+	}
+	return u.repo.GetUserAccessCodes(ctx, userId)
 }
 
 // BuildUserModel 构建用户模型

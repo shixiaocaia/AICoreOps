@@ -19,7 +19,9 @@
 package svc
 
 import (
+	"context"
 	"fmt"
+
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/api"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_common/types/menu"
 
@@ -55,12 +57,17 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Password: "",
 		DB:       0,
 	})
+	// redis 探活
+	_, err := rdb.Ping(context.Background()).Result()
+	if err != nil {
+		panic(fmt.Sprintf("Redis连接失败: %v", err))
+	}
 
 	// 初始化用户RPC客户端
 	userRpc := user.NewUserServiceClient(zrpc.MustNewClient(c.UserRpc).Conn())
-	apiRpc := api.NewApiServiceClient(zrpc.MustNewClient(c.ApiRpc).Conn())
-	menuRpc := menu.NewMenuServiceClient(zrpc.MustNewClient(c.MenuRpc).Conn())
-	roleRpc := role.NewRoleServiceClient(zrpc.MustNewClient(c.RoleRpc).Conn())
+	// apiRpc := api.NewApiServiceClient(zrpc.MustNewClient(c.ApiRpc).Conn())
+	// menuRpc := menu.NewMenuServiceClient(zrpc.MustNewClient(c.MenuRpc).Conn())
+	// roleRpc := role.NewRoleServiceClient(zrpc.MustNewClient(c.RoleRpc).Conn())
 	aiRpc := ai.NewAIHelperClient(zrpc.MustNewClient(c.AiRpc).Conn())
 
 	// 初始化数据库连接
@@ -89,11 +96,11 @@ func NewServiceContext(c config.Config) *ServiceContext {
 	}
 
 	return &ServiceContext{
-		Config:   c,
-		UserRpc:  userRpc,
-		ApiRpc:   apiRpc,
-		MenuRpc:  menuRpc,
-		RoleRpc:  roleRpc,
+		Config:  c,
+		UserRpc: userRpc,
+		// ApiRpc:   apiRpc,
+		// MenuRpc:  menuRpc,
+		// RoleRpc:  roleRpc,
 		AiRpc:    aiRpc,
 		RDB:      rdb,
 		Enforcer: enforcer,

@@ -18,5 +18,4 @@ type QdrantConfig struct {
 	Url            string
 	CollectionName string
 	Model          string
-	DocumentPath   string
 }

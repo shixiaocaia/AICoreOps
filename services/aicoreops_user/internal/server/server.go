@@ -19,11 +19,11 @@
 package server
 
 import (
-	"aicoreops_user/internal/logic"
 	"context"
 
-	"aicoreops_user/internal/svc"
-	"aicoreops_user/types"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/logic"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/types"
 )
 
 type AicoreopsUserServer struct {
@@ -70,4 +70,19 @@ func (s *AicoreopsUserServer) Login(ctx context.Context, request *types.LoginReq
 func (s *AicoreopsUserServer) Logout(ctx context.Context, request *types.LogoutRequest) (*types.LogoutResponse, error) {
 	l := logic.NewUserLogic(ctx, s.svcCtx)
 	return l.Logout(ctx, request)
+}
+
+func (s *AicoreopsUserServer) RefreshToken(ctx context.Context, request *types.RefreshTokenRequest) (*types.RefreshTokenResponse, error) {
+	l := logic.NewUserLogic(ctx, s.svcCtx)
+	return l.RefreshToken(ctx, request)
+}
+
+func (s *AicoreopsUserServer) GetAccessCodes(ctx context.Context, request *types.GetAccessCodesRequest) (*types.GetAccessCodesResponse, error) {
+	l := logic.NewUserLogic(ctx, s.svcCtx)
+	return l.GetAccessCodes(ctx, request)
+}
+
+func (s *AicoreopsUserServer) GetUserInfo(ctx context.Context, request *types.GetUserInfoRequest) (*types.GetUserInfoResponse, error) {
+	l := logic.NewUserLogic(ctx, s.svcCtx)
+	return l.GetUserInfo(ctx, request)
 }

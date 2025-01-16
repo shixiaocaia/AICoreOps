@@ -19,8 +19,9 @@
 package repo
 
 import (
-	"aicoreops_user/internal/model"
 	"context"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/model"
 )
 
 type UserRepo interface {
@@ -44,4 +45,6 @@ type UserRepo interface {
 	UpdateStatus(ctx context.Context, id int, status int) error
 	// UpdateLastLoginTime 更新用户最后登录时间
 	UpdateLastLoginTime(ctx context.Context, id int) error
+	// GetUserAccessCodes 获取用户权限码
+	GetUserAccessCodes(ctx context.Context, userId int) ([]string, error)
 }

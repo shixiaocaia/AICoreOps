@@ -9,6 +9,8 @@ service UserService {
   rpc CreateUser (CreateUserRequest) returns (CreateUserResponse);
   // 获取用户详情
   rpc GetUser (GetUserRequest) returns (GetUserResponse);
+  // 获取用户信息
+  rpc GetUserInfo (GetUserInfoRequest) returns (GetUserInfoResponse);
   // 更新用户
   rpc UpdateUser (UpdateUserRequest) returns (UpdateUserResponse);
   // 删除用户
@@ -19,6 +21,10 @@ service UserService {
   rpc Login (LoginRequest) returns (LoginResponse);
   // 登出
   rpc Logout (LogoutRequest) returns (LogoutResponse);
+  // 刷新令牌
+  rpc RefreshToken (RefreshTokenRequest) returns (RefreshTokenResponse);
+  // 获取用户权限码
+  rpc GetAccessCodes (GetAccessCodesRequest) returns (GetAccessCodesResponse);
 }
 
 // 用户对象
@@ -59,7 +65,7 @@ message CreateUserRequest {
 
 // 创建用户响应
 message CreateUserResponse {
-  int32 code = 1; // 响应码
+  optional int32 code = 1; // 响应码
   string message = 2; // 响应消息
 }
 
@@ -70,7 +76,7 @@ message GetUserRequest {
 
 // 获取用户响应
 message GetUserResponse {
-  int32 code = 1; // 响应码
+  optional int32 code = 1; // 响应码
   string message = 2; // 响应消息
   User data = 3; // 响应数据
 }
@@ -88,7 +94,7 @@ message UpdateUserRequest {
 
 // 更新用户响应
 message UpdateUserResponse {
-  int32 code = 1; // 响应码
+  optional int32 code = 1; // 响应码
   string message = 2; // 响应消息
 }
 
@@ -99,7 +105,7 @@ message DeleteUserRequest {
 
 // 删除用户响应
 message DeleteUserResponse {
-  int32 code = 1; // 响应码
+  optional int32 code = 1; // 响应码
   string message = 2; // 响应消息
 }
 
@@ -114,7 +120,7 @@ message ListUsersRequest {
 
 // 列出用户响应
 message ListUsersResponse {
-  int32 code = 1; // 响应码
+  optional int32 code = 1; // 响应码
   string message = 2; // 响应消息
   ListUsersData data = 3; // 响应数据
 }
@@ -135,7 +141,7 @@ message LoginRequest {
 
 // 登录响应
 message LoginResponse {
-  int32 code = 1; // 响应码
+  optional int32 code = 1; // 响应码
   string message = 2; // 响应消息
   LoginResponseData data = 3; // 响应数据
 }
@@ -153,6 +159,40 @@ message LogoutRequest {
 
 // 登出响应
 message LogoutResponse {
-  int32 code = 1; // 响应码
+  optional int32 code = 1; // 响应码
   string message = 2; // 响应消息
+}
+
+// 刷新令牌请求
+message RefreshTokenRequest {
+  string refresh_token = 1; // 刷新令牌
+}
+
+// 刷新令牌响应
+message RefreshTokenResponse {
+  string data = 1; // 响应数据
+  int32 status = 2; // 状态码
+  optional int32 code = 3; // 响应码
+}
+
+// 获取用户权限码请求
+message GetAccessCodesRequest {
+  string jwt_token = 1; // 登录令牌
+}
+
+// 获取用户权限码响应
+message GetAccessCodesResponse {
+  repeated string access_codes = 1; // 权限码列表
+  optional int32 code = 2; // 响应码
+}
+
+// 获取用户信息请求
+message GetUserInfoRequest {
+  string jwt_token = 1; // 登录令牌
+}
+
+// 获取用户信息响应
+message GetUserInfoResponse {
+  optional int32 code = 1; // 响应码
+  User data = 2; // 响应数据
 }

@@ -19,9 +19,10 @@
 package dao
 
 import (
-	"aicoreops_user/internal/model"
 	"context"
 	"time"
+
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_user/internal/model"
 
 	"gorm.io/gorm"
 )
@@ -161,4 +162,13 @@ func (d *UserDao) UpdateLastLoginTime(ctx context.Context, id int) error {
 	now := time.Now().Unix()
 
 	return d.db.WithContext(ctx).Model(&model.User{}).Where("id = ?", id).Update("last_login_time", now).Error
+}
+
+// GetUserAccessCodes 获取用户权限码
+func (d *UserDao) GetUserAccessCodes(ctx context.Context, userId int) ([]string, error) {
+	if userId <= 0 {
+		return nil, gorm.ErrRecordNotFound
+	}
+
+	return []string{"111", "222", "333"}, nil
 }

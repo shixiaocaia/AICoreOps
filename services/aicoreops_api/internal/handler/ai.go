@@ -16,35 +16,131 @@
  * File: ai.go
  */
 
-package handler
+ package handler
 
-import (
-	"net/http"
-
-	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
-	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/types"
-
-	"github.com/zeromicro/go-zero/rest/httpx"
-)
-
-type AiHandler struct {
-	svcCtx *svc.ServiceContext
-}
-
-func NewAiHandler(svcCtx *svc.ServiceContext) *AiHandler {
-	return &AiHandler{
-		svcCtx: svcCtx,
-	}
-}
-
-func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
-	var req types.AskQuestionRequest
-	if err := httpx.Parse(r, &req); err != nil {
-		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
-			Code:    http.StatusBadRequest,
-			Message: err.Error(),
-		})
-		return
-	}
-
-}
+ import (
+	 "net/http"
+ 
+	 "github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/logic"
+	 "github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
+	 "github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/types"
+	 "github.com/gorilla/websocket"
+ 
+	 "github.com/zeromicro/go-zero/rest/httpx"
+ )
+ 
+ type AiHandler struct {
+	 svcCtx *svc.ServiceContext
+ }
+ 
+ func NewAiHandler(svcCtx *svc.ServiceContext) *AiHandler {
+	 return &AiHandler{
+		 svcCtx: svcCtx,
+	 }
+ }
+ 
+ var upgrader = websocket.Upgrader{
+	 CheckOrigin: func(r *http.Request) bool {
+		 // 根据需要调整跨域策略
+		 return true
+	 },
+ }
+ 
+ func setWsHeader(r *http.Request) {
+	 r.Header.Set("Sec-Websocket-Version", "13")
+	 r.Header.Set("Sec-Websocket-Key", "permessage-deflate")
+	 r.Header.Set("Connection", "Upgrade")
+	 r.Header.Set("Upgrade", "websocket")
+ }
+ 
+ func (h *AiHandler) GetHistoryList(w http.ResponseWriter, r *http.Request) {
+	 l := logic.NewAiLogic(r.Context(), h.svcCtx)
+	 resp, err := l.GetHistoryList(r.Context())
+	 if err != nil {
+		 httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			 Code:    http.StatusInternalServerError,
+			 Message: err.Error(),
+		 })
+		 return
+	 }
+	 resp.Code = http.StatusOK
+ 
+	 httpx.OkJsonCtx(r.Context(), w, resp)
+ }
+ 
+ func (h *AiHandler) GetChatHistory(w http.ResponseWriter, r *http.Request) {
+	 var req types.GetChatHistoryRequest
+	 if err := httpx.Parse(r, &req); err != nil {
+		 httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			 Code:    http.StatusBadRequest,
+			 Message: err.Error(),
+		 })
+		 return
+	 }
+	 l := logic.NewAiLogic(r.Context(), h.svcCtx)
+	 resp, err := l.GetChatHistory(&req)
+	 if err != nil {
+		 httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			 Code:    http.StatusInternalServerError,
+			 Message: err.Error(),
+		 })
+		 return
+	 }
+	 resp.Code = http.StatusOK
+ 
+	 httpx.OkJsonCtx(r.Context(), w, resp)
+ }
+ 
+ func (h *AiHandler) UploadDocument(w http.ResponseWriter, r *http.Request) {
+	 var req types.UploadDocumentRequest
+	 if err := httpx.Parse(r, &req); err != nil {
+		 httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			 Code:    http.StatusBadRequest,
+			 Message: err.Error(),
+		 })
+		 return
+	 }
+	 l := logic.NewAiLogic(r.Context(), h.svcCtx)
+	 resp, err := l.UploadDocument(&req)
+	 if err != nil {
+		 httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			 Code:    http.StatusInternalServerError,
+			 Message: err.Error(),
+		 })
+		 return
+	 }
+	 resp.Code = http.StatusOK
+ 
+	 httpx.OkJsonCtx(r.Context(), w, resp)
+ }
+ 
+ func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
+	 var req types.AskQuestionRequest
+	 if err := httpx.Parse(r, &req); err != nil {
+		 httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			 Code:    http.StatusBadRequest,
+			 Message: err.Error(),
+		 })
+		 return
+	 }
+	 l := logic.NewAiLogic(r.Context(), h.svcCtx)
+	 setWsHeader(r)
+	 conn, err := upgrader.Upgrade(w, r, nil)
+	 if err != nil {
+		 l.Logger.Errorf("建立 ws 连接失败: %v", err)
+		 return
+	 }
+	 defer conn.Close()
+ 
+	 resp, err := l.AskQuestion(conn, req.SessionId)
+	 if err != nil {
+		 httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			 Code:    http.StatusInternalServerError,
+			 Message: err.Error(),
+		 })
+		 return
+	 }
+	 resp.Code = http.StatusOK
+ 
+	 httpx.OkJsonCtx(r.Context(), w, resp)
+ }

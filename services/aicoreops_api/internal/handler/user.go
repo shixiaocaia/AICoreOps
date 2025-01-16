@@ -60,7 +60,6 @@ func (h *UserHandler) Login(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	resp.Code = http.StatusOK
 
 	// 设置响应头部
 	w.Header().Set("x-jwt-token", resp.Data.JwtToken)
@@ -90,7 +89,6 @@ func (h *UserHandler) CreateUser(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	resp.Code = http.StatusOK
 
 	httpx.OkJsonCtx(r.Context(), w, resp)
 }
@@ -115,7 +113,6 @@ func (h *UserHandler) GetUser(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	resp.Code = http.StatusOK
 
 	httpx.OkJsonCtx(r.Context(), w, resp)
 }
@@ -140,7 +137,6 @@ func (h *UserHandler) DeleteUser(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	resp.Code = http.StatusOK
 
 	httpx.OkJsonCtx(r.Context(), w, resp)
 }
@@ -165,7 +161,6 @@ func (h *UserHandler) UpdateUser(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	resp.Code = http.StatusOK
 
 	httpx.OkJsonCtx(r.Context(), w, resp)
 }
@@ -190,7 +185,6 @@ func (h *UserHandler) ListUsers(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	resp.Code = http.StatusOK
 
 	httpx.OkJsonCtx(r.Context(), w, resp)
 }
@@ -211,7 +205,63 @@ func (h *UserHandler) Logout(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	resp.Code = http.StatusOK
+
+	httpx.OkJsonCtx(r.Context(), w, resp)
+}
+
+// RefreshToken 刷新令牌
+func (h *UserHandler) RefreshToken(w http.ResponseWriter, r *http.Request) {
+	var req types.RefreshTokenRequest
+
+	req.RefreshToken = r.Header.Get("x-refresh-token")
+
+	l := logic.NewUserLogic(r.Context(), h.svcCtx)
+	resp, err := l.RefreshToken(&req)
+	if err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	httpx.OkJsonCtx(r.Context(), w, resp)
+}
+
+// GetAccessCodes 获取用户权限码
+func (h *UserHandler) GetAccessCodes(w http.ResponseWriter, r *http.Request) {
+	var req types.GetAccessCodesRequest
+
+	req.JWTToken = r.Header.Get("x-jwt-token")
+
+	l := logic.NewUserLogic(r.Context(), h.svcCtx)
+	resp, err := l.GetAccessCodes(&req)
+	if err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
+
+	httpx.OkJsonCtx(r.Context(), w, resp)
+}
+
+// GetUserInfo 获取用户信息
+func (h *UserHandler) GetUserInfo(w http.ResponseWriter, r *http.Request) {
+	var req types.GetUserInfoRequest
+
+	req.JWTToken = r.Header.Get("x-jwt-token")
+
+	l := logic.NewUserLogic(r.Context(), h.svcCtx)
+	resp, err := l.GetUserInfo(&req)
+	if err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
+		return
+	}
 
 	httpx.OkJsonCtx(r.Context(), w, resp)
 }
