@@ -56,6 +56,8 @@ type JWTHandler interface {
 	SetJWTToken(uid int, ssid string) (string, error)
 	ClearToken(ctx context.Context, token string, refreshToken string) error
 	setRefreshToken(uid int, ssid string) (string, error)
+	RefreshToken(ctx context.Context, refreshToken string) (string, error)
+	GetUserIdFromToken(token string) (int, error)
 }
 
 // UserClaims 用户声明结构体
@@ -191,6 +193,10 @@ func (j *jwtHandler) generateToken(claims jwt.Claims, secret []byte) (string, er
 
 // ClearToken 清除令牌
 func (j *jwtHandler) ClearToken(ctx context.Context, token string, refreshToken string) error {
+	if token == "" || refreshToken == "" {
+		return ErrInvalidToken
+	}
+
 	claims := &UserClaims{}
 	parsedToken, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
 		if token.Method != j.signingMethod {
@@ -228,9 +234,6 @@ func (j *jwtHandler) ClearToken(ctx context.Context, token string, refreshToken 
 
 // addToBlacklist 添加令牌到黑名单
 func (j *jwtHandler) addToBlacklist(ctx context.Context, ssid string, expiresAt time.Time) error {
-	if ctx == nil {
-		return ErrEmptyContext
-	}
 	if ssid == "" {
 		return ErrInvalidToken
 	}
@@ -246,4 +249,58 @@ func (j *jwtHandler) addToBlacklist(ctx context.Context, ssid string, expiresAt 
 	}
 
 	return nil
+}
+
+// GetUserIdFromToken 从令牌中获取用户ID
+func (j *jwtHandler) GetUserIdFromToken(token string) (int, error) {
+	claims := &UserClaims{}
+	parsedToken, err := jwt.ParseWithClaims(token, claims, func(token *jwt.Token) (interface{}, error) {
+		if token.Method != j.signingMethod {
+			return nil, fmt.Errorf("意外的签名方法: %v", token.Header["alg"])
+		}
+		return j.secret, nil
+	})
+
+	if err != nil || !parsedToken.Valid {
+		return 0, ErrInvalidToken
+	}
+
+	return claims.Uid, nil
+}
+
+// RefreshToken 刷新令牌
+func (j *jwtHandler) RefreshToken(ctx context.Context, refreshToken string) (string, error) {
+	if refreshToken == "" {
+		return "", ErrInvalidToken
+	}
+
+	refreshClaims := &RefreshClaims{}
+	parsedToken, err := jwt.ParseWithClaims(refreshToken, refreshClaims, func(token *jwt.Token) (interface{}, error) {
+		if token.Method != j.signingMethod {
+			return nil, fmt.Errorf("意外的签名方法: %v", token.Header["alg"])
+		}
+		return j.refreshSecret, nil
+	})
+
+	if err != nil || !parsedToken.Valid {
+		return "", ErrInvalidToken
+	}
+
+	// 检查刷新令牌是否在黑名单中
+	key := fmt.Sprintf(blacklistKey, refreshToken)
+	exists, err := j.client.Exists(ctx, key).Result()
+	if err != nil {
+		return "", fmt.Errorf("检查刷新令牌状态失败: %w", err)
+	}
+	if exists == 1 {
+		return "", ErrInvalidToken
+	}
+
+	// 生成新的访问令牌
+	newToken, err := j.SetJWTToken(refreshClaims.Uid, refreshClaims.Ssid)
+	if err != nil {
+		return "", fmt.Errorf("生成新的访问令牌失败: %w", err)
+	}
+
+	return newToken, nil
 }

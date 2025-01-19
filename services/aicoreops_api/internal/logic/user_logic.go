@@ -169,3 +169,57 @@ func (l *UserLogic) GetUserList(req *types.GetUserListRequest) (resp *user.ListU
 
 	return listResp, nil
 }
+
+// RefreshToken 刷新令牌
+func (l *UserLogic) RefreshToken(req *types.RefreshTokenRequest) (resp *user.RefreshTokenResponse, err error) {
+	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
+	defer cancel()
+
+	refreshReq := &user.RefreshTokenRequest{}
+	if err := copier.Copy(refreshReq, req); err != nil {
+		return nil, err
+	}
+
+	refreshResp, err := l.svcCtx.UserRpc.RefreshToken(ctx, refreshReq)
+	if err != nil {
+		return nil, err
+	}
+
+	return refreshResp, nil
+}
+
+// GetAccessCodes 获取用户权限码
+func (l *UserLogic) GetAccessCodes(req *types.GetAccessCodesRequest) (resp *user.GetAccessCodesResponse, err error) {
+	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
+	defer cancel()
+
+	getAccessCodesReq := &user.GetAccessCodesRequest{}
+	if err := copier.Copy(getAccessCodesReq, req); err != nil {
+		return nil, err
+	}
+
+	getAccessCodesResp, err := l.svcCtx.UserRpc.GetAccessCodes(ctx, getAccessCodesReq)
+	if err != nil {
+		return nil, err
+	}
+
+	return getAccessCodesResp, nil
+}
+
+// GetUserInfo 获取用户信息
+func (l *UserLogic) GetUserInfo(req *types.GetUserInfoRequest) (resp *user.GetUserInfoResponse, err error) {
+	ctx, cancel := context.WithTimeout(l.ctx, time.Second*5)
+	defer cancel()
+
+	getUserInfoReq := &user.GetUserInfoRequest{}
+	if err := copier.Copy(getUserInfoReq, req); err != nil {
+		return nil, err
+	}
+
+	getUserInfoResp, err := l.svcCtx.UserRpc.GetUserInfo(ctx, getUserInfoReq)
+	if err != nil {
+		return nil, err
+	}
+
+	return getUserInfoResp, nil
+}

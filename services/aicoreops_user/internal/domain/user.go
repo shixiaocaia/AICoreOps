@@ -170,6 +170,13 @@ func (u *UserDomain) UpdateLastLoginTime(ctx context.Context, id int) error {
 	return u.repo.UpdateLastLoginTime(ctx, id)
 }
 
+func (u *UserDomain) GetUserAccessCodes(ctx context.Context, userId int) ([]string, error) {
+	if userId <= 0 {
+		return nil, errors.New("无效的用户ID")
+	}
+	return u.repo.GetUserAccessCodes(ctx, userId)
+}
+
 // BuildUserModel 构建用户模型
 func (u *UserDomain) BuildUserModel(req *types.CreateUserRequest, encryptedPwd string) model.User {
 	if req == nil {

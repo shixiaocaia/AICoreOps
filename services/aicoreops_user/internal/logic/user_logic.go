@@ -83,8 +83,10 @@ func (l *UserLogic) CreateUser(ctx context.Context, req *types.CreateUserRequest
 		return nil, errors.New("注册失败")
 	}
 
+	var code int32 = 0
+
 	return &types.CreateUserResponse{
-		Code:    0,
+		Code:    &code,
 		Message: "创建用户成功",
 	}, nil
 }
@@ -126,8 +128,9 @@ func (l *UserLogic) Login(ctx context.Context, req *types.LoginRequest) (*types.
 		l.Logger.Errorf("更新用户最后登录时间失败: %v", err)
 	}
 
+	var code int32 = 0
 	return &types.LoginResponse{
-		Code:    0,
+		Code:    &code,
 		Message: "登录成功",
 		Data: &types.LoginResponseData{
 			JwtToken:     jwtToken,
@@ -144,8 +147,9 @@ func (l *UserLogic) Logout(ctx context.Context, req *types.LogoutRequest) (*type
 		return nil, errors.New("登出失败")
 	}
 
+	var code int32 = 0
 	return &types.LogoutResponse{
-		Code:    0,
+		Code:    &code,
 		Message: "登出成功",
 	}, nil
 }
@@ -163,9 +167,11 @@ func (l *UserLogic) GetUser(ctx context.Context, req *types.GetUserRequest) (*ty
 		return nil, errors.New("系统错误")
 	}
 
+	var code int32 = 0
+
 	// 构建响应
 	return &types.GetUserResponse{
-		Code:    0,
+		Code:    &code,
 		Message: "获取用户成功",
 		Data: &types.User{
 			Id:            int64(user.ID),
@@ -216,9 +222,6 @@ func (l *UserLogic) UpdateUser(ctx context.Context, req *types.UpdateUserRequest
 	if req.Status != types.UserStatus_STATUS_UNSPECIFIED {
 		user.Status = int(req.Status)
 	}
-	if req.IsDeleted != 0 {
-		user.IsDeleted = int(req.IsDeleted)
-	}
 
 	// 调用领域层更新用户
 	if err := l.domain.UpdateUser(ctx, user); err != nil {
@@ -226,8 +229,10 @@ func (l *UserLogic) UpdateUser(ctx context.Context, req *types.UpdateUserRequest
 		return nil, errors.New("更新用户失败")
 	}
 
+	var code int32 = 0
+
 	return &types.UpdateUserResponse{
-		Code:    0,
+		Code:    &code,
 		Message: "更新用户成功",
 	}, nil
 }
@@ -252,8 +257,10 @@ func (l *UserLogic) DeleteUser(ctx context.Context, req *types.DeleteUserRequest
 		return nil, errors.New("删除用户失败")
 	}
 
+	var code int32 = 0
+
 	return &types.DeleteUserResponse{
-		Code:    0,
+		Code:    &code,
 		Message: "删除用户成功",
 	}, nil
 }
@@ -293,14 +300,86 @@ func (l *UserLogic) ListUsers(ctx context.Context, req *types.ListUsersRequest) 
 		})
 	}
 
+	var code int32 = 0
+
 	return &types.ListUsersResponse{
-		Code:    0,
+		Code:    &code,
 		Message: "获取用户列表成功",
 		Data: &types.ListUsersData{
 			Users:      userList,
 			Total:      int32(total),
 			PageNumber: req.PageNumber,
 			PageSize:   req.PageSize,
+		},
+	}, nil
+}
+
+// RefreshToken 刷新令牌
+func (l *UserLogic) RefreshToken(ctx context.Context, req *types.RefreshTokenRequest) (*types.RefreshTokenResponse, error) {
+	// 刷新token
+	newToken, err := l.svcCtx.JWT.RefreshToken(ctx, req.RefreshToken)
+	if err != nil {
+		l.Logger.Errorf("刷新token失败: %v", err)
+		return nil, errors.New("刷新token失败")
+	}
+
+	return &types.RefreshTokenResponse{
+		Data:   newToken,
+		Status: 0,
+	}, nil
+}
+
+// GetAccessCodes 获取用户权限码
+func (l *UserLogic) GetAccessCodes(ctx context.Context, req *types.GetAccessCodesRequest) (*types.GetAccessCodesResponse, error) {
+	// 从token中获取用户ID
+	userId, err := l.svcCtx.JWT.GetUserIdFromToken(req.JwtToken)
+	if err != nil {
+		l.Logger.Errorf("从token获取用户ID失败: %v", err)
+		return nil, errors.New("token无效")
+	}
+
+	// 获取用户权限码
+	accessCodes, err := l.domain.GetUserAccessCodes(ctx, userId)
+	if err != nil {
+		l.Logger.Errorf("获取用户权限码失败: %v", err)
+		return nil, errors.New("获取权限码失败")
+	}
+
+	var code int32 = 0
+
+	return &types.GetAccessCodesResponse{
+		Code:        &code,
+		AccessCodes: accessCodes,
+	}, nil
+}
+
+// GetUserInfo 获取用户信息
+func (l *UserLogic) GetUserInfo(ctx context.Context, req *types.GetUserInfoRequest) (*types.GetUserInfoResponse, error) {
+	// 从token中获取用户ID
+	userId, err := l.svcCtx.JWT.GetUserIdFromToken(req.JwtToken)
+	if err != nil {
+		l.Logger.Errorf("从token获取用户ID失败: %v", err)
+		return nil, errors.New("token无效")
+	}
+
+	// 获取用户信息
+	user, err := l.domain.GetUserById(ctx, userId)
+	if err != nil {
+		l.Logger.Errorf("查询用户失败: %v", err)
+		return nil, errors.New("查询用户失败")
+	}
+
+	var code int32 = 0
+
+	return &types.GetUserInfoResponse{
+		Code: &code,
+		Data: &types.User{
+			Id:       int64(user.ID),
+			Username: user.Username,
+			Email:    user.Email,
+			Phone:    user.Phone,
+			Nickname: user.Nickname,
+			Avatar:   user.Avatar,
 		},
 	}, nil
 }
