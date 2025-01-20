@@ -102,18 +102,10 @@ func (h *AiHandler) UploadDocument(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
-	var req types.AskQuestionRequest
-	// if err := httpx.Parse(r, &req); err != nil {
-	// 	httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
-	// 		Code:    http.StatusBadRequest,
-	// 		Message: err.Error(),
-	// 	})
-	// 	return
-	// }
-	req.SessionId = "1"
+	sessionId := r.URL.Query().Get("session_id")
 	l := logic.NewAiLogic(r.Context(), h.svcCtx)
 
-	// check
+	// 检查是否为 ws 连接
 	if !websocket.IsWebSocketUpgrade(r) {
 		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
 			Code:    http.StatusBadRequest,
@@ -122,16 +114,16 @@ func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := l.AskQuestion(w, r, req.SessionId)
+	resp, err := l.AskQuestion(w, r, sessionId)
 	if err != nil {
-		// httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
-		// 	Code:    http.StatusInternalServerError,
-		// 	Message: err.Error(),
-		// })
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		fmt.Println(err)
 		return
 	}
-	// resp.Code = http.StatusOK
+	resp.Code = http.StatusOK
 
-	// httpx.OkJsonCtx(r.Context(), w, resp)
+	httpx.OkJsonCtx(r.Context(), w, resp)
 }
