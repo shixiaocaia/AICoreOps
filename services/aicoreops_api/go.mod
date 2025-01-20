@@ -7,7 +7,6 @@ require (
 	github.com/casbin/casbin/v2 v2.102.0
 	github.com/casbin/gorm-adapter/v3 v3.32.0
 	github.com/gorilla/websocket v1.5.0
-	github.com/lesismal/nbio v1.6.0
 	github.com/redis/go-redis/v9 v9.7.0
 	github.com/zeromicro/go-zero v1.7.4
 	gorm.io/driver/mysql v1.5.7
@@ -47,12 +46,10 @@ require (
 	github.com/jinzhu/now v1.1.5 // indirect
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
-	github.com/lesismal/llib v1.2.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/microsoft/go-mssqldb v1.6.0 // indirect
 	github.com/modern-go/concurrent v0.0.0-20180306012644-bacd9c7ef1dd // indirect
 	github.com/modern-go/reflect2 v1.0.2 // indirect
-	github.com/olahol/melody v1.2.1 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230126093431-47fa9a501578 // indirect
 	go.etcd.io/etcd/api/v3 v3.5.15 // indirect
 	go.etcd.io/etcd/client/pkg/v3 v3.5.15 // indirect
