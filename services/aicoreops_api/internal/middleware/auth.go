@@ -54,6 +54,10 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		// 获取 token
 		token := r.Header.Get("Authorization")
 		if token == "" {
+			// 如果是 ws 协议，从sec-websocket-protocol获取 token
+			token = r.Header.Get("Sec-Websocket-Protocol")
+		}
+		if token == "" {
 			logx.Error("token为空")
 			response.SetFailResponse(aicoreops_common.BizCodeUnauthorized, tools.ErrEmptyToken.Error())
 			httpx.WriteJson(w, http.StatusUnauthorized, response)
@@ -64,7 +68,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		const bearerPrefix = "Bearer "
 		if len(token) > len(bearerPrefix) && token[:len(bearerPrefix)] == bearerPrefix {
 			token = token[len(bearerPrefix):]
-		} else {
+		} else if r.URL.Path != "/api/ai/ask" {
 			logx.Error("token格式错误")
 			response.SetFailResponse(aicoreops_common.BizCodeUnauthorized, "invalid token format")
 			httpx.WriteJson(w, http.StatusUnauthorized, response)
