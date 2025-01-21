@@ -1,6 +1,6 @@
 package svc
 
-import "aicoreops_cicd/internal/config"
+import "github.com/GoSimplicity/AICoreOps/services/aicoreops_cicd/internal/config"
 
 type ServiceContext struct {
 	Config config.Config
