@@ -12,7 +12,7 @@ service Prometheus_rpc {
   
 
   // Alertmanager
-  rpc GetMonitorAlertmanagerPoolList(GetAlertmanagerPoolListRequest) returns(GetAlertmanagerPoolListResponse);
+  rpc GetMonitorAlertManagerPoolList(GetAlertManagerPoolListRequest) returns(GetAlertManagerPoolListResponse);
   rpc CreateMonitorAlertManagerPool(CreateMonitorAlertManagerPoolRequest) returns(CreateMonitorAlertManagerPoolResponse);
   rpc UpdateMonitorAlertManagerPool(UpdateMonitorAlertManagerPoolRequest) returns(UpdateMonitorAlertManagerPoolResponse);
   rpc DeleteMonitorAlertManagerPool(DeleteMonitorAlertManagerPoolRequest) returns(DeleteMonitorAlertManagerPoolResponse);
@@ -95,7 +95,7 @@ message DeleteMonitorScrapePoolResponse {
 }
 
 // Alertmanager 相关接口
-message AlertmanagerPool {
+message AlertManagerPool {
   int64 id = 1;
   string name = 2;
   repeated string alertmanager_instances = 3;
@@ -108,17 +108,17 @@ message AlertmanagerPool {
   string receiver = 10;
 }
 
-message GetAlertmanagerPoolListRequest {
+message GetAlertManagerPoolListRequest {
 }
 
-message GetAlertmanagerPoolListResponse {
+message GetAlertManagerPoolListResponse {
   int32 code = 1;
   string message = 2;
-  repeated AlertmanagerPool data = 3;
+  repeated AlertManagerPool data = 3;
 }
 
 message CreateMonitorAlertManagerPoolRequest {
-  AlertmanagerPool pool = 1;
+  AlertManagerPool pool = 1;
 }
 
 message CreateMonitorAlertManagerPoolResponse {
@@ -127,7 +127,7 @@ message CreateMonitorAlertManagerPoolResponse {
 }
 
 message UpdateMonitorAlertManagerPoolRequest {
-  AlertmanagerPool pool = 1;
+  AlertManagerPool pool = 1;
 }
 
 message UpdateMonitorAlertManagerPoolResponse {

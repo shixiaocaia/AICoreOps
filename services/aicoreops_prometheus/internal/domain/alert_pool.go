@@ -13,17 +13,17 @@ import (
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/types"
 )
 
-type AltermanagerDomain struct {
-	repo repo.MonitorAltermanagerRepo
+type AlterManagerPoolDomain struct {
+	repo repo.MonitorAlterManagerPoolRepo
 }
 
-func NewAltermanagerDomain(ctx *svc.ServiceContext) *AltermanagerDomain {
-	return &AltermanagerDomain{repo: dao.NewAltermanagerDao(ctx.DB)}
+func NewAlterManagerPoolDomain(ctx *svc.ServiceContext) *AlterManagerPoolDomain {
+	return &AlterManagerPoolDomain{repo: dao.NewAlertManagerPoolDao(ctx.DB)}
 }
 
-func (a *AltermanagerDomain) CreateMonitorAlertmanagerPool(ctx context.Context, pool *model.MonitorAlertManagerPool) error {
+func (a *AlterManagerPoolDomain) CreateMonitorAlertManagerPool(ctx context.Context, pool *model.MonitorAlertManagerPool) error {
 	// 检查 AlertManagerPool是否存在
-	exist, err := a.repo.CheckMonitorAlertmanagerPoolExist(ctx, pool.Name)
+	exist, err := a.repo.CheckMonitorAlertManagerPoolExist(ctx, pool.Name)
 	if err != nil {
 		return err
 	}
@@ -32,22 +32,22 @@ func (a *AltermanagerDomain) CreateMonitorAlertmanagerPool(ctx context.Context, 
 	}
 
 	// 检查 instances 是否存在
-	if err := a.checkAlertmanagerIpExist(ctx, pool.ID, pool.AlertManagerInstances); err != nil {
+	if err := a.checkAlertManagerIpExist(ctx, pool.ID, pool.AlertManagerInstances); err != nil {
 		return err
 	}
 
-	return a.repo.CreateMonitorAlertmanagerPool(ctx, pool)
+	return a.repo.CreateMonitorAlertManagerPool(ctx, pool)
 }
 
-func (a *AltermanagerDomain) GetMonitorAlertmanagerPoolList(ctx context.Context, searchName *string) ([]*model.MonitorAlertManagerPool, error) {
+func (a *AlterManagerPoolDomain) GetMonitorAlertManagerPoolList(ctx context.Context, searchName *string) ([]*model.MonitorAlertManagerPool, error) {
 	return pkg.HandleList(ctx, searchName,
 		a.repo.SearchMonitorAlertManagerPoolByName, // 搜索函数
-		a.repo.GetMonitorAlertmanagerPoolList)      // 获取所有函数
+		a.repo.GetMonitorAlertManagerPoolList)      // 获取所有函数
 }
 
-func (a *AltermanagerDomain) UpdateMonitorAlertmanagerPool(ctx context.Context, pool *model.MonitorAlertManagerPool) error {
+func (a *AlterManagerPoolDomain) UpdateMonitorAlertManagerPool(ctx context.Context, pool *model.MonitorAlertManagerPool) error {
 	// 检查 AlertmanagerPool 是否存在
-	exist, err := a.repo.CheckMonitorAlertmanagerPoolExist(ctx, pool.Name)
+	exist, err := a.repo.CheckMonitorAlertManagerPoolExist(ctx, pool.Name)
 	if err != nil {
 		return err
 	}
@@ -56,19 +56,19 @@ func (a *AltermanagerDomain) UpdateMonitorAlertmanagerPool(ctx context.Context, 
 	}
 
 	// 检查 instances 是否存在
-	if err := a.checkAlertmanagerIpExist(ctx, pool.ID, pool.AlertManagerInstances); err != nil {
+	if err := a.checkAlertManagerIpExist(ctx, pool.ID, pool.AlertManagerInstances); err != nil {
 		return err
 	}
 
-	return a.repo.UpdateMonitorAlertmanagerPool(ctx, pool)
+	return a.repo.UpdateMonitorAlertManagerPool(ctx, pool)
 }
 
-func (a *AltermanagerDomain) DeleteMonitorAlertmanagerPool(ctx context.Context, poolId int64) error {
-	return a.repo.DeleteMonitorAlertmanagerPool(ctx, poolId)
+func (a *AlterManagerPoolDomain) DeleteMonitorAlertManagerPool(ctx context.Context, poolId int64) error {
+	return a.repo.DeleteMonitorAlertManagerPool(ctx, poolId)
 }
 
-func (a *AltermanagerDomain) checkAlertmanagerIpExist(ctx context.Context, poolId int64, ip []string) error {
-	pools, err := a.repo.GetMonitorAlertmanagerPoolList(ctx)
+func (a *AlterManagerPoolDomain) checkAlertManagerIpExist(ctx context.Context, poolId int64, ip []string) error {
+	pools, err := a.repo.GetMonitorAlertManagerPoolList(ctx)
 	if err != nil {
 		return err
 	}
@@ -90,7 +90,7 @@ func (a *AltermanagerDomain) checkAlertmanagerIpExist(ctx context.Context, poolI
 	return nil
 }
 
-func (a *AltermanagerDomain) BuildMonitorAlertmanagerPoolModel(pool *types.AlertmanagerPool) *model.MonitorAlertManagerPool {
+func (a *AlterManagerPoolDomain) BuildMonitorAlertManagerPoolModel(pool *types.AlertManagerPool) *model.MonitorAlertManagerPool {
 	return &model.MonitorAlertManagerPool{
 		ID:                    pool.Id,
 		Name:                  pool.Name,
@@ -105,10 +105,10 @@ func (a *AltermanagerDomain) BuildMonitorAlertmanagerPoolModel(pool *types.Alert
 	}
 }
 
-func (a *AltermanagerDomain) BuildAlertmanagerPoolRespModel(pools []*model.MonitorAlertManagerPool) []*types.AlertmanagerPool {
-	list := make([]*types.AlertmanagerPool, 0)
+func (a *AlterManagerPoolDomain) BuildAlertManagerPoolRespModel(pools []*model.MonitorAlertManagerPool) []*types.AlertManagerPool {
+	list := make([]*types.AlertManagerPool, 0)
 	for _, pool := range pools {
-		list = append(list, &types.AlertmanagerPool{
+		list = append(list, &types.AlertManagerPool{
 			Id:                    int64(pool.ID),
 			Name:                  pool.Name,
 			AlertmanagerInstances: pool.AlertManagerInstances,

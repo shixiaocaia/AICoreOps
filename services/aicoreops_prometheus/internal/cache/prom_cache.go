@@ -22,7 +22,6 @@ import (
 	"github.com/prometheus/prometheus/model/labels"
 	"github.com/prometheus/prometheus/model/relabel"
 	"github.com/zeromicro/go-zero/core/logx"
-	"go.uber.org/zap"
 	"gopkg.in/yaml.v2"
 	"gorm.io/gorm"
 )
@@ -182,7 +181,7 @@ func (p *promConfigCache) CreateBasePrometheusConfig(pool *model.MonitorScrapePo
 	if pool.RemoteReadUrl != "" {
 		remoteReadURL, err := pkg.ParseURL(pool.RemoteReadUrl)
 		if err != nil {
-			p.Logger.Error("解析 RemoteReadUrl 失败", zap.Error(err))
+			p.Logger.Errorf("解析 RemoteReadUrl 失败: %v", err)
 			return pc.Config{}, fmt.Errorf("解析 RemoteReadUrl 失败: %w", err)
 		}
 
@@ -229,11 +228,11 @@ func (p *promConfigCache) GenerateScrapeConfigs(ctx context.Context, pool *model
 	// 获取与指定池相关的采集任务
 	scrapeJobs, err := p.scrapeJobRepo.SearchMonitorScrapeJobByID(ctx, pool.ID)
 	if err != nil {
-		p.Logger.Error("获取采集任务失败", zap.Error(err), zap.String("池名", pool.Name))
+		p.Logger.Errorf("获取采集任务失败: %v", err)
 		return nil
 	}
 	if len(scrapeJobs) == 0 {
-		p.Logger.Info("没有找到任何采集任务", zap.String("池名", pool.Name))
+		p.Logger.Infof("%v 没有找到任何采集任务", pool.Name)
 		return nil
 	}
 
@@ -251,7 +250,7 @@ func (p *promConfigCache) GenerateScrapeConfigs(ctx context.Context, pool *model
 		// 解析 Relabel 配置
 		if job.RelabelConfigsYamlString != "" {
 			if err := yaml.Unmarshal([]byte(job.RelabelConfigsYamlString), &sc.RelabelConfigs); err != nil {
-				p.Logger.Error("解析 Relabel 配置失败", zap.Error(err), zap.String("任务名", job.Name))
+				p.Logger.Errorf("scrapeJob [%v] 解析 Relabel 配置失败: %v", job.Name, err)
 				continue
 			}
 		}
@@ -260,7 +259,7 @@ func (p *promConfigCache) GenerateScrapeConfigs(ctx context.Context, pool *model
 		switch job.ServiceDiscoveryType {
 		case "http":
 			if p.httpSdAPI == "" {
-				p.Logger.Error("获取 HTTP SD API 失败", zap.Error(err), zap.String("任务名", job.Name))
+				p.Logger.Errorf("scrapeJob [%v] 获取 HTTP SD API 失败: %v", job.Name, err)
 				continue
 			}
 
@@ -290,7 +289,7 @@ func (p *promConfigCache) GenerateScrapeConfigs(ctx context.Context, pool *model
 				},
 			}
 		default:
-			p.Logger.Error("未知的服务发现类型", zap.String("类型", job.ServiceDiscoveryType), zap.String("任务名", job.Name))
+			p.Logger.Errorf("scrapeJob [%v] 未知的服务发现类型: %v", job.Name, job.ServiceDiscoveryType)
 			continue
 		}
 

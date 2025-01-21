@@ -6,6 +6,7 @@ import (
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/model"
 )
 
+// MonitorScrapeJobRepo 监控抓取任务Repo
 type MonitorScrapeJobRepo interface {
 	GetMonitorScrapeJobList(ctx context.Context) ([]*model.MonitorScrapeJob, error)
 	CreateMonitorScrapeJob(ctx context.Context, job *model.MonitorScrapeJob) error

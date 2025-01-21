@@ -55,6 +55,7 @@ func (mc *monitorCache) MonitorCacheManager(ctx context.Context) error {
 
 	// 并发执行任务
 	go executeTask("生成 Prometheus 配置", mc.PrometheusMainConfig.GeneratePrometheusMainConfig)
+	
 
 	mc.Logger.Info("更新所有监控缓存配置完成")
 	return nil

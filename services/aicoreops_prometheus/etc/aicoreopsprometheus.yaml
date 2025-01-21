@@ -4,8 +4,14 @@ Etcd:
   Hosts:
   - 127.0.0.1:2379
   Key: aicoreopsprometheus.rpc
+
 Mysql: "root:root@tcp(localhost:3306)/AICoreOps?charset=utf8mb4&parseTime=True&loc=Local"
 XRedis: "127.0.0.1:6379"
+
 PrometheusConfig:
   LocalYamlDir: "./local_yaml"
   HttpSdAPI: "http://localhost:8888/api/not_auth/getTreeNodeBindIps"
+
+AlertManagerConfig:
+  LocalYamlDir: "./local_yaml"
+  AlertWebhookAddr: "http://localhost:8888/api/not_auth/getTreeNodeBindIps"

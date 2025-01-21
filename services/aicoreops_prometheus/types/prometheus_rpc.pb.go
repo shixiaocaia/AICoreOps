@@ -596,7 +596,7 @@ func (x *DeleteMonitorScrapePoolResponse) GetMessage() string {
 }
 
 // Alertmanager 相关接口
-type AlertmanagerPool struct {
+type AlertManagerPool struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -613,8 +613,8 @@ type AlertmanagerPool struct {
 	Receiver              string   `protobuf:"bytes,10,opt,name=receiver,proto3" json:"receiver,omitempty"`
 }
 
-func (x *AlertmanagerPool) Reset() {
-	*x = AlertmanagerPool{}
+func (x *AlertManagerPool) Reset() {
+	*x = AlertManagerPool{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_prometheus_rpc_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -622,13 +622,13 @@ func (x *AlertmanagerPool) Reset() {
 	}
 }
 
-func (x *AlertmanagerPool) String() string {
+func (x *AlertManagerPool) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*AlertmanagerPool) ProtoMessage() {}
+func (*AlertManagerPool) ProtoMessage() {}
 
-func (x *AlertmanagerPool) ProtoReflect() protoreflect.Message {
+func (x *AlertManagerPool) ProtoReflect() protoreflect.Message {
 	mi := &file_prometheus_rpc_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -640,89 +640,89 @@ func (x *AlertmanagerPool) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use AlertmanagerPool.ProtoReflect.Descriptor instead.
-func (*AlertmanagerPool) Descriptor() ([]byte, []int) {
+// Deprecated: Use AlertManagerPool.ProtoReflect.Descriptor instead.
+func (*AlertManagerPool) Descriptor() ([]byte, []int) {
 	return file_prometheus_rpc_proto_rawDescGZIP(), []int{9}
 }
 
-func (x *AlertmanagerPool) GetId() int64 {
+func (x *AlertManagerPool) GetId() int64 {
 	if x != nil {
 		return x.Id
 	}
 	return 0
 }
 
-func (x *AlertmanagerPool) GetName() string {
+func (x *AlertManagerPool) GetName() string {
 	if x != nil {
 		return x.Name
 	}
 	return ""
 }
 
-func (x *AlertmanagerPool) GetAlertmanagerInstances() []string {
+func (x *AlertManagerPool) GetAlertmanagerInstances() []string {
 	if x != nil {
 		return x.AlertmanagerInstances
 	}
 	return nil
 }
 
-func (x *AlertmanagerPool) GetUserId() int64 {
+func (x *AlertManagerPool) GetUserId() int64 {
 	if x != nil {
 		return x.UserId
 	}
 	return 0
 }
 
-func (x *AlertmanagerPool) GetResolveTimeout() string {
+func (x *AlertManagerPool) GetResolveTimeout() string {
 	if x != nil {
 		return x.ResolveTimeout
 	}
 	return ""
 }
 
-func (x *AlertmanagerPool) GetGroupWait() string {
+func (x *AlertManagerPool) GetGroupWait() string {
 	if x != nil {
 		return x.GroupWait
 	}
 	return ""
 }
 
-func (x *AlertmanagerPool) GetGroupInterval() string {
+func (x *AlertManagerPool) GetGroupInterval() string {
 	if x != nil {
 		return x.GroupInterval
 	}
 	return ""
 }
 
-func (x *AlertmanagerPool) GetRepeatInterval() string {
+func (x *AlertManagerPool) GetRepeatInterval() string {
 	if x != nil {
 		return x.RepeatInterval
 	}
 	return ""
 }
 
-func (x *AlertmanagerPool) GetGroupBy() []string {
+func (x *AlertManagerPool) GetGroupBy() []string {
 	if x != nil {
 		return x.GroupBy
 	}
 	return nil
 }
 
-func (x *AlertmanagerPool) GetReceiver() string {
+func (x *AlertManagerPool) GetReceiver() string {
 	if x != nil {
 		return x.Receiver
 	}
 	return ""
 }
 
-type GetAlertmanagerPoolListRequest struct {
+type GetAlertManagerPoolListRequest struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 }
 
-func (x *GetAlertmanagerPoolListRequest) Reset() {
-	*x = GetAlertmanagerPoolListRequest{}
+func (x *GetAlertManagerPoolListRequest) Reset() {
+	*x = GetAlertManagerPoolListRequest{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_prometheus_rpc_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -730,13 +730,13 @@ func (x *GetAlertmanagerPoolListRequest) Reset() {
 	}
 }
 
-func (x *GetAlertmanagerPoolListRequest) String() string {
+func (x *GetAlertManagerPoolListRequest) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetAlertmanagerPoolListRequest) ProtoMessage() {}
+func (*GetAlertManagerPoolListRequest) ProtoMessage() {}
 
-func (x *GetAlertmanagerPoolListRequest) ProtoReflect() protoreflect.Message {
+func (x *GetAlertManagerPoolListRequest) ProtoReflect() protoreflect.Message {
 	mi := &file_prometheus_rpc_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -748,23 +748,23 @@ func (x *GetAlertmanagerPoolListRequest) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetAlertmanagerPoolListRequest.ProtoReflect.Descriptor instead.
-func (*GetAlertmanagerPoolListRequest) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetAlertManagerPoolListRequest.ProtoReflect.Descriptor instead.
+func (*GetAlertManagerPoolListRequest) Descriptor() ([]byte, []int) {
 	return file_prometheus_rpc_proto_rawDescGZIP(), []int{10}
 }
 
-type GetAlertmanagerPoolListResponse struct {
+type GetAlertManagerPoolListResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
 	Code    int32               `protobuf:"varint,1,opt,name=code,proto3" json:"code,omitempty"`
 	Message string              `protobuf:"bytes,2,opt,name=message,proto3" json:"message,omitempty"`
-	Data    []*AlertmanagerPool `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty"`
+	Data    []*AlertManagerPool `protobuf:"bytes,3,rep,name=data,proto3" json:"data,omitempty"`
 }
 
-func (x *GetAlertmanagerPoolListResponse) Reset() {
-	*x = GetAlertmanagerPoolListResponse{}
+func (x *GetAlertManagerPoolListResponse) Reset() {
+	*x = GetAlertManagerPoolListResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_prometheus_rpc_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -772,13 +772,13 @@ func (x *GetAlertmanagerPoolListResponse) Reset() {
 	}
 }
 
-func (x *GetAlertmanagerPoolListResponse) String() string {
+func (x *GetAlertManagerPoolListResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*GetAlertmanagerPoolListResponse) ProtoMessage() {}
+func (*GetAlertManagerPoolListResponse) ProtoMessage() {}
 
-func (x *GetAlertmanagerPoolListResponse) ProtoReflect() protoreflect.Message {
+func (x *GetAlertManagerPoolListResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_prometheus_rpc_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -790,26 +790,26 @@ func (x *GetAlertmanagerPoolListResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use GetAlertmanagerPoolListResponse.ProtoReflect.Descriptor instead.
-func (*GetAlertmanagerPoolListResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use GetAlertManagerPoolListResponse.ProtoReflect.Descriptor instead.
+func (*GetAlertManagerPoolListResponse) Descriptor() ([]byte, []int) {
 	return file_prometheus_rpc_proto_rawDescGZIP(), []int{11}
 }
 
-func (x *GetAlertmanagerPoolListResponse) GetCode() int32 {
+func (x *GetAlertManagerPoolListResponse) GetCode() int32 {
 	if x != nil {
 		return x.Code
 	}
 	return 0
 }
 
-func (x *GetAlertmanagerPoolListResponse) GetMessage() string {
+func (x *GetAlertManagerPoolListResponse) GetMessage() string {
 	if x != nil {
 		return x.Message
 	}
 	return ""
 }
 
-func (x *GetAlertmanagerPoolListResponse) GetData() []*AlertmanagerPool {
+func (x *GetAlertManagerPoolListResponse) GetData() []*AlertManagerPool {
 	if x != nil {
 		return x.Data
 	}
@@ -821,7 +821,7 @@ type CreateMonitorAlertManagerPoolRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Pool *AlertmanagerPool `protobuf:"bytes,1,opt,name=pool,proto3" json:"pool,omitempty"`
+	Pool *AlertManagerPool `protobuf:"bytes,1,opt,name=pool,proto3" json:"pool,omitempty"`
 }
 
 func (x *CreateMonitorAlertManagerPoolRequest) Reset() {
@@ -856,7 +856,7 @@ func (*CreateMonitorAlertManagerPoolRequest) Descriptor() ([]byte, []int) {
 	return file_prometheus_rpc_proto_rawDescGZIP(), []int{12}
 }
 
-func (x *CreateMonitorAlertManagerPoolRequest) GetPool() *AlertmanagerPool {
+func (x *CreateMonitorAlertManagerPoolRequest) GetPool() *AlertManagerPool {
 	if x != nil {
 		return x.Pool
 	}
@@ -923,7 +923,7 @@ type UpdateMonitorAlertManagerPoolRequest struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Pool *AlertmanagerPool `protobuf:"bytes,1,opt,name=pool,proto3" json:"pool,omitempty"`
+	Pool *AlertManagerPool `protobuf:"bytes,1,opt,name=pool,proto3" json:"pool,omitempty"`
 }
 
 func (x *UpdateMonitorAlertManagerPoolRequest) Reset() {
@@ -958,7 +958,7 @@ func (*UpdateMonitorAlertManagerPoolRequest) Descriptor() ([]byte, []int) {
 	return file_prometheus_rpc_proto_rawDescGZIP(), []int{14}
 }
 
-func (x *UpdateMonitorAlertManagerPoolRequest) GetPool() *AlertmanagerPool {
+func (x *UpdateMonitorAlertManagerPoolRequest) GetPool() *AlertManagerPool {
 	if x != nil {
 		return x.Pool
 	}
@@ -1813,7 +1813,7 @@ var file_prometheus_rpc_proto_rawDesc = []byte{
 	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20,
 	0x01, 0x28, 0x05, 0x52, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73,
 	0x73, 0x61, 0x67, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73,
-	0x61, 0x67, 0x65, 0x22, 0xd5, 0x02, 0x0a, 0x10, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x6d, 0x61, 0x6e,
+	0x61, 0x67, 0x65, 0x22, 0xd5, 0x02, 0x0a, 0x10, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x4d, 0x61, 0x6e,
 	0x61, 0x67, 0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x12, 0x0e, 0x0a, 0x02, 0x69, 0x64, 0x18, 0x01,
 	0x20, 0x01, 0x28, 0x03, 0x52, 0x02, 0x69, 0x64, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65,
 	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x35, 0x0a, 0x16,
@@ -1835,22 +1835,22 @@ var file_prometheus_rpc_proto_rawDesc = []byte{
 	0x18, 0x09, 0x20, 0x03, 0x28, 0x09, 0x52, 0x07, 0x67, 0x72, 0x6f, 0x75, 0x70, 0x42, 0x79, 0x12,
 	0x1a, 0x0a, 0x08, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x72, 0x18, 0x0a, 0x20, 0x01, 0x28,
 	0x09, 0x52, 0x08, 0x72, 0x65, 0x63, 0x65, 0x69, 0x76, 0x65, 0x72, 0x22, 0x20, 0x0a, 0x1e, 0x47,
-	0x65, 0x74, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x6d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f,
+	0x65, 0x74, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f,
 	0x6f, 0x6c, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x85, 0x01,
-	0x0a, 0x1f, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x6d, 0x61, 0x6e, 0x61, 0x67, 0x65,
+	0x0a, 0x1f, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65,
 	0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
 	0x65, 0x12, 0x12, 0x0a, 0x04, 0x63, 0x6f, 0x64, 0x65, 0x18, 0x01, 0x20, 0x01, 0x28, 0x05, 0x52,
 	0x04, 0x63, 0x6f, 0x64, 0x65, 0x12, 0x18, 0x0a, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65,
 	0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x07, 0x6d, 0x65, 0x73, 0x73, 0x61, 0x67, 0x65, 0x12,
 	0x34, 0x0a, 0x04, 0x64, 0x61, 0x74, 0x61, 0x18, 0x03, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x20, 0x2e,
 	0x70, 0x72, 0x6f, 0x6d, 0x65, 0x74, 0x68, 0x65, 0x75, 0x73, 0x5f, 0x72, 0x70, 0x63, 0x2e, 0x41,
-	0x6c, 0x65, 0x72, 0x74, 0x6d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x52,
+	0x6c, 0x65, 0x72, 0x74, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x52,
 	0x04, 0x64, 0x61, 0x74, 0x61, 0x22, 0x5c, 0x0a, 0x24, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4d,
 	0x6f, 0x6e, 0x69, 0x74, 0x6f, 0x72, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x4d, 0x61, 0x6e, 0x61, 0x67,
 	0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x12, 0x34, 0x0a,
 	0x04, 0x70, 0x6f, 0x6f, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x20, 0x2e, 0x70, 0x72,
 	0x6f, 0x6d, 0x65, 0x74, 0x68, 0x65, 0x75, 0x73, 0x5f, 0x72, 0x70, 0x63, 0x2e, 0x41, 0x6c, 0x65,
-	0x72, 0x74, 0x6d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x04, 0x70,
+	0x72, 0x74, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x04, 0x70,
 	0x6f, 0x6f, 0x6c, 0x22, 0x55, 0x0a, 0x25, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x4d, 0x6f, 0x6e,
 	0x69, 0x74, 0x6f, 0x72, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72,
 	0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x12, 0x0a, 0x04,
@@ -1861,7 +1861,7 @@ var file_prometheus_rpc_proto_rawDesc = []byte{
 	0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x71, 0x75, 0x65,
 	0x73, 0x74, 0x12, 0x34, 0x0a, 0x04, 0x70, 0x6f, 0x6f, 0x6c, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b,
 	0x32, 0x20, 0x2e, 0x70, 0x72, 0x6f, 0x6d, 0x65, 0x74, 0x68, 0x65, 0x75, 0x73, 0x5f, 0x72, 0x70,
-	0x63, 0x2e, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x6d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f,
+	0x63, 0x2e, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f,
 	0x6f, 0x6c, 0x52, 0x04, 0x70, 0x6f, 0x6f, 0x6c, 0x22, 0x55, 0x0a, 0x25, 0x55, 0x70, 0x64, 0x61,
 	0x74, 0x65, 0x4d, 0x6f, 0x6e, 0x69, 0x74, 0x6f, 0x72, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x4d, 0x61,
 	0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
@@ -1994,12 +1994,12 @@ var file_prometheus_rpc_proto_rawDesc = []byte{
 	0x63, 0x2e, 0x44, 0x65, 0x6c, 0x65, 0x74, 0x65, 0x4d, 0x6f, 0x6e, 0x69, 0x74, 0x6f, 0x72, 0x53,
 	0x63, 0x72, 0x61, 0x70, 0x65, 0x50, 0x6f, 0x6f, 0x6c, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73,
 	0x65, 0x12, 0x81, 0x01, 0x0a, 0x1e, 0x47, 0x65, 0x74, 0x4d, 0x6f, 0x6e, 0x69, 0x74, 0x6f, 0x72,
-	0x41, 0x6c, 0x65, 0x72, 0x74, 0x6d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c,
+	0x41, 0x6c, 0x65, 0x72, 0x74, 0x4d, 0x61, 0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c,
 	0x4c, 0x69, 0x73, 0x74, 0x12, 0x2e, 0x2e, 0x70, 0x72, 0x6f, 0x6d, 0x65, 0x74, 0x68, 0x65, 0x75,
-	0x73, 0x5f, 0x72, 0x70, 0x63, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x6d, 0x61,
+	0x73, 0x5f, 0x72, 0x70, 0x63, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x4d, 0x61,
 	0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x71,
 	0x75, 0x65, 0x73, 0x74, 0x1a, 0x2f, 0x2e, 0x70, 0x72, 0x6f, 0x6d, 0x65, 0x74, 0x68, 0x65, 0x75,
-	0x73, 0x5f, 0x72, 0x70, 0x63, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x6d, 0x61,
+	0x73, 0x5f, 0x72, 0x70, 0x63, 0x2e, 0x47, 0x65, 0x74, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x4d, 0x61,
 	0x6e, 0x61, 0x67, 0x65, 0x72, 0x50, 0x6f, 0x6f, 0x6c, 0x4c, 0x69, 0x73, 0x74, 0x52, 0x65, 0x73,
 	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x8c, 0x01, 0x0a, 0x1d, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
 	0x4d, 0x6f, 0x6e, 0x69, 0x74, 0x6f, 0x72, 0x41, 0x6c, 0x65, 0x72, 0x74, 0x4d, 0x61, 0x6e, 0x61,
@@ -2085,9 +2085,9 @@ var file_prometheus_rpc_proto_goTypes = []any{
 	(*UpdateMonitorScrapePoolResponse)(nil),       // 6: prometheus_rpc.UpdateMonitorScrapePoolResponse
 	(*DeleteMonitorScrapePoolRequest)(nil),        // 7: prometheus_rpc.DeleteMonitorScrapePoolRequest
 	(*DeleteMonitorScrapePoolResponse)(nil),       // 8: prometheus_rpc.DeleteMonitorScrapePoolResponse
-	(*AlertmanagerPool)(nil),                      // 9: prometheus_rpc.AlertmanagerPool
-	(*GetAlertmanagerPoolListRequest)(nil),        // 10: prometheus_rpc.GetAlertmanagerPoolListRequest
-	(*GetAlertmanagerPoolListResponse)(nil),       // 11: prometheus_rpc.GetAlertmanagerPoolListResponse
+	(*AlertManagerPool)(nil),                      // 9: prometheus_rpc.AlertManagerPool
+	(*GetAlertManagerPoolListRequest)(nil),        // 10: prometheus_rpc.GetAlertManagerPoolListRequest
+	(*GetAlertManagerPoolListResponse)(nil),       // 11: prometheus_rpc.GetAlertManagerPoolListResponse
 	(*CreateMonitorAlertManagerPoolRequest)(nil),  // 12: prometheus_rpc.CreateMonitorAlertManagerPoolRequest
 	(*CreateMonitorAlertManagerPoolResponse)(nil), // 13: prometheus_rpc.CreateMonitorAlertManagerPoolResponse
 	(*UpdateMonitorAlertManagerPoolRequest)(nil),  // 14: prometheus_rpc.UpdateMonitorAlertManagerPoolRequest
@@ -2108,9 +2108,9 @@ var file_prometheus_rpc_proto_depIdxs = []int32{
 	0,  // 0: prometheus_rpc.GetMonitorScrapePoolListResponse.data:type_name -> prometheus_rpc.ScrapePool
 	0,  // 1: prometheus_rpc.CreateMonitorScrapePoolRequest.pool:type_name -> prometheus_rpc.ScrapePool
 	0,  // 2: prometheus_rpc.UpdateMonitorScrapePoolRequest.pool:type_name -> prometheus_rpc.ScrapePool
-	9,  // 3: prometheus_rpc.GetAlertmanagerPoolListResponse.data:type_name -> prometheus_rpc.AlertmanagerPool
-	9,  // 4: prometheus_rpc.CreateMonitorAlertManagerPoolRequest.pool:type_name -> prometheus_rpc.AlertmanagerPool
-	9,  // 5: prometheus_rpc.UpdateMonitorAlertManagerPoolRequest.pool:type_name -> prometheus_rpc.AlertmanagerPool
+	9,  // 3: prometheus_rpc.GetAlertManagerPoolListResponse.data:type_name -> prometheus_rpc.AlertManagerPool
+	9,  // 4: prometheus_rpc.CreateMonitorAlertManagerPoolRequest.pool:type_name -> prometheus_rpc.AlertManagerPool
+	9,  // 5: prometheus_rpc.UpdateMonitorAlertManagerPoolRequest.pool:type_name -> prometheus_rpc.AlertManagerPool
 	18, // 6: prometheus_rpc.GetMonitorScrapeJobListResponse.data:type_name -> prometheus_rpc.ScrapeJob
 	18, // 7: prometheus_rpc.CreateMonitorScrapeJobRequest.job:type_name -> prometheus_rpc.ScrapeJob
 	18, // 8: prometheus_rpc.UpdateMonitorScrapeJobRequest.job:type_name -> prometheus_rpc.ScrapeJob
@@ -2118,7 +2118,7 @@ var file_prometheus_rpc_proto_depIdxs = []int32{
 	3,  // 10: prometheus_rpc.Prometheus_rpc.CreateMonitorScrapePool:input_type -> prometheus_rpc.CreateMonitorScrapePoolRequest
 	5,  // 11: prometheus_rpc.Prometheus_rpc.UpdateMonitorScrapePool:input_type -> prometheus_rpc.UpdateMonitorScrapePoolRequest
 	7,  // 12: prometheus_rpc.Prometheus_rpc.DeleteMonitorScrapePool:input_type -> prometheus_rpc.DeleteMonitorScrapePoolRequest
-	10, // 13: prometheus_rpc.Prometheus_rpc.GetMonitorAlertmanagerPoolList:input_type -> prometheus_rpc.GetAlertmanagerPoolListRequest
+	10, // 13: prometheus_rpc.Prometheus_rpc.GetMonitorAlertManagerPoolList:input_type -> prometheus_rpc.GetAlertManagerPoolListRequest
 	12, // 14: prometheus_rpc.Prometheus_rpc.CreateMonitorAlertManagerPool:input_type -> prometheus_rpc.CreateMonitorAlertManagerPoolRequest
 	14, // 15: prometheus_rpc.Prometheus_rpc.UpdateMonitorAlertManagerPool:input_type -> prometheus_rpc.UpdateMonitorAlertManagerPoolRequest
 	16, // 16: prometheus_rpc.Prometheus_rpc.DeleteMonitorAlertManagerPool:input_type -> prometheus_rpc.DeleteMonitorAlertManagerPoolRequest
@@ -2130,7 +2130,7 @@ var file_prometheus_rpc_proto_depIdxs = []int32{
 	4,  // 22: prometheus_rpc.Prometheus_rpc.CreateMonitorScrapePool:output_type -> prometheus_rpc.CreateMonitorScrapePoolResponse
 	6,  // 23: prometheus_rpc.Prometheus_rpc.UpdateMonitorScrapePool:output_type -> prometheus_rpc.UpdateMonitorScrapePoolResponse
 	8,  // 24: prometheus_rpc.Prometheus_rpc.DeleteMonitorScrapePool:output_type -> prometheus_rpc.DeleteMonitorScrapePoolResponse
-	11, // 25: prometheus_rpc.Prometheus_rpc.GetMonitorAlertmanagerPoolList:output_type -> prometheus_rpc.GetAlertmanagerPoolListResponse
+	11, // 25: prometheus_rpc.Prometheus_rpc.GetMonitorAlertManagerPoolList:output_type -> prometheus_rpc.GetAlertManagerPoolListResponse
 	13, // 26: prometheus_rpc.Prometheus_rpc.CreateMonitorAlertManagerPool:output_type -> prometheus_rpc.CreateMonitorAlertManagerPoolResponse
 	15, // 27: prometheus_rpc.Prometheus_rpc.UpdateMonitorAlertManagerPool:output_type -> prometheus_rpc.UpdateMonitorAlertManagerPoolResponse
 	17, // 28: prometheus_rpc.Prometheus_rpc.DeleteMonitorAlertManagerPool:output_type -> prometheus_rpc.DeleteMonitorAlertManagerPoolResponse
@@ -2260,7 +2260,7 @@ func file_prometheus_rpc_proto_init() {
 			}
 		}
 		file_prometheus_rpc_proto_msgTypes[9].Exporter = func(v any, i int) any {
-			switch v := v.(*AlertmanagerPool); i {
+			switch v := v.(*AlertManagerPool); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2272,7 +2272,7 @@ func file_prometheus_rpc_proto_init() {
 			}
 		}
 		file_prometheus_rpc_proto_msgTypes[10].Exporter = func(v any, i int) any {
-			switch v := v.(*GetAlertmanagerPoolListRequest); i {
+			switch v := v.(*GetAlertManagerPoolListRequest); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -2284,7 +2284,7 @@ func file_prometheus_rpc_proto_init() {
 			}
 		}
 		file_prometheus_rpc_proto_msgTypes[11].Exporter = func(v any, i int) any {
-			switch v := v.(*GetAlertmanagerPoolListResponse); i {
+			switch v := v.(*GetAlertManagerPoolListResponse); i {
 			case 0:
 				return &v.state
 			case 1:

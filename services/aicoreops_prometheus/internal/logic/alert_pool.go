@@ -9,40 +9,40 @@ import (
 	"github.com/zeromicro/go-zero/core/logx"
 )
 
-type AlertmanagerLogic struct {
+type AlertManagerPoolLogic struct {
 	ctx    context.Context
-	domain *domain.AltermanagerDomain
+	domain *domain.AlterManagerPoolDomain
 	svcCtx *svc.ServiceContext
 	logx.Logger
 }
 
-func NewAlertmanagerLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AlertmanagerLogic {
-	return &AlertmanagerLogic{
+func NewAlertManagerPoolLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AlertManagerPoolLogic {
+	return &AlertManagerPoolLogic{
 		ctx:    ctx,
-		domain: domain.NewAltermanagerDomain(svcCtx),
+		domain: domain.NewAlterManagerPoolDomain(svcCtx),
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
 }
 
-func (a *AlertmanagerLogic) GetMonitorAlertmanagerPoolList(ctx context.Context) (*types.GetAlertmanagerPoolListResponse, error) {
-	pools, err := a.domain.GetMonitorAlertmanagerPoolList(ctx, nil)
+func (a *AlertManagerPoolLogic) GetMonitorAlertManagerPoolList(ctx context.Context) (*types.GetAlertManagerPoolListResponse, error) {
+	pools, err := a.domain.GetMonitorAlertManagerPoolList(ctx, nil)
 	if err != nil {
 		a.Logger.Errorf("获取 Alertmanager 集群池列表失败: %v", err)
 		return nil, err
 	}
 
-	return &types.GetAlertmanagerPoolListResponse{
+	return &types.GetAlertManagerPoolListResponse{
 		Code:    0,
 		Message: "获取 Alertmanager 集群池列表成功",
-		Data:    a.domain.BuildAlertmanagerPoolRespModel(pools),
+		Data:    a.domain.BuildAlertManagerPoolRespModel(pools),
 	}, nil
 }
 
-func (a *AlertmanagerLogic) CreateMonitorAlertManagerPool(ctx context.Context, req *types.CreateMonitorAlertManagerPoolRequest) (*types.CreateMonitorAlertManagerPoolResponse, error) {
+func (a *AlertManagerPoolLogic) CreateMonitorAlertManagerPool(ctx context.Context, req *types.CreateMonitorAlertManagerPoolRequest) (*types.CreateMonitorAlertManagerPoolResponse, error) {
 	// 创建 Alertmanger 集群池
-	pool := a.domain.BuildMonitorAlertmanagerPoolModel(req.Pool)
-	err := a.domain.CreateMonitorAlertmanagerPool(ctx, pool)
+	pool := a.domain.BuildMonitorAlertManagerPoolModel(req.Pool)
+	err := a.domain.CreateMonitorAlertManagerPool(ctx, pool)
 	if err != nil {
 		a.Logger.Errorf("创建 Alertmanager 集群池失败: %v", err)
 		return nil, err
@@ -58,10 +58,10 @@ func (a *AlertmanagerLogic) CreateMonitorAlertManagerPool(ctx context.Context, r
 	}, nil
 }
 
-func (a *AlertmanagerLogic) UpdateMonitorAlertManagerPool(ctx context.Context, req *types.UpdateMonitorAlertManagerPoolRequest) (*types.UpdateMonitorAlertManagerPoolResponse, error) {
+func (a *AlertManagerPoolLogic) UpdateMonitorAlertManagerPool(ctx context.Context, req *types.UpdateMonitorAlertManagerPoolRequest) (*types.UpdateMonitorAlertManagerPoolResponse, error) {
 	// 更新 Alertmanger 集群池
-	pool := a.domain.BuildMonitorAlertmanagerPoolModel(req.Pool)
-	err := a.domain.UpdateMonitorAlertmanagerPool(ctx, pool)
+	pool := a.domain.BuildMonitorAlertManagerPoolModel(req.Pool)
+	err := a.domain.UpdateMonitorAlertManagerPool(ctx, pool)
 	if err != nil {
 		a.Logger.Errorf("更新 Alertmanager 集群池失败: %v", err)
 		return nil, err
@@ -77,11 +77,11 @@ func (a *AlertmanagerLogic) UpdateMonitorAlertManagerPool(ctx context.Context, r
 	}, nil
 }
 
-func (a *AlertmanagerLogic) DeleteMonitorAlertManagerPool(ctx context.Context, req *types.DeleteMonitorAlertManagerPoolRequest) (*types.DeleteMonitorAlertManagerPoolResponse, error) {
+func (a *AlertManagerPoolLogic) DeleteMonitorAlertManagerPool(ctx context.Context, req *types.DeleteMonitorAlertManagerPoolRequest) (*types.DeleteMonitorAlertManagerPoolResponse, error) {
 	// TODO 检查 Alertmanager 是否关联发送组
 
 	// 删除 Alertmanger 集群池
-	err := a.domain.DeleteMonitorAlertmanagerPool(ctx, req.Id)
+	err := a.domain.DeleteMonitorAlertManagerPool(ctx, req.Id)
 	if err != nil {
 		a.Logger.Errorf("删除 Alertmanager 集群池失败: %v", err)
 		return nil, err
