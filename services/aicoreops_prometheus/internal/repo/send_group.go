@@ -18,4 +18,5 @@ type SendGroupRepo interface {
 	DeleteMonitorSendGroup(ctx context.Context, id int64) error
 	CheckMonitorSendGroupExists(ctx context.Context, sendGroup *model.MonitorSendGroup) (bool, error)
 	CheckMonitorSendGroupNameExists(ctx context.Context, sendGroup *model.MonitorSendGroup) (bool, error)
+	GetMonitorSendGroupByName(ctx context.Context, name string) (*model.MonitorSendGroup, error)
 }

@@ -27,3 +27,21 @@ func TestPromConfigCache_GeneratePrometheusMainConfig(t *testing.T) {
 	})
 	promConfigCache.GeneratePrometheusMainConfig(ctx)
 }
+
+func TestAlertConfigCache_generateRouteConfigOnePool(t *testing.T) {
+	ctx := context.Background()
+	db, err := gorm.Open(mysql.Open("root:root@tcp(localhost:3306)/AICoreOps?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	alertConfigCache := NewAlertConfigCache(ctx, db, &config.Config{
+		AlertManagerConfig: config.AlertManagerConfig{
+			LocalYamlDir:     "./local_yaml",
+			AlertWebhookAddr: "http://localhost:8888/api/not_auth/getTreeNodeBindIps",
+		},
+	})
+	alertConfigCache.GenerateAlertManagerMainConfig(ctx)
+}

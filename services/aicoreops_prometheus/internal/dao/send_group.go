@@ -92,3 +92,12 @@ func (d *SendGroupDao) CheckMonitorSendGroupNameExists(ctx context.Context, send
 	}
 	return count > 0, nil
 }
+
+// GetMonitorSendGroupByName 根据名称获取发送组
+func (d *SendGroupDao) GetMonitorSendGroupByName(ctx context.Context, name string) (*model.MonitorSendGroup, error) {
+	var sendGroup model.MonitorSendGroup
+	if err := d.db.WithContext(ctx).Where("name = ?", name).First(&sendGroup).Error; err != nil {
+		return nil, err
+	}
+	return &sendGroup, nil
+}

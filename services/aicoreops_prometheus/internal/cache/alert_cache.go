@@ -180,15 +180,6 @@ func (a *alertConfigCache) generateMainConfigOnePool(pool *model.MonitorAlertMan
 		},
 	}
 
-	//// 如果有默认rs列表中Receiver，则添加到Receive
-	//if config.Route.Receiver != "" {
-	//	config.Receivers = []altconfig.Receiver{
-	//		{
-	//			Name: config.Route.Receiver, // 接收者名称
-	//		},
-	//	}
-	//}
-
 	return config
 }
 
@@ -207,7 +198,14 @@ func (a *alertConfigCache) generateRouteConfigOnePool(ctx context.Context, pool 
 	var routes []*alertconfig.Route
 	var receivers []alertconfig.Receiver
 
+	var default_receiver bool
+
 	for _, sendGroup := range sendGroups {
+		// 去重 default_receiver
+		if sendGroup.Name == pool.Receiver {
+			default_receiver = true
+		}
+
 		// 解析RepeatInterval
 		repeatInterval, err := pm.ParseDuration(sendGroup.RepeatInterval)
 		if err != nil {
@@ -261,6 +259,43 @@ func (a *alertConfigCache) generateRouteConfigOnePool(ctx context.Context, pool 
 		// 添加到routes和receivers中
 		routes = append(routes, route)
 		receivers = append(receivers, receiver)
+	}
+
+	// 如果有默认rs列表中Receiver，则添加到Receivers
+	// 如果default_receiver为true，包含在sendGroups中
+	if pool.Receiver != "" && !default_receiver {
+		defaultSendGroup, err := a.alertSendRepo.GetMonitorSendGroupByName(ctx, pool.Receiver)
+		if err != nil {
+			a.Logger.Errorf("alertPool [%v] 获取默认Receiver失败：%v", pool.Name, err)
+			return nil, nil
+		}
+
+		webHookURL := fmt.Sprintf("%s?%s=%d",
+			a.alertWebhookAddr,
+			alertSendGroupKey,
+			defaultSendGroup.ID,
+		)
+
+		// 将 URL 写入到 .txt 文件
+		urlFilePath := fmt.Sprintf("%s/webhook_url_%d.txt", a.localYamlDir, defaultSendGroup.ID)
+		err = os.WriteFile(urlFilePath, []byte(webHookURL), 0644)
+		if err != nil {
+			a.Logger.Errorf("alertPool [%v] 写入Webhook URL文件失败: %v", pool.Name, err)
+			return nil, nil
+		}
+
+		receivers = append(receivers, alertconfig.Receiver{
+			Name: defaultSendGroup.Name, // 接收者名称
+			WebhookConfigs: []*alertconfig.WebhookConfig{ // Webhook配置
+				{
+					NotifierConfig: alertconfig.NotifierConfig{ // Notifier配置 用于告警通知
+						VSendResolved: defaultSendGroup.SendResolved == 1, // 在告警解决时是否发送通知
+					},
+					URLFile: urlFilePath,
+				},
+			},
+		})
+
 	}
 
 	return routes, receivers

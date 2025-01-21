@@ -23,6 +23,36 @@ services:
     networks:
       - prom-network
 
+  # AlertManager 实例1
+  alertmanager1:
+    image: prom/alertmanager:latest
+    container_name: alertmanager1
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager1:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yaml'
+      - '--cluster.listen-address=0.0.0.0:9094'
+      - '--cluster.peer=alertmanager2:9094'
+    networks:
+      - prom-network
+
+  # AlertManager 实例2
+  alertmanager2:
+    image: prom/alertmanager:latest
+    container_name: alertmanager2
+    ports:
+      - "9095:9093"
+    volumes:
+      - ./alertmanager2:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yaml'
+      - '--cluster.listen-address=0.0.0.0:9094'
+      - '--cluster.peer=alertmanager1:9094'
+    networks:
+      - prom-network
+
   # 模拟的目标服务（提供 metrics）
   target-service-1:
     build:
