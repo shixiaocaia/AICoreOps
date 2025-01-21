@@ -53,7 +53,7 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 
 		// 获取 token
 		token := r.Header.Get("Authorization")
-		if token == "" {
+		if token == "" && r.URL.Path != "/api/ai/ask" {
 			logx.Error("token为空")
 			response.SetFailResponse(aicoreops_common.BizCodeUnauthorized, tools.ErrEmptyToken.Error())
 			httpx.WriteJson(w, http.StatusUnauthorized, response)
@@ -64,6 +64,8 @@ func (m *AuthMiddleware) Handle(next http.HandlerFunc) http.HandlerFunc {
 		const bearerPrefix = "Bearer "
 		if len(token) > len(bearerPrefix) && token[:len(bearerPrefix)] == bearerPrefix {
 			token = token[len(bearerPrefix):]
+		} else if r.URL.Path == "/api/ai/ask" {
+			token = r.URL.Query().Get("token")
 		} else {
 			logx.Error("token格式错误")
 			response.SetFailResponse(aicoreops_common.BizCodeUnauthorized, "invalid token format")
