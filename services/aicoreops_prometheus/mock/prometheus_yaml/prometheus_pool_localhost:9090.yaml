@@ -1,0 +1,26 @@
+global:
+  scrape_interval: 15s
+  scrape_timeout: 10s
+scrape_configs:
+- job_name: TestJob1
+  honor_timestamps: false
+  track_timestamps_staleness: false
+  scrape_interval: 15s
+  scrape_timeout: 10s
+  metrics_path: /metrics
+  scheme: http
+  enable_compression: false
+  follow_redirects: false
+  enable_http2: false
+  relabel_configs: 
+  - source_labels: [__address__]
+    separator: ;
+    regex: (.+):\d+
+    target_label: __address__
+    replacement: $1:9100 # 正则匹配后，修改为 8080
+    action: replace
+  http_sd_configs:
+  - follow_redirects: false
+    enable_http2: false
+    refresh_interval: 1m # 刷新间隔
+    url: http://sd-service:8888/api/not_auth/getTreeNodeBindIps?port=8080&leafNodeIds=1001,1002
