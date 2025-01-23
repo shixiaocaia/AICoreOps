@@ -45,3 +45,20 @@ func TestAlertConfigCache_generateRouteConfigOnePool(t *testing.T) {
 	})
 	alertConfigCache.GenerateAlertManagerMainConfig(ctx)
 }
+
+func TestRuleConfigCache_GenerateAlertRuleConfigYaml(t *testing.T) {
+	ctx := context.Background()
+	db, err := gorm.Open(mysql.Open("root:root@tcp(localhost:3306)/AICoreOps?charset=utf8mb4&parseTime=True&loc=Local"), &gorm.Config{
+		Logger: logger.Default.LogMode(logger.Info),
+	})
+	if err != nil {
+		panic(err)
+	}
+
+	ruleConfigCache := NewRuleConfigCache(ctx, db, &config.Config{
+		AlertManagerConfig: config.AlertManagerConfig{
+			LocalYamlDir: "./local_yaml",
+		},
+	})
+	ruleConfigCache.GenerateAlertRuleConfigYaml(ctx)
+}
