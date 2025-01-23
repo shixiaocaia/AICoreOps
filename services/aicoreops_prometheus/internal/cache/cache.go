@@ -20,6 +20,7 @@ type monitorCache struct {
 	PrometheusMainConfig PromConfigCache
 	AlertConfigCache     AlertConfigCache
 	RuleConfigCache      RuleConfigCache
+	RecordConfigCache    RecordConfigCache
 }
 
 func NewMonitorCache(ctx context.Context, db *gorm.DB, config *config.Config) MonitorCache {
@@ -28,6 +29,7 @@ func NewMonitorCache(ctx context.Context, db *gorm.DB, config *config.Config) Mo
 		PrometheusMainConfig: NewPromConfigCache(ctx, db, config),
 		AlertConfigCache:     NewAlertConfigCache(ctx, db, config),
 		RuleConfigCache:      NewRuleConfigCache(ctx, db, config),
+		RecordConfigCache:    NewRecordConfigCache(ctx, db, config),
 	}
 }
 
@@ -61,6 +63,7 @@ func (mc *monitorCache) MonitorCacheManager(ctx context.Context) error {
 	go executeTask("生成 Prometheus 配置", mc.PrometheusMainConfig.GeneratePrometheusMainConfig)
 	go executeTask("生成 AlertManager 配置", mc.AlertConfigCache.GenerateAlertManagerMainConfig)
 	go executeTask("生成 AlertRule 配置", mc.RuleConfigCache.GenerateAlertRuleConfigYaml)
+	go executeTask("生成 RecordRule 配置", mc.RecordConfigCache.GenerateRecordRuleConfigYaml)
 
 	mc.Logger.Info("更新所有监控缓存配置完成")
 	return nil
