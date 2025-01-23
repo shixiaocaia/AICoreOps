@@ -56,7 +56,7 @@ func NewRuleConfigCache(ctx context.Context, db *gorm.DB, config *config.Config)
 		localYamlDir:   config.AlertManagerConfig.LocalYamlDir,
 		AlertRuleMap:   make(map[string]string),
 		scrapePoolRepo: dao.NewMonitorScrapePoolDAO(db),
-		alertRuleRepo:  dao.NewAlertRuleDao(db),
+		alertRuleRepo:  dao.NewMonitorAlertRuleDAO(db),
 	}
 }
 

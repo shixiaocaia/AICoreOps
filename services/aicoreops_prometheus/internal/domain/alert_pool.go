@@ -18,7 +18,7 @@ type AlterManagerPoolDomain struct {
 }
 
 func NewAlterManagerPoolDomain(ctx *svc.ServiceContext) *AlterManagerPoolDomain {
-	return &AlterManagerPoolDomain{repo: dao.NewAlertManagerPoolDao(ctx.DB)}
+	return &AlterManagerPoolDomain{repo: dao.NewAlertManagerPoolDAO(ctx.DB)}
 }
 
 func (a *AlterManagerPoolDomain) CreateMonitorAlertManagerPool(ctx context.Context, pool *model.MonitorAlertManagerPool) error {

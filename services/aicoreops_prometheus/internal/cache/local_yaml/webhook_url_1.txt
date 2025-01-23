@@ -1,1 +1,0 @@
-http://localhost:8888/api/not_auth/getTreeNodeBindIps?alert_send_group=1

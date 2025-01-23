@@ -10,16 +10,16 @@ import (
 	"gorm.io/gorm"
 )
 
-type AlertManagerPoolDao struct {
+type AlertManagerPoolDAO struct {
 	db *gorm.DB
 }
 
-func NewAlertManagerPoolDao(db *gorm.DB) *AlertManagerPoolDao {
-	return &AlertManagerPoolDao{db: db}
+func NewAlertManagerPoolDAO(db *gorm.DB) *AlertManagerPoolDAO {
+	return &AlertManagerPoolDAO{db: db}
 }
 
 // CreateMonitorAlertManagerPool 创建AlertManager池
-func (d *AlertManagerPoolDao) CreateMonitorAlertManagerPool(ctx context.Context, pool *model.MonitorAlertManagerPool) error {
+func (d *AlertManagerPoolDAO) CreateMonitorAlertManagerPool(ctx context.Context, pool *model.MonitorAlertManagerPool) error {
 	if pool == nil {
 		return errors.New("pool 不能为空")
 	}
@@ -28,7 +28,7 @@ func (d *AlertManagerPoolDao) CreateMonitorAlertManagerPool(ctx context.Context,
 }
 
 // GetMonitorAlertManagerPoolList 获取AlertManager池列表
-func (d *AlertManagerPoolDao) GetMonitorAlertManagerPoolList(ctx context.Context) ([]*model.MonitorAlertManagerPool, error) {
+func (d *AlertManagerPoolDAO) GetMonitorAlertManagerPoolList(ctx context.Context) ([]*model.MonitorAlertManagerPool, error) {
 	var pools []*model.MonitorAlertManagerPool
 	if err := d.db.WithContext(ctx).Find(&pools).Error; err != nil {
 		return nil, err
@@ -37,7 +37,7 @@ func (d *AlertManagerPoolDao) GetMonitorAlertManagerPoolList(ctx context.Context
 }
 
 // SearchMonitorAlertManagerPoolByName 根据名称搜索AlertManager池
-func (d *AlertManagerPoolDao) SearchMonitorAlertManagerPoolByName(ctx context.Context, name string) ([]*model.MonitorAlertManagerPool, error) {
+func (d *AlertManagerPoolDAO) SearchMonitorAlertManagerPoolByName(ctx context.Context, name string) ([]*model.MonitorAlertManagerPool, error) {
 	var pools []*model.MonitorAlertManagerPool
 	if err := d.db.WithContext(ctx).
 		Where("LOWER(name) LIKE ?", "%"+strings.ToLower(name)+"%").
@@ -49,7 +49,7 @@ func (d *AlertManagerPoolDao) SearchMonitorAlertManagerPoolByName(ctx context.Co
 }
 
 // UpdateMonitorAlertManagerPool 更新AlertManager池
-func (d *AlertManagerPoolDao) UpdateMonitorAlertManagerPool(ctx context.Context, pool *model.MonitorAlertManagerPool) error {
+func (d *AlertManagerPoolDAO) UpdateMonitorAlertManagerPool(ctx context.Context, pool *model.MonitorAlertManagerPool) error {
 	if pool == nil {
 		return errors.New("pool 不能为空")
 	}
@@ -62,7 +62,7 @@ func (d *AlertManagerPoolDao) UpdateMonitorAlertManagerPool(ctx context.Context,
 }
 
 // DeleteMonitorAlertManagerPool 删除AlertManager池
-func (d *AlertManagerPoolDao) DeleteMonitorAlertManagerPool(ctx context.Context, poolId int64) error {
+func (d *AlertManagerPoolDAO) DeleteMonitorAlertManagerPool(ctx context.Context, poolId int64) error {
 	if poolId <= 0 {
 		return fmt.Errorf("无效的 poolId：%d", poolId)
 	}
@@ -71,7 +71,7 @@ func (d *AlertManagerPoolDao) DeleteMonitorAlertManagerPool(ctx context.Context,
 }
 
 // CheckMonitorAlertManagerPoolExist 检查 AlertManagerPool 是否存在
-func (d *AlertManagerPoolDao) CheckMonitorAlertManagerPoolExist(ctx context.Context, name string) (bool, error) {
+func (d *AlertManagerPoolDAO) CheckMonitorAlertManagerPoolExist(ctx context.Context, name string) (bool, error) {
 	var count int64
 	err := d.db.WithContext(ctx).Model(&model.MonitorAlertManagerPool{}).Where("name = ?", name).Count(&count).Error
 	if err != nil {

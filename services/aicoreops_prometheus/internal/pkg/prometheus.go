@@ -15,7 +15,6 @@ import (
 	"github.com/prometheus/alertmanager/pkg/labels"
 	pcc "github.com/prometheus/common/config"
 	pm "github.com/prometheus/common/model"
-	promModel "github.com/prometheus/common/model"
 	pc "github.com/prometheus/prometheus/config"
 	"github.com/prometheus/prometheus/discovery"
 	"github.com/prometheus/prometheus/model/relabel"
@@ -24,8 +23,8 @@ import (
 )
 
 // ParseTags 将 ECS 的 Tags 切片解析为 Prometheus 的标签映射
-func ParseTags(tags []string) (map[promModel.LabelName]promModel.LabelValue, error) {
-	labels := make(map[promModel.LabelName]promModel.LabelValue)
+func ParseTags(tags []string) (map[pm.LabelName]pm.LabelValue, error) {
+	labels := make(map[pm.LabelName]pm.LabelValue)
 
 	// 遍历 tags 切片，每两个元素构成一个键值对
 	for i := 0; i < len(tags); i += 2 {
@@ -40,7 +39,7 @@ func ParseTags(tags []string) (map[promModel.LabelName]promModel.LabelValue, err
 		}
 
 		value := strings.TrimSpace(tags[i+1])
-		labels[promModel.LabelName(key)] = promModel.LabelValue(value)
+		labels[pm.LabelName(key)] = pm.LabelValue(value)
 	}
 
 	return labels, nil

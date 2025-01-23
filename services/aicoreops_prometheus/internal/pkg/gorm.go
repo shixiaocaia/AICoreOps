@@ -51,5 +51,6 @@ func InitTables(db *gorm.DB) error {
 		model.MonitorAlertRule{},
 		model.MonitorAlertEvent{},
 		model.MonitorSendGroup{},
+		model.MonitorRecordRule{},
 	)
 }

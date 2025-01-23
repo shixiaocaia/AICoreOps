@@ -51,8 +51,8 @@ func NewAlertConfigCache(ctx context.Context, db *gorm.DB, config *config.Config
 		localYamlDir:              config.AlertManagerConfig.LocalYamlDir,
 		alertWebhookAddr:          config.AlertManagerConfig.AlertWebhookAddr,
 		alertManagerMainConfigMap: make(map[string]string),
-		alertPoolRepo:             dao.NewAlertManagerPoolDao(db),
-		alertSendRepo:             dao.NewSendGroupDao(db),
+		alertPoolRepo:             dao.NewAlertManagerPoolDAO(db),
+		alertSendRepo:             dao.NewSendGroupDAO(db),
 	}
 }
 
