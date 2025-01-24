@@ -7,95 +7,97 @@ import (
 	"gorm.io/gorm"
 )
 
-type MonitorAlertRuleDAO struct {
+type AlertRuleDAO struct {
 	db *gorm.DB
 }
 
-func NewMonitorAlertRuleDAO(db *gorm.DB) *MonitorAlertRuleDAO {
-	return &MonitorAlertRuleDAO{
+func NewAlertRuleDAO(db *gorm.DB) *AlertRuleDAO {
+	return &AlertRuleDAO{
 		db: db,
 	}
 }
 
-// GetMonitorAlertRuleByPoolId 根据池ID获取告警规则列表
-func (d *MonitorAlertRuleDAO) GetMonitorAlertRuleByPoolId(ctx context.Context, poolId int) ([]*model.MonitorAlertRule, error) {
-	var rules []*model.MonitorAlertRule
+// GetAlertRuleByPoolId 根据池ID获取告警规则列表
+func (d *AlertRuleDAO) GetAlertRuleByPoolId(ctx context.Context, poolId int64) ([]*model.AlertRule, error) {
+	var rules []*model.AlertRule
 	err := d.db.WithContext(ctx).Where("pool_id = ? AND is_deleted = 0", poolId).Find(&rules).Error
 	return rules, err
 }
 
-// SearchMonitorAlertRuleByName 根据名称搜索告警规则
-func (d *MonitorAlertRuleDAO) SearchMonitorAlertRuleByName(ctx context.Context, name string) ([]*model.MonitorAlertRule, error) {
-	var rules []*model.MonitorAlertRule
+// SearchAlertRuleByName 根据名称搜索告警规则
+func (d *AlertRuleDAO) SearchAlertRuleByName(ctx context.Context, name string) ([]*model.AlertRule, error) {
+	var rules []*model.AlertRule
 	err := d.db.WithContext(ctx).Where("name LIKE ? AND is_deleted = 0", "%"+name+"%").Find(&rules).Error
 	return rules, err
 }
 
-// GetMonitorAlertRuleList 获取所有告警规则列表
-func (d *MonitorAlertRuleDAO) GetMonitorAlertRuleList(ctx context.Context) ([]*model.MonitorAlertRule, error) {
-	var rules []*model.MonitorAlertRule
+// GetAlertRuleList 获取所有告警规则列表
+func (d *AlertRuleDAO) GetAlertRuleList(ctx context.Context) ([]*model.AlertRule, error) {
+	var rules []*model.AlertRule
 	err := d.db.WithContext(ctx).Where("is_deleted = 0").Find(&rules).Error
 	return rules, err
 }
 
-// CreateMonitorAlertRule 创建告警规则
-func (d *MonitorAlertRuleDAO) CreateMonitorAlertRule(ctx context.Context, monitorAlertRule *model.MonitorAlertRule) error {
+// CreateAlertRule 创建告警规则
+func (d *AlertRuleDAO) CreateAlertRule(ctx context.Context, monitorAlertRule *model.AlertRule) error {
 	return d.db.WithContext(ctx).Create(monitorAlertRule).Error
 }
 
-// GetMonitorAlertRuleById 根据ID获取告警规则
-func (d *MonitorAlertRuleDAO) GetMonitorAlertRuleById(ctx context.Context, id int) (*model.MonitorAlertRule, error) {
-	var rule model.MonitorAlertRule
+// GetAlertRuleById 根据ID获取告警规则
+func (d *AlertRuleDAO) GetAlertRuleById(ctx context.Context, id int64) (*model.AlertRule, error) {
+	var rule model.AlertRule
 	err := d.db.WithContext(ctx).Where("id = ? AND is_deleted = 0", id).First(&rule).Error
 	return &rule, err
 }
 
-// UpdateMonitorAlertRule 更新告警规则
-func (d *MonitorAlertRuleDAO) UpdateMonitorAlertRule(ctx context.Context, monitorAlertRule *model.MonitorAlertRule) error {
+// UpdateAlertRule 更新告警规则
+func (d *AlertRuleDAO) UpdateAlertRule(ctx context.Context, monitorAlertRule *model.AlertRule) error {
 	return d.db.WithContext(ctx).Save(monitorAlertRule).Error
 }
 
-// EnableSwitchMonitorAlertRule 启用/禁用告警规则
-func (d *MonitorAlertRuleDAO) EnableSwitchMonitorAlertRule(ctx context.Context, ruleID int) error {
-	return d.db.WithContext(ctx).Model(&model.MonitorAlertRule{}).Where("id = ?", ruleID).
+// EnableSwitchAlertRule 启用/禁用告警规则
+func (d *AlertRuleDAO) EnableSwitchAlertRule(ctx context.Context, id int64) error {
+	return d.db.WithContext(ctx).Model(&model.AlertRule{}).Where("id = ?", id).
 		Update("enable", gorm.Expr("CASE WHEN enable = 1 THEN 2 ELSE 1 END")).Error
 }
 
-// BatchEnableSwitchMonitorAlertRule 批量启用告警规则
-func (d *MonitorAlertRuleDAO) BatchEnableSwitchMonitorAlertRule(ctx context.Context, ruleIDs []int) error {
-	return d.db.WithContext(ctx).Model(&model.MonitorAlertRule{}).Where("id IN ?", ruleIDs).
+// BatchEnableSwitchAlertRule 批量启用告警规则
+func (d *AlertRuleDAO) BatchEnableSwitchAlertRule(ctx context.Context, ids []int64) error {
+	return d.db.WithContext(ctx).Model(&model.AlertRule{}).Where("id IN ?", ids).
 		Update("enable", 1).Error
 }
 
-// DeleteMonitorAlertRule 删除告警规则（软删除）
-func (d *MonitorAlertRuleDAO) DeleteMonitorAlertRule(ctx context.Context, ruleID int) error {
-	return d.db.WithContext(ctx).Model(&model.MonitorAlertRule{}).Where("id = ?", ruleID).
+// DeleteAlertRule 删除告警规则（软删除）
+func (d *AlertRuleDAO) DeleteAlertRule(ctx context.Context, id int64) error {
+	return d.db.WithContext(ctx).Model(&model.AlertRule{}).Where("id = ?", id).
+		Update("is_deleted", 1).Error
+}
+
+// BatchDeleteAlertRule 批量删除告警规则
+func (d *AlertRuleDAO) BatchDeleteAlertRule(ctx context.Context, ids []int64) error {
+	return d.db.WithContext(ctx).Model(&model.AlertRule{}).Where("id IN ?", ids).
 		Update("is_deleted", 1).Error
 }
 
 // GetAssociatedResourcesBySendGroupId 获取发送组关联的告警规则
-func (d *MonitorAlertRuleDAO) GetAssociatedResourcesBySendGroupId(ctx context.Context, sendGroupId int) ([]*model.MonitorAlertRule, error) {
-	var rules []*model.MonitorAlertRule
+func (d *AlertRuleDAO) GetAssociatedResourcesBySendGroupId(ctx context.Context, sendGroupId int64) ([]*model.AlertRule, error) {
+	var rules []*model.AlertRule
 	err := d.db.WithContext(ctx).Where("send_group_id = ? AND is_deleted = 0", sendGroupId).Find(&rules).Error
 	return rules, err
 }
 
-// CheckMonitorAlertRuleExists 检查告警规则是否存在
-func (d *MonitorAlertRuleDAO) CheckMonitorAlertRuleExists(ctx context.Context, alertRule *model.MonitorAlertRule) (bool, error) {
+// CheckAlertRuleExists 检查告警规则是否存在
+func (d *AlertRuleDAO) CheckAlertRuleExists(ctx context.Context, alertRule *model.AlertRule) (bool, error) {
 	var count int64
-	err := d.db.WithContext(ctx).Model(&model.MonitorAlertRule{}).
+	err := d.db.WithContext(ctx).Model(&model.AlertRule{}).
 		Where("id = ? AND is_deleted = 0", alertRule.ID).Count(&count).Error
 	return count > 0, err
 }
 
-// CheckMonitorAlertRuleNameExists 检查告警规则名称是否存在
-func (d *MonitorAlertRuleDAO) CheckMonitorAlertRuleNameExists(ctx context.Context, alertRule *model.MonitorAlertRule) (bool, error) {
+// CheckAlertRuleNameExists 检查告警规则名称是否存在
+func (d *AlertRuleDAO) CheckAlertRuleNameExists(ctx context.Context, alertRule *model.AlertRule) (bool, error) {
 	var count int64
-	query := d.db.WithContext(ctx).Model(&model.MonitorAlertRule{}).
-		Where("name = ? AND is_deleted = 0", alertRule.Name)
-	if alertRule.ID > 0 {
-		query = query.Where("id != ?", alertRule.ID)
-	}
-	err := query.Count(&count).Error
+	err := d.db.WithContext(ctx).Model(&model.AlertRule{}).
+		Where("name = ? AND is_deleted = 0", alertRule.Name).Count(&count).Error
 	return count > 0, err
 }

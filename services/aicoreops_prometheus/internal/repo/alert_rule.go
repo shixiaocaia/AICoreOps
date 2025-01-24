@@ -6,17 +6,18 @@ import (
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/model"
 )
 
-type RuleRepo interface {
-	GetMonitorAlertRuleByPoolId(ctx context.Context, poolId int) ([]*model.MonitorAlertRule, error)
-	SearchMonitorAlertRuleByName(ctx context.Context, name string) ([]*model.MonitorAlertRule, error)
-	GetMonitorAlertRuleList(ctx context.Context) ([]*model.MonitorAlertRule, error)
-	CreateMonitorAlertRule(ctx context.Context, monitorAlertRule *model.MonitorAlertRule) error
-	GetMonitorAlertRuleById(ctx context.Context, id int) (*model.MonitorAlertRule, error)
-	UpdateMonitorAlertRule(ctx context.Context, monitorAlertRule *model.MonitorAlertRule) error
-	EnableSwitchMonitorAlertRule(ctx context.Context, ruleID int) error
-	BatchEnableSwitchMonitorAlertRule(ctx context.Context, ruleIDs []int) error
-	DeleteMonitorAlertRule(ctx context.Context, ruleID int) error
-	GetAssociatedResourcesBySendGroupId(ctx context.Context, sendGroupId int) ([]*model.MonitorAlertRule, error)
-	CheckMonitorAlertRuleExists(ctx context.Context, alertRule *model.MonitorAlertRule) (bool, error)
-	CheckMonitorAlertRuleNameExists(ctx context.Context, alertRule *model.MonitorAlertRule) (bool, error)
+type AlertRuleRepo interface {
+	GetAlertRuleByPoolId(ctx context.Context, poolId int64) ([]*model.AlertRule, error)
+	SearchAlertRuleByName(ctx context.Context, name string) ([]*model.AlertRule, error)
+	GetAlertRuleList(ctx context.Context) ([]*model.AlertRule, error)
+	CreateAlertRule(ctx context.Context, monitorAlertRule *model.AlertRule) error
+	GetAlertRuleById(ctx context.Context, id int64) (*model.AlertRule, error)
+	UpdateAlertRule(ctx context.Context, monitorAlertRule *model.AlertRule) error
+	EnableSwitchAlertRule(ctx context.Context, ruleID int64) error
+	BatchEnableSwitchAlertRule(ctx context.Context, ruleIDs []int64) error
+	DeleteAlertRule(ctx context.Context, id int64) error
+	BatchDeleteAlertRule(ctx context.Context, ids []int64) error
+	GetAssociatedResourcesBySendGroupId(ctx context.Context, sendGroupId int64) ([]*model.AlertRule, error)
+	CheckAlertRuleExists(ctx context.Context, alertRule *model.AlertRule) (bool, error)
+	CheckAlertRuleNameExists(ctx context.Context, alertRule *model.AlertRule) (bool, error)
 }

@@ -81,3 +81,39 @@ func (s *AicoreopsPrometheusServer) DeleteMonitorScrapeJob(ctx context.Context, 
 	l := logic.NewScrapeJobLogic(ctx, s.svcCtx)
 	return l.DeleteMonitorScrapeJob(ctx, req)
 }
+
+// alertRule
+func (s *AicoreopsPrometheusServer) GetMonitorAlertRuleList(ctx context.Context, req *types.GetMonitorAlertRuleListRequest) (*types.GetMonitorAlertRuleListResponse, error) {
+	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
+	return l.GetAlertRuleList(ctx)
+}
+
+func (s *AicoreopsPrometheusServer) CreateMonitorAlertRule(ctx context.Context, req *types.CreateMonitorAlertRuleRequest) (*types.CreateMonitorAlertRuleResponse, error) {
+	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
+	return l.CreateAlertRule(ctx, req)
+}
+
+func (s *AicoreopsPrometheusServer) UpdateMonitorAlertRule(ctx context.Context, req *types.UpdateMonitorAlertRuleRequest) (*types.UpdateMonitorAlertRuleResponse, error) {
+	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
+	return l.UpdateAlertRule(ctx, req)
+}
+
+func (s *AicoreopsPrometheusServer) DeleteMonitorAlertRule(ctx context.Context, req *types.DeleteMonitorAlertRuleRequest) (*types.DeleteMonitorAlertRuleResponse, error) {
+	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
+	return l.DeleteAlertRule(ctx, req)
+}
+
+func (s *AicoreopsPrometheusServer) EnableSwitchMonitorAlertRule(ctx context.Context, req *types.EnableSwitchMonitorAlertRuleRequest) (*types.EnableSwitchMonitorAlertRuleResponse, error) {
+	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
+	return l.EnableSwitchAlertRule(ctx, req)
+}
+
+func (s *AicoreopsPrometheusServer) BatchEnableSwitchMonitorAlertRule(ctx context.Context, req *types.BatchEnableSwitchMonitorAlertRuleRequest) (*types.BatchEnableSwitchMonitorAlertRuleResponse, error) {
+	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
+	return l.BatchEnableSwitchAlertRule(ctx, req)
+}
+
+func (s *AicoreopsPrometheusServer) BatchDeleteMonitorAlertRule(ctx context.Context, req *types.BatchDeleteMonitorAlertRuleRequest) (*types.BatchDeleteMonitorAlertRuleResponse, error) {
+	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
+	return l.BatchDeleteAlertRule(ctx, req)
+}

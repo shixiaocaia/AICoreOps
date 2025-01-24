@@ -4,31 +4,37 @@ package prometheus_rpc;
 option go_package="./types";
 
 service Prometheus_rpc {
-  // 采集池
+  // scrapePool 采集池
   rpc GetMonitorScrapePoolList(GetMonitorScrapePoolListRequest) returns(GetMonitorScrapePoolListResponse);
   rpc CreateMonitorScrapePool(CreateMonitorScrapePoolRequest) returns(CreateMonitorScrapePoolResponse);
   rpc UpdateMonitorScrapePool(UpdateMonitorScrapePoolRequest) returns(UpdateMonitorScrapePoolResponse);
   rpc DeleteMonitorScrapePool(DeleteMonitorScrapePoolRequest) returns(DeleteMonitorScrapePoolResponse);
   
 
-  // Alertmanager
+  // alertmanagerPool 告警池
   rpc GetMonitorAlertManagerPoolList(GetAlertManagerPoolListRequest) returns(GetAlertManagerPoolListResponse);
   rpc CreateMonitorAlertManagerPool(CreateMonitorAlertManagerPoolRequest) returns(CreateMonitorAlertManagerPoolResponse);
   rpc UpdateMonitorAlertManagerPool(UpdateMonitorAlertManagerPoolRequest) returns(UpdateMonitorAlertManagerPoolResponse);
   rpc DeleteMonitorAlertManagerPool(DeleteMonitorAlertManagerPoolRequest) returns(DeleteMonitorAlertManagerPoolResponse);
 
-  // 采集任务
+  // scrapeJob 采集任务
   rpc GetMonitorScrapeJobList(GetMonitorScrapeJobListRequest) returns(GetMonitorScrapeJobListResponse);
   rpc CreateMonitorScrapeJob(CreateMonitorScrapeJobRequest) returns(CreateMonitorScrapeJobResponse);
   rpc UpdateMonitorScrapeJob(UpdateMonitorScrapeJobRequest) returns(UpdateMonitorScrapeJobResponse);
   rpc DeleteMonitorScrapeJob(DeleteMonitorScrapeJobRequest) returns(DeleteMonitorScrapeJobResponse);
 
-  // alertmanager 告警池
+  // alertRule 告警规则
+  rpc GetMonitorAlertRuleList(GetMonitorAlertRuleListRequest) returns(GetMonitorAlertRuleListResponse);
+  rpc CreateMonitorAlertRule(CreateMonitorAlertRuleRequest) returns(CreateMonitorAlertRuleResponse);
+  rpc UpdateMonitorAlertRule(UpdateMonitorAlertRuleRequest) returns(UpdateMonitorAlertRuleResponse);
+  rpc DeleteMonitorAlertRule(DeleteMonitorAlertRuleRequest) returns(DeleteMonitorAlertRuleResponse);
+  rpc CheckPromqlExpr(CheckPromqlExprRequest) returns(CheckPromqlExprResponse);
+  rpc EnableSwitchMonitorAlertRule(EnableSwitchMonitorAlertRuleRequest) returns(EnableSwitchMonitorAlertRuleResponse);
+  rpc BatchEnableSwitchMonitorAlertRule(BatchEnableSwitchMonitorAlertRuleRequest) returns(BatchEnableSwitchMonitorAlertRuleResponse);
+  rpc BatchDeleteMonitorAlertRule(BatchDeleteMonitorAlertRuleRequest) returns(BatchDeleteMonitorAlertRuleResponse);
 
-  // 告警规则
-
-  // 告警事件
-
+  // recordRule 预聚合规则
+ 
   // 预聚合
 
   // 配置文件
@@ -38,7 +44,7 @@ service Prometheus_rpc {
   // 发送组
 }
 
-// 采集池相关接口
+// scrapePool 采集池
 message ScrapePool {
   int64 id = 1;
   string name = 2;
@@ -94,7 +100,7 @@ message DeleteMonitorScrapePoolResponse {
   string message = 2;
 }
 
-// Alertmanager 相关接口
+// alertmanagerPool 告警池
 message AlertManagerPool {
   int64 id = 1;
   string name = 2;
@@ -144,7 +150,7 @@ message DeleteMonitorAlertManagerPoolResponse {
   string message = 2;
 }
 
-// 采集任务
+// scrapeJob 采集任务
 message ScrapeJob {
   int64 id = 1;
   string name = 2;
@@ -200,6 +206,95 @@ message DeleteMonitorScrapeJobRequest {
 }
 
 message DeleteMonitorScrapeJobResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// alertRule 告警规则
+message AlertRule {
+  int64 id = 1;
+  string name = 2;
+  int64 user_id = 3;
+  int64 pool_id = 4;
+  int64 send_group_id = 5;
+  int64 tree_node_id = 6;
+  int32 enable = 7;
+  string expr = 8;
+  string severity = 9;
+  string grafana_link = 10;
+  string for_duration = 11;
+  repeated string labels = 12;
+  repeated string annotations = 13;
+}
+
+message GetMonitorAlertRuleListRequest {
+}
+
+message GetMonitorAlertRuleListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated AlertRule data = 3;
+}
+
+message CreateMonitorAlertRuleRequest {
+  AlertRule rule = 1;
+}
+
+message CreateMonitorAlertRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message UpdateMonitorAlertRuleRequest {
+  AlertRule rule = 1;
+}
+
+message UpdateMonitorAlertRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message DeleteMonitorAlertRuleRequest {
+  int64 id = 1;
+}
+
+message DeleteMonitorAlertRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message CheckPromqlExprRequest {
+  string expr = 1;
+}
+
+message CheckPromqlExprResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message EnableSwitchMonitorAlertRuleRequest {
+  int64 id = 1;
+}
+
+message EnableSwitchMonitorAlertRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message BatchEnableSwitchMonitorAlertRuleRequest {
+  repeated int64 ids = 1;
+}
+
+message BatchEnableSwitchMonitorAlertRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message BatchDeleteMonitorAlertRuleRequest {
+  repeated int64 ids = 1;
+}
+
+message BatchDeleteMonitorAlertRuleResponse {
   int32 code = 1;
   string message = 2;
 }

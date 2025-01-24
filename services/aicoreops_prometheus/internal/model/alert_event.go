@@ -25,7 +25,7 @@ type MonitorAlertEvent struct {
 	Alert         template.Alert    `json:"alert,omitempty" gorm:"-"`
 	SendGroup     *MonitorSendGroup `json:"sendGroup,omitempty" gorm:"-"`
 	// RenLingUser   *User             `json:"renLingUser,omitempty" gorm:"-"`
-	Rule          *MonitorAlertRule `json:"rule,omitempty" gorm:"-"`
+	Rule          *AlertRule        `json:"rule,omitempty" gorm:"-"`
 	LabelsMatcher map[string]string `json:"labelsMatcher,omitempty" gorm:"-"`
 	// AnnotationsMatcher map[string]string `json:"annotationsMatcher,omitempty" gorm:"-"`
 }
