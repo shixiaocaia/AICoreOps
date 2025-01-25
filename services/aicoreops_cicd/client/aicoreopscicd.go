@@ -2,12 +2,12 @@
 // goctl 1.7.3
 // Source: aicoreops_cicd.proto
 
-package aicoreopscicdclient
+package client
 
 import (
 	"context"
 
-	"aicoreops_cicd/aicoreops_cicd"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_cicd/aicoreops_cicd"
 
 	"github.com/zeromicro/go-zero/zrpc"
 	"google.golang.org/grpc"

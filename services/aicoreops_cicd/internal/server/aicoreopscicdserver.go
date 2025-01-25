@@ -7,9 +7,9 @@ package server
 import (
 	"context"
 
-	"aicoreops_cicd/aicoreops_cicd"
-	"aicoreops_cicd/internal/logic"
-	"aicoreops_cicd/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_cicd/aicoreops_cicd"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_cicd/internal/logic"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_cicd/internal/svc"
 )
 
 type AicoreopsCicdServer struct {

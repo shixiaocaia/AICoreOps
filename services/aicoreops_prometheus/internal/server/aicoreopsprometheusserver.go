@@ -6,10 +6,14 @@ import (
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/logic"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/svc"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/types"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/logic"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_prometheus/types"
 )
 
 type AicoreopsPrometheusServer struct {
 	svcCtx *svc.ServiceContext
+	types.UnimplementedPrometheusRpcServer
 	types.UnimplementedPrometheusRpcServer
 }
 
