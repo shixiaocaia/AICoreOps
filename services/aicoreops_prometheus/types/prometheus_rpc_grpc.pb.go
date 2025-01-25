@@ -19,26 +19,26 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	PrometheusRpc_GetMonitorScrapePoolList_FullMethodName          = "/prometheus_rpc.Prometheus_rpc/GetMonitorScrapePoolList"
-	PrometheusRpc_CreateMonitorScrapePool_FullMethodName           = "/prometheus_rpc.Prometheus_rpc/CreateMonitorScrapePool"
-	PrometheusRpc_UpdateMonitorScrapePool_FullMethodName           = "/prometheus_rpc.Prometheus_rpc/UpdateMonitorScrapePool"
-	PrometheusRpc_DeleteMonitorScrapePool_FullMethodName           = "/prometheus_rpc.Prometheus_rpc/DeleteMonitorScrapePool"
-	PrometheusRpc_GetMonitorAlertManagerPoolList_FullMethodName    = "/prometheus_rpc.Prometheus_rpc/GetMonitorAlertManagerPoolList"
-	PrometheusRpc_CreateMonitorAlertManagerPool_FullMethodName     = "/prometheus_rpc.Prometheus_rpc/CreateMonitorAlertManagerPool"
-	PrometheusRpc_UpdateMonitorAlertManagerPool_FullMethodName     = "/prometheus_rpc.Prometheus_rpc/UpdateMonitorAlertManagerPool"
-	PrometheusRpc_DeleteMonitorAlertManagerPool_FullMethodName     = "/prometheus_rpc.Prometheus_rpc/DeleteMonitorAlertManagerPool"
-	PrometheusRpc_GetMonitorScrapeJobList_FullMethodName           = "/prometheus_rpc.Prometheus_rpc/GetMonitorScrapeJobList"
-	PrometheusRpc_CreateMonitorScrapeJob_FullMethodName            = "/prometheus_rpc.Prometheus_rpc/CreateMonitorScrapeJob"
-	PrometheusRpc_UpdateMonitorScrapeJob_FullMethodName            = "/prometheus_rpc.Prometheus_rpc/UpdateMonitorScrapeJob"
-	PrometheusRpc_DeleteMonitorScrapeJob_FullMethodName            = "/prometheus_rpc.Prometheus_rpc/DeleteMonitorScrapeJob"
-	PrometheusRpc_GetMonitorAlertRuleList_FullMethodName           = "/prometheus_rpc.Prometheus_rpc/GetMonitorAlertRuleList"
-	PrometheusRpc_CreateMonitorAlertRule_FullMethodName            = "/prometheus_rpc.Prometheus_rpc/CreateMonitorAlertRule"
-	PrometheusRpc_UpdateMonitorAlertRule_FullMethodName            = "/prometheus_rpc.Prometheus_rpc/UpdateMonitorAlertRule"
-	PrometheusRpc_DeleteMonitorAlertRule_FullMethodName            = "/prometheus_rpc.Prometheus_rpc/DeleteMonitorAlertRule"
-	PrometheusRpc_CheckPromqlExpr_FullMethodName                   = "/prometheus_rpc.Prometheus_rpc/CheckPromqlExpr"
-	PrometheusRpc_EnableSwitchMonitorAlertRule_FullMethodName      = "/prometheus_rpc.Prometheus_rpc/EnableSwitchMonitorAlertRule"
-	PrometheusRpc_BatchEnableSwitchMonitorAlertRule_FullMethodName = "/prometheus_rpc.Prometheus_rpc/BatchEnableSwitchMonitorAlertRule"
-	PrometheusRpc_BatchDeleteMonitorAlertRule_FullMethodName       = "/prometheus_rpc.Prometheus_rpc/BatchDeleteMonitorAlertRule"
+	PrometheusRpc_GetMonitorScrapePoolList_FullMethodName       = "/prometheus_rpc.Prometheus_rpc/GetMonitorScrapePoolList"
+	PrometheusRpc_CreateMonitorScrapePool_FullMethodName        = "/prometheus_rpc.Prometheus_rpc/CreateMonitorScrapePool"
+	PrometheusRpc_UpdateMonitorScrapePool_FullMethodName        = "/prometheus_rpc.Prometheus_rpc/UpdateMonitorScrapePool"
+	PrometheusRpc_DeleteMonitorScrapePool_FullMethodName        = "/prometheus_rpc.Prometheus_rpc/DeleteMonitorScrapePool"
+	PrometheusRpc_GetMonitorAlertManagerPoolList_FullMethodName = "/prometheus_rpc.Prometheus_rpc/GetMonitorAlertManagerPoolList"
+	PrometheusRpc_CreateMonitorAlertManagerPool_FullMethodName  = "/prometheus_rpc.Prometheus_rpc/CreateMonitorAlertManagerPool"
+	PrometheusRpc_UpdateMonitorAlertManagerPool_FullMethodName  = "/prometheus_rpc.Prometheus_rpc/UpdateMonitorAlertManagerPool"
+	PrometheusRpc_DeleteMonitorAlertManagerPool_FullMethodName  = "/prometheus_rpc.Prometheus_rpc/DeleteMonitorAlertManagerPool"
+	PrometheusRpc_GetMonitorScrapeJobList_FullMethodName        = "/prometheus_rpc.Prometheus_rpc/GetMonitorScrapeJobList"
+	PrometheusRpc_CreateMonitorScrapeJob_FullMethodName         = "/prometheus_rpc.Prometheus_rpc/CreateMonitorScrapeJob"
+	PrometheusRpc_UpdateMonitorScrapeJob_FullMethodName         = "/prometheus_rpc.Prometheus_rpc/UpdateMonitorScrapeJob"
+	PrometheusRpc_DeleteMonitorScrapeJob_FullMethodName         = "/prometheus_rpc.Prometheus_rpc/DeleteMonitorScrapeJob"
+	PrometheusRpc_GetAlertRuleList_FullMethodName               = "/prometheus_rpc.Prometheus_rpc/GetAlertRuleList"
+	PrometheusRpc_CreateAlertRule_FullMethodName                = "/prometheus_rpc.Prometheus_rpc/CreateAlertRule"
+	PrometheusRpc_UpdateAlertRule_FullMethodName                = "/prometheus_rpc.Prometheus_rpc/UpdateAlertRule"
+	PrometheusRpc_DeleteAlertRule_FullMethodName                = "/prometheus_rpc.Prometheus_rpc/DeleteAlertRule"
+	PrometheusRpc_CheckPromqlExpr_FullMethodName                = "/prometheus_rpc.Prometheus_rpc/CheckPromqlExpr"
+	PrometheusRpc_EnableSwitchAlertRule_FullMethodName          = "/prometheus_rpc.Prometheus_rpc/EnableSwitchAlertRule"
+	PrometheusRpc_BatchEnableSwitchAlertRule_FullMethodName     = "/prometheus_rpc.Prometheus_rpc/BatchEnableSwitchAlertRule"
+	PrometheusRpc_BatchDeleteAlertRule_FullMethodName           = "/prometheus_rpc.Prometheus_rpc/BatchDeleteAlertRule"
 )
 
 // PrometheusRpcClient is the client API for PrometheusRpc service.
@@ -61,14 +61,14 @@ type PrometheusRpcClient interface {
 	UpdateMonitorScrapeJob(ctx context.Context, in *UpdateMonitorScrapeJobRequest, opts ...grpc.CallOption) (*UpdateMonitorScrapeJobResponse, error)
 	DeleteMonitorScrapeJob(ctx context.Context, in *DeleteMonitorScrapeJobRequest, opts ...grpc.CallOption) (*DeleteMonitorScrapeJobResponse, error)
 	// alertRule 告警规则
-	GetMonitorAlertRuleList(ctx context.Context, in *GetMonitorAlertRuleListRequest, opts ...grpc.CallOption) (*GetMonitorAlertRuleListResponse, error)
-	CreateMonitorAlertRule(ctx context.Context, in *CreateMonitorAlertRuleRequest, opts ...grpc.CallOption) (*CreateMonitorAlertRuleResponse, error)
-	UpdateMonitorAlertRule(ctx context.Context, in *UpdateMonitorAlertRuleRequest, opts ...grpc.CallOption) (*UpdateMonitorAlertRuleResponse, error)
-	DeleteMonitorAlertRule(ctx context.Context, in *DeleteMonitorAlertRuleRequest, opts ...grpc.CallOption) (*DeleteMonitorAlertRuleResponse, error)
+	GetAlertRuleList(ctx context.Context, in *GetAlertRuleListRequest, opts ...grpc.CallOption) (*GetAlertRuleListResponse, error)
+	CreateAlertRule(ctx context.Context, in *CreateAlertRuleRequest, opts ...grpc.CallOption) (*CreateAlertRuleResponse, error)
+	UpdateAlertRule(ctx context.Context, in *UpdateAlertRuleRequest, opts ...grpc.CallOption) (*UpdateAlertRuleResponse, error)
+	DeleteAlertRule(ctx context.Context, in *DeleteAlertRuleRequest, opts ...grpc.CallOption) (*DeleteAlertRuleResponse, error)
 	CheckPromqlExpr(ctx context.Context, in *CheckPromqlExprRequest, opts ...grpc.CallOption) (*CheckPromqlExprResponse, error)
-	EnableSwitchMonitorAlertRule(ctx context.Context, in *EnableSwitchMonitorAlertRuleRequest, opts ...grpc.CallOption) (*EnableSwitchMonitorAlertRuleResponse, error)
-	BatchEnableSwitchMonitorAlertRule(ctx context.Context, in *BatchEnableSwitchMonitorAlertRuleRequest, opts ...grpc.CallOption) (*BatchEnableSwitchMonitorAlertRuleResponse, error)
-	BatchDeleteMonitorAlertRule(ctx context.Context, in *BatchDeleteMonitorAlertRuleRequest, opts ...grpc.CallOption) (*BatchDeleteMonitorAlertRuleResponse, error)
+	EnableSwitchAlertRule(ctx context.Context, in *EnableSwitchAlertRuleRequest, opts ...grpc.CallOption) (*EnableSwitchAlertRuleResponse, error)
+	BatchEnableSwitchAlertRule(ctx context.Context, in *BatchEnableSwitchAlertRuleRequest, opts ...grpc.CallOption) (*BatchEnableSwitchAlertRuleResponse, error)
+	BatchDeleteAlertRule(ctx context.Context, in *BatchDeleteAlertRuleRequest, opts ...grpc.CallOption) (*BatchDeleteAlertRuleResponse, error)
 }
 
 type prometheusRpcClient struct {
@@ -199,40 +199,40 @@ func (c *prometheusRpcClient) DeleteMonitorScrapeJob(ctx context.Context, in *De
 	return out, nil
 }
 
-func (c *prometheusRpcClient) GetMonitorAlertRuleList(ctx context.Context, in *GetMonitorAlertRuleListRequest, opts ...grpc.CallOption) (*GetMonitorAlertRuleListResponse, error) {
+func (c *prometheusRpcClient) GetAlertRuleList(ctx context.Context, in *GetAlertRuleListRequest, opts ...grpc.CallOption) (*GetAlertRuleListResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetMonitorAlertRuleListResponse)
-	err := c.cc.Invoke(ctx, PrometheusRpc_GetMonitorAlertRuleList_FullMethodName, in, out, cOpts...)
+	out := new(GetAlertRuleListResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_GetAlertRuleList_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *prometheusRpcClient) CreateMonitorAlertRule(ctx context.Context, in *CreateMonitorAlertRuleRequest, opts ...grpc.CallOption) (*CreateMonitorAlertRuleResponse, error) {
+func (c *prometheusRpcClient) CreateAlertRule(ctx context.Context, in *CreateAlertRuleRequest, opts ...grpc.CallOption) (*CreateAlertRuleResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(CreateMonitorAlertRuleResponse)
-	err := c.cc.Invoke(ctx, PrometheusRpc_CreateMonitorAlertRule_FullMethodName, in, out, cOpts...)
+	out := new(CreateAlertRuleResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_CreateAlertRule_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *prometheusRpcClient) UpdateMonitorAlertRule(ctx context.Context, in *UpdateMonitorAlertRuleRequest, opts ...grpc.CallOption) (*UpdateMonitorAlertRuleResponse, error) {
+func (c *prometheusRpcClient) UpdateAlertRule(ctx context.Context, in *UpdateAlertRuleRequest, opts ...grpc.CallOption) (*UpdateAlertRuleResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(UpdateMonitorAlertRuleResponse)
-	err := c.cc.Invoke(ctx, PrometheusRpc_UpdateMonitorAlertRule_FullMethodName, in, out, cOpts...)
+	out := new(UpdateAlertRuleResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_UpdateAlertRule_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *prometheusRpcClient) DeleteMonitorAlertRule(ctx context.Context, in *DeleteMonitorAlertRuleRequest, opts ...grpc.CallOption) (*DeleteMonitorAlertRuleResponse, error) {
+func (c *prometheusRpcClient) DeleteAlertRule(ctx context.Context, in *DeleteAlertRuleRequest, opts ...grpc.CallOption) (*DeleteAlertRuleResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(DeleteMonitorAlertRuleResponse)
-	err := c.cc.Invoke(ctx, PrometheusRpc_DeleteMonitorAlertRule_FullMethodName, in, out, cOpts...)
+	out := new(DeleteAlertRuleResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_DeleteAlertRule_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -249,30 +249,30 @@ func (c *prometheusRpcClient) CheckPromqlExpr(ctx context.Context, in *CheckProm
 	return out, nil
 }
 
-func (c *prometheusRpcClient) EnableSwitchMonitorAlertRule(ctx context.Context, in *EnableSwitchMonitorAlertRuleRequest, opts ...grpc.CallOption) (*EnableSwitchMonitorAlertRuleResponse, error) {
+func (c *prometheusRpcClient) EnableSwitchAlertRule(ctx context.Context, in *EnableSwitchAlertRuleRequest, opts ...grpc.CallOption) (*EnableSwitchAlertRuleResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(EnableSwitchMonitorAlertRuleResponse)
-	err := c.cc.Invoke(ctx, PrometheusRpc_EnableSwitchMonitorAlertRule_FullMethodName, in, out, cOpts...)
+	out := new(EnableSwitchAlertRuleResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_EnableSwitchAlertRule_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *prometheusRpcClient) BatchEnableSwitchMonitorAlertRule(ctx context.Context, in *BatchEnableSwitchMonitorAlertRuleRequest, opts ...grpc.CallOption) (*BatchEnableSwitchMonitorAlertRuleResponse, error) {
+func (c *prometheusRpcClient) BatchEnableSwitchAlertRule(ctx context.Context, in *BatchEnableSwitchAlertRuleRequest, opts ...grpc.CallOption) (*BatchEnableSwitchAlertRuleResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(BatchEnableSwitchMonitorAlertRuleResponse)
-	err := c.cc.Invoke(ctx, PrometheusRpc_BatchEnableSwitchMonitorAlertRule_FullMethodName, in, out, cOpts...)
+	out := new(BatchEnableSwitchAlertRuleResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_BatchEnableSwitchAlertRule_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-func (c *prometheusRpcClient) BatchDeleteMonitorAlertRule(ctx context.Context, in *BatchDeleteMonitorAlertRuleRequest, opts ...grpc.CallOption) (*BatchDeleteMonitorAlertRuleResponse, error) {
+func (c *prometheusRpcClient) BatchDeleteAlertRule(ctx context.Context, in *BatchDeleteAlertRuleRequest, opts ...grpc.CallOption) (*BatchDeleteAlertRuleResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(BatchDeleteMonitorAlertRuleResponse)
-	err := c.cc.Invoke(ctx, PrometheusRpc_BatchDeleteMonitorAlertRule_FullMethodName, in, out, cOpts...)
+	out := new(BatchDeleteAlertRuleResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_BatchDeleteAlertRule_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -299,14 +299,14 @@ type PrometheusRpcServer interface {
 	UpdateMonitorScrapeJob(context.Context, *UpdateMonitorScrapeJobRequest) (*UpdateMonitorScrapeJobResponse, error)
 	DeleteMonitorScrapeJob(context.Context, *DeleteMonitorScrapeJobRequest) (*DeleteMonitorScrapeJobResponse, error)
 	// alertRule 告警规则
-	GetMonitorAlertRuleList(context.Context, *GetMonitorAlertRuleListRequest) (*GetMonitorAlertRuleListResponse, error)
-	CreateMonitorAlertRule(context.Context, *CreateMonitorAlertRuleRequest) (*CreateMonitorAlertRuleResponse, error)
-	UpdateMonitorAlertRule(context.Context, *UpdateMonitorAlertRuleRequest) (*UpdateMonitorAlertRuleResponse, error)
-	DeleteMonitorAlertRule(context.Context, *DeleteMonitorAlertRuleRequest) (*DeleteMonitorAlertRuleResponse, error)
+	GetAlertRuleList(context.Context, *GetAlertRuleListRequest) (*GetAlertRuleListResponse, error)
+	CreateAlertRule(context.Context, *CreateAlertRuleRequest) (*CreateAlertRuleResponse, error)
+	UpdateAlertRule(context.Context, *UpdateAlertRuleRequest) (*UpdateAlertRuleResponse, error)
+	DeleteAlertRule(context.Context, *DeleteAlertRuleRequest) (*DeleteAlertRuleResponse, error)
 	CheckPromqlExpr(context.Context, *CheckPromqlExprRequest) (*CheckPromqlExprResponse, error)
-	EnableSwitchMonitorAlertRule(context.Context, *EnableSwitchMonitorAlertRuleRequest) (*EnableSwitchMonitorAlertRuleResponse, error)
-	BatchEnableSwitchMonitorAlertRule(context.Context, *BatchEnableSwitchMonitorAlertRuleRequest) (*BatchEnableSwitchMonitorAlertRuleResponse, error)
-	BatchDeleteMonitorAlertRule(context.Context, *BatchDeleteMonitorAlertRuleRequest) (*BatchDeleteMonitorAlertRuleResponse, error)
+	EnableSwitchAlertRule(context.Context, *EnableSwitchAlertRuleRequest) (*EnableSwitchAlertRuleResponse, error)
+	BatchEnableSwitchAlertRule(context.Context, *BatchEnableSwitchAlertRuleRequest) (*BatchEnableSwitchAlertRuleResponse, error)
+	BatchDeleteAlertRule(context.Context, *BatchDeleteAlertRuleRequest) (*BatchDeleteAlertRuleResponse, error)
 	mustEmbedUnimplementedPrometheusRpcServer()
 }
 
@@ -353,29 +353,29 @@ func (UnimplementedPrometheusRpcServer) UpdateMonitorScrapeJob(context.Context, 
 func (UnimplementedPrometheusRpcServer) DeleteMonitorScrapeJob(context.Context, *DeleteMonitorScrapeJobRequest) (*DeleteMonitorScrapeJobResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method DeleteMonitorScrapeJob not implemented")
 }
-func (UnimplementedPrometheusRpcServer) GetMonitorAlertRuleList(context.Context, *GetMonitorAlertRuleListRequest) (*GetMonitorAlertRuleListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetMonitorAlertRuleList not implemented")
+func (UnimplementedPrometheusRpcServer) GetAlertRuleList(context.Context, *GetAlertRuleListRequest) (*GetAlertRuleListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetAlertRuleList not implemented")
 }
-func (UnimplementedPrometheusRpcServer) CreateMonitorAlertRule(context.Context, *CreateMonitorAlertRuleRequest) (*CreateMonitorAlertRuleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method CreateMonitorAlertRule not implemented")
+func (UnimplementedPrometheusRpcServer) CreateAlertRule(context.Context, *CreateAlertRuleRequest) (*CreateAlertRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateAlertRule not implemented")
 }
-func (UnimplementedPrometheusRpcServer) UpdateMonitorAlertRule(context.Context, *UpdateMonitorAlertRuleRequest) (*UpdateMonitorAlertRuleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method UpdateMonitorAlertRule not implemented")
+func (UnimplementedPrometheusRpcServer) UpdateAlertRule(context.Context, *UpdateAlertRuleRequest) (*UpdateAlertRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateAlertRule not implemented")
 }
-func (UnimplementedPrometheusRpcServer) DeleteMonitorAlertRule(context.Context, *DeleteMonitorAlertRuleRequest) (*DeleteMonitorAlertRuleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method DeleteMonitorAlertRule not implemented")
+func (UnimplementedPrometheusRpcServer) DeleteAlertRule(context.Context, *DeleteAlertRuleRequest) (*DeleteAlertRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteAlertRule not implemented")
 }
 func (UnimplementedPrometheusRpcServer) CheckPromqlExpr(context.Context, *CheckPromqlExprRequest) (*CheckPromqlExprResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CheckPromqlExpr not implemented")
 }
-func (UnimplementedPrometheusRpcServer) EnableSwitchMonitorAlertRule(context.Context, *EnableSwitchMonitorAlertRuleRequest) (*EnableSwitchMonitorAlertRuleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method EnableSwitchMonitorAlertRule not implemented")
+func (UnimplementedPrometheusRpcServer) EnableSwitchAlertRule(context.Context, *EnableSwitchAlertRuleRequest) (*EnableSwitchAlertRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnableSwitchAlertRule not implemented")
 }
-func (UnimplementedPrometheusRpcServer) BatchEnableSwitchMonitorAlertRule(context.Context, *BatchEnableSwitchMonitorAlertRuleRequest) (*BatchEnableSwitchMonitorAlertRuleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BatchEnableSwitchMonitorAlertRule not implemented")
+func (UnimplementedPrometheusRpcServer) BatchEnableSwitchAlertRule(context.Context, *BatchEnableSwitchAlertRuleRequest) (*BatchEnableSwitchAlertRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BatchEnableSwitchAlertRule not implemented")
 }
-func (UnimplementedPrometheusRpcServer) BatchDeleteMonitorAlertRule(context.Context, *BatchDeleteMonitorAlertRuleRequest) (*BatchDeleteMonitorAlertRuleResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method BatchDeleteMonitorAlertRule not implemented")
+func (UnimplementedPrometheusRpcServer) BatchDeleteAlertRule(context.Context, *BatchDeleteAlertRuleRequest) (*BatchDeleteAlertRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BatchDeleteAlertRule not implemented")
 }
 func (UnimplementedPrometheusRpcServer) mustEmbedUnimplementedPrometheusRpcServer() {}
 func (UnimplementedPrometheusRpcServer) testEmbeddedByValue()                       {}
@@ -614,74 +614,74 @@ func _PrometheusRpc_DeleteMonitorScrapeJob_Handler(srv interface{}, ctx context.
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PrometheusRpc_GetMonitorAlertRuleList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetMonitorAlertRuleListRequest)
+func _PrometheusRpc_GetAlertRuleList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetAlertRuleListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PrometheusRpcServer).GetMonitorAlertRuleList(ctx, in)
+		return srv.(PrometheusRpcServer).GetAlertRuleList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PrometheusRpc_GetMonitorAlertRuleList_FullMethodName,
+		FullMethod: PrometheusRpc_GetAlertRuleList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PrometheusRpcServer).GetMonitorAlertRuleList(ctx, req.(*GetMonitorAlertRuleListRequest))
+		return srv.(PrometheusRpcServer).GetAlertRuleList(ctx, req.(*GetAlertRuleListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PrometheusRpc_CreateMonitorAlertRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(CreateMonitorAlertRuleRequest)
+func _PrometheusRpc_CreateAlertRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateAlertRuleRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PrometheusRpcServer).CreateMonitorAlertRule(ctx, in)
+		return srv.(PrometheusRpcServer).CreateAlertRule(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PrometheusRpc_CreateMonitorAlertRule_FullMethodName,
+		FullMethod: PrometheusRpc_CreateAlertRule_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PrometheusRpcServer).CreateMonitorAlertRule(ctx, req.(*CreateMonitorAlertRuleRequest))
+		return srv.(PrometheusRpcServer).CreateAlertRule(ctx, req.(*CreateAlertRuleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PrometheusRpc_UpdateMonitorAlertRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UpdateMonitorAlertRuleRequest)
+func _PrometheusRpc_UpdateAlertRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateAlertRuleRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PrometheusRpcServer).UpdateMonitorAlertRule(ctx, in)
+		return srv.(PrometheusRpcServer).UpdateAlertRule(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PrometheusRpc_UpdateMonitorAlertRule_FullMethodName,
+		FullMethod: PrometheusRpc_UpdateAlertRule_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PrometheusRpcServer).UpdateMonitorAlertRule(ctx, req.(*UpdateMonitorAlertRuleRequest))
+		return srv.(PrometheusRpcServer).UpdateAlertRule(ctx, req.(*UpdateAlertRuleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PrometheusRpc_DeleteMonitorAlertRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(DeleteMonitorAlertRuleRequest)
+func _PrometheusRpc_DeleteAlertRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteAlertRuleRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PrometheusRpcServer).DeleteMonitorAlertRule(ctx, in)
+		return srv.(PrometheusRpcServer).DeleteAlertRule(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PrometheusRpc_DeleteMonitorAlertRule_FullMethodName,
+		FullMethod: PrometheusRpc_DeleteAlertRule_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PrometheusRpcServer).DeleteMonitorAlertRule(ctx, req.(*DeleteMonitorAlertRuleRequest))
+		return srv.(PrometheusRpcServer).DeleteAlertRule(ctx, req.(*DeleteAlertRuleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -704,56 +704,56 @@ func _PrometheusRpc_CheckPromqlExpr_Handler(srv interface{}, ctx context.Context
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PrometheusRpc_EnableSwitchMonitorAlertRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(EnableSwitchMonitorAlertRuleRequest)
+func _PrometheusRpc_EnableSwitchAlertRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EnableSwitchAlertRuleRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PrometheusRpcServer).EnableSwitchMonitorAlertRule(ctx, in)
+		return srv.(PrometheusRpcServer).EnableSwitchAlertRule(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PrometheusRpc_EnableSwitchMonitorAlertRule_FullMethodName,
+		FullMethod: PrometheusRpc_EnableSwitchAlertRule_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PrometheusRpcServer).EnableSwitchMonitorAlertRule(ctx, req.(*EnableSwitchMonitorAlertRuleRequest))
+		return srv.(PrometheusRpcServer).EnableSwitchAlertRule(ctx, req.(*EnableSwitchAlertRuleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PrometheusRpc_BatchEnableSwitchMonitorAlertRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BatchEnableSwitchMonitorAlertRuleRequest)
+func _PrometheusRpc_BatchEnableSwitchAlertRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchEnableSwitchAlertRuleRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PrometheusRpcServer).BatchEnableSwitchMonitorAlertRule(ctx, in)
+		return srv.(PrometheusRpcServer).BatchEnableSwitchAlertRule(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PrometheusRpc_BatchEnableSwitchMonitorAlertRule_FullMethodName,
+		FullMethod: PrometheusRpc_BatchEnableSwitchAlertRule_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PrometheusRpcServer).BatchEnableSwitchMonitorAlertRule(ctx, req.(*BatchEnableSwitchMonitorAlertRuleRequest))
+		return srv.(PrometheusRpcServer).BatchEnableSwitchAlertRule(ctx, req.(*BatchEnableSwitchAlertRuleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _PrometheusRpc_BatchDeleteMonitorAlertRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(BatchDeleteMonitorAlertRuleRequest)
+func _PrometheusRpc_BatchDeleteAlertRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchDeleteAlertRuleRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(PrometheusRpcServer).BatchDeleteMonitorAlertRule(ctx, in)
+		return srv.(PrometheusRpcServer).BatchDeleteAlertRule(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: PrometheusRpc_BatchDeleteMonitorAlertRule_FullMethodName,
+		FullMethod: PrometheusRpc_BatchDeleteAlertRule_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(PrometheusRpcServer).BatchDeleteMonitorAlertRule(ctx, req.(*BatchDeleteMonitorAlertRuleRequest))
+		return srv.(PrometheusRpcServer).BatchDeleteAlertRule(ctx, req.(*BatchDeleteAlertRuleRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -814,36 +814,36 @@ var PrometheusRpc_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _PrometheusRpc_DeleteMonitorScrapeJob_Handler,
 		},
 		{
-			MethodName: "GetMonitorAlertRuleList",
-			Handler:    _PrometheusRpc_GetMonitorAlertRuleList_Handler,
+			MethodName: "GetAlertRuleList",
+			Handler:    _PrometheusRpc_GetAlertRuleList_Handler,
 		},
 		{
-			MethodName: "CreateMonitorAlertRule",
-			Handler:    _PrometheusRpc_CreateMonitorAlertRule_Handler,
+			MethodName: "CreateAlertRule",
+			Handler:    _PrometheusRpc_CreateAlertRule_Handler,
 		},
 		{
-			MethodName: "UpdateMonitorAlertRule",
-			Handler:    _PrometheusRpc_UpdateMonitorAlertRule_Handler,
+			MethodName: "UpdateAlertRule",
+			Handler:    _PrometheusRpc_UpdateAlertRule_Handler,
 		},
 		{
-			MethodName: "DeleteMonitorAlertRule",
-			Handler:    _PrometheusRpc_DeleteMonitorAlertRule_Handler,
+			MethodName: "DeleteAlertRule",
+			Handler:    _PrometheusRpc_DeleteAlertRule_Handler,
 		},
 		{
 			MethodName: "CheckPromqlExpr",
 			Handler:    _PrometheusRpc_CheckPromqlExpr_Handler,
 		},
 		{
-			MethodName: "EnableSwitchMonitorAlertRule",
-			Handler:    _PrometheusRpc_EnableSwitchMonitorAlertRule_Handler,
+			MethodName: "EnableSwitchAlertRule",
+			Handler:    _PrometheusRpc_EnableSwitchAlertRule_Handler,
 		},
 		{
-			MethodName: "BatchEnableSwitchMonitorAlertRule",
-			Handler:    _PrometheusRpc_BatchEnableSwitchMonitorAlertRule_Handler,
+			MethodName: "BatchEnableSwitchAlertRule",
+			Handler:    _PrometheusRpc_BatchEnableSwitchAlertRule_Handler,
 		},
 		{
-			MethodName: "BatchDeleteMonitorAlertRule",
-			Handler:    _PrometheusRpc_BatchDeleteMonitorAlertRule_Handler,
+			MethodName: "BatchDeleteAlertRule",
+			Handler:    _PrometheusRpc_BatchDeleteAlertRule_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

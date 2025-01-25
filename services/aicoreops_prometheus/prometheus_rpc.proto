@@ -24,14 +24,14 @@ service Prometheus_rpc {
   rpc DeleteMonitorScrapeJob(DeleteMonitorScrapeJobRequest) returns(DeleteMonitorScrapeJobResponse);
 
   // alertRule 告警规则
-  rpc GetMonitorAlertRuleList(GetMonitorAlertRuleListRequest) returns(GetMonitorAlertRuleListResponse);
-  rpc CreateMonitorAlertRule(CreateMonitorAlertRuleRequest) returns(CreateMonitorAlertRuleResponse);
-  rpc UpdateMonitorAlertRule(UpdateMonitorAlertRuleRequest) returns(UpdateMonitorAlertRuleResponse);
-  rpc DeleteMonitorAlertRule(DeleteMonitorAlertRuleRequest) returns(DeleteMonitorAlertRuleResponse);
+  rpc GetAlertRuleList(GetAlertRuleListRequest) returns(GetAlertRuleListResponse);
+  rpc CreateAlertRule(CreateAlertRuleRequest) returns(CreateAlertRuleResponse);
+  rpc UpdateAlertRule(UpdateAlertRuleRequest) returns(UpdateAlertRuleResponse);
+  rpc DeleteAlertRule(DeleteAlertRuleRequest) returns(DeleteAlertRuleResponse);
   rpc CheckPromqlExpr(CheckPromqlExprRequest) returns(CheckPromqlExprResponse);
-  rpc EnableSwitchMonitorAlertRule(EnableSwitchMonitorAlertRuleRequest) returns(EnableSwitchMonitorAlertRuleResponse);
-  rpc BatchEnableSwitchMonitorAlertRule(BatchEnableSwitchMonitorAlertRuleRequest) returns(BatchEnableSwitchMonitorAlertRuleResponse);
-  rpc BatchDeleteMonitorAlertRule(BatchDeleteMonitorAlertRuleRequest) returns(BatchDeleteMonitorAlertRuleResponse);
+  rpc EnableSwitchAlertRule(EnableSwitchAlertRuleRequest) returns(EnableSwitchAlertRuleResponse);
+  rpc BatchEnableSwitchAlertRule(BatchEnableSwitchAlertRuleRequest) returns(BatchEnableSwitchAlertRuleResponse);
+  rpc BatchDeleteAlertRule(BatchDeleteAlertRuleRequest) returns(BatchDeleteAlertRuleResponse);
 
   // recordRule 预聚合规则
  
@@ -227,38 +227,38 @@ message AlertRule {
   repeated string annotations = 13;
 }
 
-message GetMonitorAlertRuleListRequest {
+message GetAlertRuleListRequest {
 }
 
-message GetMonitorAlertRuleListResponse {
+message GetAlertRuleListResponse {
   int32 code = 1;
   string message = 2;
   repeated AlertRule data = 3;
 }
 
-message CreateMonitorAlertRuleRequest {
+message CreateAlertRuleRequest {
   AlertRule rule = 1;
 }
 
-message CreateMonitorAlertRuleResponse {
+message CreateAlertRuleResponse {
   int32 code = 1;
   string message = 2;
 }
 
-message UpdateMonitorAlertRuleRequest {
+message UpdateAlertRuleRequest {
   AlertRule rule = 1;
 }
 
-message UpdateMonitorAlertRuleResponse {
+message UpdateAlertRuleResponse {
   int32 code = 1;
   string message = 2;
 }
 
-message DeleteMonitorAlertRuleRequest {
+message DeleteAlertRuleRequest {
   int64 id = 1;
 }
 
-message DeleteMonitorAlertRuleResponse {
+message DeleteAlertRuleResponse {
   int32 code = 1;
   string message = 2;
 }
@@ -272,29 +272,29 @@ message CheckPromqlExprResponse {
   string message = 2;
 }
 
-message EnableSwitchMonitorAlertRuleRequest {
+message EnableSwitchAlertRuleRequest {
   int64 id = 1;
 }
 
-message EnableSwitchMonitorAlertRuleResponse {
+message EnableSwitchAlertRuleResponse {
   int32 code = 1;
   string message = 2;
 }
 
-message BatchEnableSwitchMonitorAlertRuleRequest {
+message BatchEnableSwitchAlertRuleRequest {
   repeated int64 ids = 1;
 }
 
-message BatchEnableSwitchMonitorAlertRuleResponse {
+message BatchEnableSwitchAlertRuleResponse {
   int32 code = 1;
   string message = 2;
 }
 
-message BatchDeleteMonitorAlertRuleRequest {
+message BatchDeleteAlertRuleRequest {
   repeated int64 ids = 1;
 }
 
-message BatchDeleteMonitorAlertRuleResponse {
+message BatchDeleteAlertRuleResponse {
   int32 code = 1;
   string message = 2;
 }

@@ -25,21 +25,21 @@ func NewAlertRuleLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AlertRu
 	}
 }
 
-func (a *AlertRuleLogic) GetAlertRuleList(ctx context.Context) (*types.GetMonitorAlertRuleListResponse, error) {
+func (a *AlertRuleLogic) GetAlertRuleList(ctx context.Context) (*types.GetAlertRuleListResponse, error) {
 	rules, err := a.domain.GetAlertRuleList(ctx, nil)
 	if err != nil {
 		a.Logger.Errorf("获取告警规则列表失败: %v", err)
 		return nil, err
 	}
 
-	return &types.GetMonitorAlertRuleListResponse{
+	return &types.GetAlertRuleListResponse{
 		Code:    0,
 		Message: "获取告警规则列表成功",
 		Data:    a.domain.BuildAlertRuleRespModel(rules),
 	}, nil
 }
 
-func (a *AlertRuleLogic) CreateAlertRule(ctx context.Context, req *types.CreateMonitorAlertRuleRequest) (*types.CreateMonitorAlertRuleResponse, error) {
+func (a *AlertRuleLogic) CreateAlertRule(ctx context.Context, req *types.CreateAlertRuleRequest) (*types.CreateAlertRuleResponse, error) {
 	// 创建告警规则
 	rule := a.domain.BuildAlertRuleModel(req.Rule)
 	if err := a.domain.CreateAlertRule(ctx, rule); err != nil {
@@ -49,13 +49,13 @@ func (a *AlertRuleLogic) CreateAlertRule(ctx context.Context, req *types.CreateM
 
 	// TODO 更新缓存
 
-	return &types.CreateMonitorAlertRuleResponse{
+	return &types.CreateAlertRuleResponse{
 		Code:    0,
 		Message: "创建告警规则成功",
 	}, nil
 }
 
-func (a *AlertRuleLogic) UpdateAlertRule(ctx context.Context, req *types.UpdateMonitorAlertRuleRequest) (*types.UpdateMonitorAlertRuleResponse, error) {
+func (a *AlertRuleLogic) UpdateAlertRule(ctx context.Context, req *types.UpdateAlertRuleRequest) (*types.UpdateAlertRuleResponse, error) {
 	// 更新告警规则
 	rule := a.domain.BuildAlertRuleModel(req.Rule)
 	if err := a.domain.UpdateAlertRule(ctx, rule); err != nil {
@@ -65,13 +65,13 @@ func (a *AlertRuleLogic) UpdateAlertRule(ctx context.Context, req *types.UpdateM
 
 	// TODO 更新缓存
 
-	return &types.UpdateMonitorAlertRuleResponse{
+	return &types.UpdateAlertRuleResponse{
 		Code:    0,
 		Message: "更新告警规则成功",
 	}, nil
 }
 
-func (a *AlertRuleLogic) DeleteAlertRule(ctx context.Context, req *types.DeleteMonitorAlertRuleRequest) (*types.DeleteMonitorAlertRuleResponse, error) {
+func (a *AlertRuleLogic) DeleteAlertRule(ctx context.Context, req *types.DeleteAlertRuleRequest) (*types.DeleteAlertRuleResponse, error) {
 	// 删除告警规则
 	if err := a.domain.DeleteAlertRule(ctx, req.Id); err != nil {
 		a.Logger.Errorf("删除告警规则失败: %v", err)
@@ -80,13 +80,13 @@ func (a *AlertRuleLogic) DeleteAlertRule(ctx context.Context, req *types.DeleteM
 
 	// TODO 更新缓存
 
-	return &types.DeleteMonitorAlertRuleResponse{
+	return &types.DeleteAlertRuleResponse{
 		Code:    0,
 		Message: "删除告警规则成功",
 	}, nil
 }
 
-func (a *AlertRuleLogic) BatchDeleteAlertRule(ctx context.Context, req *types.BatchDeleteMonitorAlertRuleRequest) (*types.BatchDeleteMonitorAlertRuleResponse, error) {
+func (a *AlertRuleLogic) BatchDeleteAlertRule(ctx context.Context, req *types.BatchDeleteAlertRuleRequest) (*types.BatchDeleteAlertRuleResponse, error) {
 	// 批量删除告警规则
 	if err := a.domain.BatchDeleteAlertRule(ctx, req.Ids); err != nil {
 		a.Logger.Errorf("批量删除告警规则失败: %v", err)
@@ -95,13 +95,13 @@ func (a *AlertRuleLogic) BatchDeleteAlertRule(ctx context.Context, req *types.Ba
 
 	// TODO 更新缓存
 
-	return &types.BatchDeleteMonitorAlertRuleResponse{
+	return &types.BatchDeleteAlertRuleResponse{
 		Code:    0,
 		Message: "批量删除告警规则成功",
 	}, nil
 }
 
-func (a *AlertRuleLogic) EnableSwitchAlertRule(ctx context.Context, req *types.EnableSwitchMonitorAlertRuleRequest) (*types.EnableSwitchMonitorAlertRuleResponse, error) {
+func (a *AlertRuleLogic) EnableSwitchAlertRule(ctx context.Context, req *types.EnableSwitchAlertRuleRequest) (*types.EnableSwitchAlertRuleResponse, error) {
 	// 启用或禁用告警规则
 	if err := a.domain.EnableSwitchAlertRule(ctx, req.Id); err != nil {
 		a.Logger.Errorf("启用或禁用告警规则失败: %v", err)
@@ -110,13 +110,13 @@ func (a *AlertRuleLogic) EnableSwitchAlertRule(ctx context.Context, req *types.E
 
 	// TODO 更新缓存
 
-	return &types.EnableSwitchMonitorAlertRuleResponse{
+	return &types.EnableSwitchAlertRuleResponse{
 		Code:    0,
 		Message: "启用或禁用告警规则成功",
 	}, nil
 }
 
-func (a *AlertRuleLogic) BatchEnableSwitchAlertRule(ctx context.Context, req *types.BatchEnableSwitchMonitorAlertRuleRequest) (*types.BatchEnableSwitchMonitorAlertRuleResponse, error) {
+func (a *AlertRuleLogic) BatchEnableSwitchAlertRule(ctx context.Context, req *types.BatchEnableSwitchAlertRuleRequest) (*types.BatchEnableSwitchAlertRuleResponse, error) {
 	// 批量启用或禁用告警规则
 	if err := a.domain.BatchEnableSwitchAlertRule(ctx, req.Ids); err != nil {
 		a.Logger.Errorf("批量启用或禁用告警规则失败: %v", err)
@@ -125,8 +125,20 @@ func (a *AlertRuleLogic) BatchEnableSwitchAlertRule(ctx context.Context, req *ty
 
 	// TODO 更新缓存
 
-	return &types.BatchEnableSwitchMonitorAlertRuleResponse{
+	return &types.BatchEnableSwitchAlertRuleResponse{
 		Code:    0,
 		Message: "批量启用或禁用告警规则成功",
+	}, nil
+}
+
+func (a *AlertRuleLogic) CheckPromqlExpr(ctx context.Context, req *types.CheckPromqlExprRequest) (*types.CheckPromqlExprResponse, error) {
+	if err := a.domain.CheckPromqlExpr(ctx, req.Expr); err != nil {
+		a.Logger.Errorf("检查PromQL表达式失败: %v", err)
+		return nil, err
+	}
+
+	return &types.CheckPromqlExprResponse{
+		Code:    0,
+		Message: "PromQL表达式正确",
 	}, nil
 }

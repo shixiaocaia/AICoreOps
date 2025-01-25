@@ -83,37 +83,42 @@ func (s *AicoreopsPrometheusServer) DeleteMonitorScrapeJob(ctx context.Context, 
 }
 
 // alertRule
-func (s *AicoreopsPrometheusServer) GetMonitorAlertRuleList(ctx context.Context, req *types.GetMonitorAlertRuleListRequest) (*types.GetMonitorAlertRuleListResponse, error) {
+func (s *AicoreopsPrometheusServer) GetAlertRuleList(ctx context.Context, req *types.GetAlertRuleListRequest) (*types.GetAlertRuleListResponse, error) {
 	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
 	return l.GetAlertRuleList(ctx)
 }
 
-func (s *AicoreopsPrometheusServer) CreateMonitorAlertRule(ctx context.Context, req *types.CreateMonitorAlertRuleRequest) (*types.CreateMonitorAlertRuleResponse, error) {
+func (s *AicoreopsPrometheusServer) CreateAlertRule(ctx context.Context, req *types.CreateAlertRuleRequest) (*types.CreateAlertRuleResponse, error) {
 	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
 	return l.CreateAlertRule(ctx, req)
 }
 
-func (s *AicoreopsPrometheusServer) UpdateMonitorAlertRule(ctx context.Context, req *types.UpdateMonitorAlertRuleRequest) (*types.UpdateMonitorAlertRuleResponse, error) {
+func (s *AicoreopsPrometheusServer) UpdateAlertRule(ctx context.Context, req *types.UpdateAlertRuleRequest) (*types.UpdateAlertRuleResponse, error) {
 	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
 	return l.UpdateAlertRule(ctx, req)
 }
 
-func (s *AicoreopsPrometheusServer) DeleteMonitorAlertRule(ctx context.Context, req *types.DeleteMonitorAlertRuleRequest) (*types.DeleteMonitorAlertRuleResponse, error) {
+func (s *AicoreopsPrometheusServer) DeleteAlertRule(ctx context.Context, req *types.DeleteAlertRuleRequest) (*types.DeleteAlertRuleResponse, error) {
 	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
 	return l.DeleteAlertRule(ctx, req)
 }
 
-func (s *AicoreopsPrometheusServer) EnableSwitchMonitorAlertRule(ctx context.Context, req *types.EnableSwitchMonitorAlertRuleRequest) (*types.EnableSwitchMonitorAlertRuleResponse, error) {
+func (s *AicoreopsPrometheusServer) EnableSwitchAlertRule(ctx context.Context, req *types.EnableSwitchAlertRuleRequest) (*types.EnableSwitchAlertRuleResponse, error) {
 	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
 	return l.EnableSwitchAlertRule(ctx, req)
 }
 
-func (s *AicoreopsPrometheusServer) BatchEnableSwitchMonitorAlertRule(ctx context.Context, req *types.BatchEnableSwitchMonitorAlertRuleRequest) (*types.BatchEnableSwitchMonitorAlertRuleResponse, error) {
+func (s *AicoreopsPrometheusServer) BatchEnableSwitchAlertRule(ctx context.Context, req *types.BatchEnableSwitchAlertRuleRequest) (*types.BatchEnableSwitchAlertRuleResponse, error) {
 	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
 	return l.BatchEnableSwitchAlertRule(ctx, req)
 }
 
-func (s *AicoreopsPrometheusServer) BatchDeleteMonitorAlertRule(ctx context.Context, req *types.BatchDeleteMonitorAlertRuleRequest) (*types.BatchDeleteMonitorAlertRuleResponse, error) {
+func (s *AicoreopsPrometheusServer) BatchDeleteAlertRule(ctx context.Context, req *types.BatchDeleteAlertRuleRequest) (*types.BatchDeleteAlertRuleResponse, error) {
 	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
 	return l.BatchDeleteAlertRule(ctx, req)
+}
+
+func (s *AicoreopsPrometheusServer) CheckPromqlExpr(ctx context.Context, req *types.CheckPromqlExprRequest) (*types.CheckPromqlExprResponse, error) {
+	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
+	return l.CheckPromqlExpr(ctx, req)
 }

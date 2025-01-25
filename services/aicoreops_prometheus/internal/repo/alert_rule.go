@@ -18,6 +18,6 @@ type AlertRuleRepo interface {
 	DeleteAlertRule(ctx context.Context, id int64) error
 	BatchDeleteAlertRule(ctx context.Context, ids []int64) error
 	GetAssociatedResourcesBySendGroupId(ctx context.Context, sendGroupId int64) ([]*model.AlertRule, error)
-	CheckAlertRuleExists(ctx context.Context, alertRule *model.AlertRule) (bool, error)
-	CheckAlertRuleNameExists(ctx context.Context, alertRule *model.AlertRule) (bool, error)
+	CheckAlertRuleExists(ctx context.Context, id int64) (bool, error)
+	CheckAlertRuleNameExists(ctx context.Context, name string) (bool, error)
 }

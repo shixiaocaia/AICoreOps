@@ -87,17 +87,17 @@ func (d *AlertRuleDAO) GetAssociatedResourcesBySendGroupId(ctx context.Context, 
 }
 
 // CheckAlertRuleExists 检查告警规则是否存在
-func (d *AlertRuleDAO) CheckAlertRuleExists(ctx context.Context, alertRule *model.AlertRule) (bool, error) {
+func (d *AlertRuleDAO) CheckAlertRuleExists(ctx context.Context, id int64) (bool, error) {
 	var count int64
 	err := d.db.WithContext(ctx).Model(&model.AlertRule{}).
-		Where("id = ? AND is_deleted = 0", alertRule.ID).Count(&count).Error
+		Where("id = ? AND is_deleted = 0", id).Count(&count).Error
 	return count > 0, err
 }
 
 // CheckAlertRuleNameExists 检查告警规则名称是否存在
-func (d *AlertRuleDAO) CheckAlertRuleNameExists(ctx context.Context, alertRule *model.AlertRule) (bool, error) {
+func (d *AlertRuleDAO) CheckAlertRuleNameExists(ctx context.Context, name string) (bool, error) {
 	var count int64
 	err := d.db.WithContext(ctx).Model(&model.AlertRule{}).
-		Where("name = ? AND is_deleted = 0", alertRule.Name).Count(&count).Error
+		Where("name = ? AND is_deleted = 0", name).Count(&count).Error
 	return count > 0, err
 }
