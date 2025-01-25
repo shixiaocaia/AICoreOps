@@ -26,7 +26,6 @@ func NewScrapePoolLogic(ctx context.Context, svcCtx *svc.ServiceContext) *Scrape
 	}
 }
 
-// GetMonitorScrapePoolList 获取采集池列表
 func (s *ScrapePoolLogic) GetMonitorScrapePoolList(req *types.GetMonitorScrapePoolListRequest) (*types.GetMonitorScrapePoolListResponse, error) {
 	pools, err := s.domain.GetMonitorScrapePoolList(s.ctx)
 	if err != nil {
@@ -41,7 +40,6 @@ func (s *ScrapePoolLogic) GetMonitorScrapePoolList(req *types.GetMonitorScrapePo
 	}, nil
 }
 
-// CreateMonitorScrapePool 创建采集池
 func (s *ScrapePoolLogic) CreateMonitorScrapePool(req *types.CreateMonitorScrapePoolRequest) (*types.CreateMonitorScrapePoolResponse, error) {
 	// 创建采集池
 	pool := domain.BuildMonitorScrapePoolModel(req.Pool)
@@ -61,7 +59,6 @@ func (s *ScrapePoolLogic) CreateMonitorScrapePool(req *types.CreateMonitorScrape
 	}, nil
 }
 
-// UpdateMonitorScrapePool 更新采集池
 func (s *ScrapePoolLogic) UpdateMonitorScrapePool(req *types.UpdateMonitorScrapePoolRequest) (*types.UpdateMonitorScrapePoolResponse, error) {
 	pool := domain.BuildMonitorScrapePoolModel(req.Pool)
 	err := s.domain.UpdateMonitorScrapePool(s.ctx, pool)
@@ -80,7 +77,6 @@ func (s *ScrapePoolLogic) UpdateMonitorScrapePool(req *types.UpdateMonitorScrape
 	}, nil
 }
 
-// DeleteMonitorScrapePool 删除采集池
 func (s *ScrapePoolLogic) DeleteMonitorScrapePool(req *types.DeleteMonitorScrapePoolRequest) (*types.DeleteMonitorScrapePoolResponse, error) {
 	err := s.domain.DeleteMonitorScrapePool(s.ctx, req.Id)
 	if err != nil {

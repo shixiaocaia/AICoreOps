@@ -34,7 +34,7 @@ type ruleConfigCache struct {
 	AlertRuleMap   map[string]string // 存储告警规则
 	localYamlDir   string            // 本地YAML目录
 	scrapePoolRepo repo.MonitorScrapePoolRepo
-	alertRuleRepo  repo.RuleRepo
+	alertRuleRepo  repo.AlertRuleRepo
 }
 
 // RuleGroups 告警规则组
@@ -56,7 +56,7 @@ func NewRuleConfigCache(ctx context.Context, db *gorm.DB, config *config.Config)
 		localYamlDir:   config.AlertManagerConfig.LocalYamlDir,
 		AlertRuleMap:   make(map[string]string),
 		scrapePoolRepo: dao.NewMonitorScrapePoolDAO(db),
-		alertRuleRepo:  dao.NewMonitorAlertRuleDAO(db),
+		alertRuleRepo:  dao.NewAlertRuleDAO(db),
 	}
 }
 
@@ -99,7 +99,7 @@ func (r *ruleConfigCache) GenerateAlertRuleConfigYaml(ctx context.Context) error
 }
 
 func (r *ruleConfigCache) GeneratePrometheusAlertRuleConfigYamlOnePool(ctx context.Context, pool *model.MonitorScrapePool) map[string]string {
-	rules, err := r.alertRuleRepo.GetMonitorAlertRuleByPoolId(ctx, int(pool.ID))
+	rules, err := r.alertRuleRepo.GetAlertRuleByPoolId(ctx, pool.ID)
 	if err != nil {
 		r.Logger.Errorf("[监控模块] 根据采集池ID [%d] 获取告警规则失败: %v", pool.ID, err)
 		return nil
@@ -119,7 +119,7 @@ func (r *ruleConfigCache) GeneratePrometheusAlertRuleConfigYamlOnePool(ctx conte
 
 	// 构建规则组
 	for _, rule := range rules {
-		ft, err := pm.ParseDuration(rule.ForTime)
+		ft, err := pm.ParseDuration(rule.ForDuration)
 		if err != nil {
 			r.Logger.Errorf("[监控模块] 解析告警规则持续时间失败，使用默认值: %v", err)
 			ft, _ = pm.ParseDuration("5s")

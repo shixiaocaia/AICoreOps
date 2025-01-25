@@ -48,7 +48,7 @@ func InitTables(db *gorm.DB) error {
 		model.MonitorScrapePool{},
 		model.MonitorScrapeJob{},
 		model.MonitorAlertManagerPool{},
-		model.MonitorAlertRule{},
+		model.AlertRule{},
 		model.MonitorAlertEvent{},
 		model.MonitorSendGroup{},
 		model.MonitorRecordRule{},
