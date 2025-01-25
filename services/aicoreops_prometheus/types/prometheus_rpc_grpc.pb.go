@@ -39,6 +39,13 @@ const (
 	PrometheusRpc_EnableSwitchAlertRule_FullMethodName          = "/prometheus_rpc.Prometheus_rpc/EnableSwitchAlertRule"
 	PrometheusRpc_BatchEnableSwitchAlertRule_FullMethodName     = "/prometheus_rpc.Prometheus_rpc/BatchEnableSwitchAlertRule"
 	PrometheusRpc_BatchDeleteAlertRule_FullMethodName           = "/prometheus_rpc.Prometheus_rpc/BatchDeleteAlertRule"
+	PrometheusRpc_GetRecordRuleList_FullMethodName              = "/prometheus_rpc.Prometheus_rpc/GetRecordRuleList"
+	PrometheusRpc_CreateRecordRule_FullMethodName               = "/prometheus_rpc.Prometheus_rpc/CreateRecordRule"
+	PrometheusRpc_UpdateRecordRule_FullMethodName               = "/prometheus_rpc.Prometheus_rpc/UpdateRecordRule"
+	PrometheusRpc_DeleteRecordRule_FullMethodName               = "/prometheus_rpc.Prometheus_rpc/DeleteRecordRule"
+	PrometheusRpc_EnableSwitchRecordRule_FullMethodName         = "/prometheus_rpc.Prometheus_rpc/EnableSwitchRecordRule"
+	PrometheusRpc_BatchEnableSwitchRecordRule_FullMethodName    = "/prometheus_rpc.Prometheus_rpc/BatchEnableSwitchRecordRule"
+	PrometheusRpc_BatchDeleteRecordRule_FullMethodName          = "/prometheus_rpc.Prometheus_rpc/BatchDeleteRecordRule"
 )
 
 // PrometheusRpcClient is the client API for PrometheusRpc service.
@@ -69,6 +76,14 @@ type PrometheusRpcClient interface {
 	EnableSwitchAlertRule(ctx context.Context, in *EnableSwitchAlertRuleRequest, opts ...grpc.CallOption) (*EnableSwitchAlertRuleResponse, error)
 	BatchEnableSwitchAlertRule(ctx context.Context, in *BatchEnableSwitchAlertRuleRequest, opts ...grpc.CallOption) (*BatchEnableSwitchAlertRuleResponse, error)
 	BatchDeleteAlertRule(ctx context.Context, in *BatchDeleteAlertRuleRequest, opts ...grpc.CallOption) (*BatchDeleteAlertRuleResponse, error)
+	// recordRule 预聚合规则
+	GetRecordRuleList(ctx context.Context, in *GetRecordRuleListRequest, opts ...grpc.CallOption) (*GetRecordRuleListResponse, error)
+	CreateRecordRule(ctx context.Context, in *CreateRecordRuleRequest, opts ...grpc.CallOption) (*CreateRecordRuleResponse, error)
+	UpdateRecordRule(ctx context.Context, in *UpdateRecordRuleRequest, opts ...grpc.CallOption) (*UpdateRecordRuleResponse, error)
+	DeleteRecordRule(ctx context.Context, in *DeleteRecordRuleRequest, opts ...grpc.CallOption) (*DeleteRecordRuleResponse, error)
+	EnableSwitchRecordRule(ctx context.Context, in *EnableSwitchRecordRuleRequest, opts ...grpc.CallOption) (*EnableSwitchRecordRuleResponse, error)
+	BatchEnableSwitchRecordRule(ctx context.Context, in *BatchEnableSwitchRecordRuleRequest, opts ...grpc.CallOption) (*BatchEnableSwitchRecordRuleResponse, error)
+	BatchDeleteRecordRule(ctx context.Context, in *BatchDeleteRecordRuleRequest, opts ...grpc.CallOption) (*BatchDeleteRecordRuleResponse, error)
 }
 
 type prometheusRpcClient struct {
@@ -279,6 +294,76 @@ func (c *prometheusRpcClient) BatchDeleteAlertRule(ctx context.Context, in *Batc
 	return out, nil
 }
 
+func (c *prometheusRpcClient) GetRecordRuleList(ctx context.Context, in *GetRecordRuleListRequest, opts ...grpc.CallOption) (*GetRecordRuleListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetRecordRuleListResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_GetRecordRuleList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *prometheusRpcClient) CreateRecordRule(ctx context.Context, in *CreateRecordRuleRequest, opts ...grpc.CallOption) (*CreateRecordRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateRecordRuleResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_CreateRecordRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *prometheusRpcClient) UpdateRecordRule(ctx context.Context, in *UpdateRecordRuleRequest, opts ...grpc.CallOption) (*UpdateRecordRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(UpdateRecordRuleResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_UpdateRecordRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *prometheusRpcClient) DeleteRecordRule(ctx context.Context, in *DeleteRecordRuleRequest, opts ...grpc.CallOption) (*DeleteRecordRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(DeleteRecordRuleResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_DeleteRecordRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *prometheusRpcClient) EnableSwitchRecordRule(ctx context.Context, in *EnableSwitchRecordRuleRequest, opts ...grpc.CallOption) (*EnableSwitchRecordRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(EnableSwitchRecordRuleResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_EnableSwitchRecordRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *prometheusRpcClient) BatchEnableSwitchRecordRule(ctx context.Context, in *BatchEnableSwitchRecordRuleRequest, opts ...grpc.CallOption) (*BatchEnableSwitchRecordRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BatchEnableSwitchRecordRuleResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_BatchEnableSwitchRecordRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *prometheusRpcClient) BatchDeleteRecordRule(ctx context.Context, in *BatchDeleteRecordRuleRequest, opts ...grpc.CallOption) (*BatchDeleteRecordRuleResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(BatchDeleteRecordRuleResponse)
+	err := c.cc.Invoke(ctx, PrometheusRpc_BatchDeleteRecordRule_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // PrometheusRpcServer is the server API for PrometheusRpc service.
 // All implementations must embed UnimplementedPrometheusRpcServer
 // for forward compatibility.
@@ -307,6 +392,14 @@ type PrometheusRpcServer interface {
 	EnableSwitchAlertRule(context.Context, *EnableSwitchAlertRuleRequest) (*EnableSwitchAlertRuleResponse, error)
 	BatchEnableSwitchAlertRule(context.Context, *BatchEnableSwitchAlertRuleRequest) (*BatchEnableSwitchAlertRuleResponse, error)
 	BatchDeleteAlertRule(context.Context, *BatchDeleteAlertRuleRequest) (*BatchDeleteAlertRuleResponse, error)
+	// recordRule 预聚合规则
+	GetRecordRuleList(context.Context, *GetRecordRuleListRequest) (*GetRecordRuleListResponse, error)
+	CreateRecordRule(context.Context, *CreateRecordRuleRequest) (*CreateRecordRuleResponse, error)
+	UpdateRecordRule(context.Context, *UpdateRecordRuleRequest) (*UpdateRecordRuleResponse, error)
+	DeleteRecordRule(context.Context, *DeleteRecordRuleRequest) (*DeleteRecordRuleResponse, error)
+	EnableSwitchRecordRule(context.Context, *EnableSwitchRecordRuleRequest) (*EnableSwitchRecordRuleResponse, error)
+	BatchEnableSwitchRecordRule(context.Context, *BatchEnableSwitchRecordRuleRequest) (*BatchEnableSwitchRecordRuleResponse, error)
+	BatchDeleteRecordRule(context.Context, *BatchDeleteRecordRuleRequest) (*BatchDeleteRecordRuleResponse, error)
 	mustEmbedUnimplementedPrometheusRpcServer()
 }
 
@@ -376,6 +469,27 @@ func (UnimplementedPrometheusRpcServer) BatchEnableSwitchAlertRule(context.Conte
 }
 func (UnimplementedPrometheusRpcServer) BatchDeleteAlertRule(context.Context, *BatchDeleteAlertRuleRequest) (*BatchDeleteAlertRuleResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method BatchDeleteAlertRule not implemented")
+}
+func (UnimplementedPrometheusRpcServer) GetRecordRuleList(context.Context, *GetRecordRuleListRequest) (*GetRecordRuleListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetRecordRuleList not implemented")
+}
+func (UnimplementedPrometheusRpcServer) CreateRecordRule(context.Context, *CreateRecordRuleRequest) (*CreateRecordRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateRecordRule not implemented")
+}
+func (UnimplementedPrometheusRpcServer) UpdateRecordRule(context.Context, *UpdateRecordRuleRequest) (*UpdateRecordRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method UpdateRecordRule not implemented")
+}
+func (UnimplementedPrometheusRpcServer) DeleteRecordRule(context.Context, *DeleteRecordRuleRequest) (*DeleteRecordRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method DeleteRecordRule not implemented")
+}
+func (UnimplementedPrometheusRpcServer) EnableSwitchRecordRule(context.Context, *EnableSwitchRecordRuleRequest) (*EnableSwitchRecordRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method EnableSwitchRecordRule not implemented")
+}
+func (UnimplementedPrometheusRpcServer) BatchEnableSwitchRecordRule(context.Context, *BatchEnableSwitchRecordRuleRequest) (*BatchEnableSwitchRecordRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BatchEnableSwitchRecordRule not implemented")
+}
+func (UnimplementedPrometheusRpcServer) BatchDeleteRecordRule(context.Context, *BatchDeleteRecordRuleRequest) (*BatchDeleteRecordRuleResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method BatchDeleteRecordRule not implemented")
 }
 func (UnimplementedPrometheusRpcServer) mustEmbedUnimplementedPrometheusRpcServer() {}
 func (UnimplementedPrometheusRpcServer) testEmbeddedByValue()                       {}
@@ -758,6 +872,132 @@ func _PrometheusRpc_BatchDeleteAlertRule_Handler(srv interface{}, ctx context.Co
 	return interceptor(ctx, in, info, handler)
 }
 
+func _PrometheusRpc_GetRecordRuleList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetRecordRuleListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).GetRecordRuleList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_GetRecordRuleList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).GetRecordRuleList(ctx, req.(*GetRecordRuleListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PrometheusRpc_CreateRecordRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateRecordRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).CreateRecordRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_CreateRecordRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).CreateRecordRule(ctx, req.(*CreateRecordRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PrometheusRpc_UpdateRecordRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(UpdateRecordRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).UpdateRecordRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_UpdateRecordRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).UpdateRecordRule(ctx, req.(*UpdateRecordRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PrometheusRpc_DeleteRecordRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(DeleteRecordRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).DeleteRecordRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_DeleteRecordRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).DeleteRecordRule(ctx, req.(*DeleteRecordRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PrometheusRpc_EnableSwitchRecordRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(EnableSwitchRecordRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).EnableSwitchRecordRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_EnableSwitchRecordRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).EnableSwitchRecordRule(ctx, req.(*EnableSwitchRecordRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PrometheusRpc_BatchEnableSwitchRecordRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchEnableSwitchRecordRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).BatchEnableSwitchRecordRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_BatchEnableSwitchRecordRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).BatchEnableSwitchRecordRule(ctx, req.(*BatchEnableSwitchRecordRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _PrometheusRpc_BatchDeleteRecordRule_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(BatchDeleteRecordRuleRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PrometheusRpcServer).BatchDeleteRecordRule(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: PrometheusRpc_BatchDeleteRecordRule_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PrometheusRpcServer).BatchDeleteRecordRule(ctx, req.(*BatchDeleteRecordRuleRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // PrometheusRpc_ServiceDesc is the grpc.ServiceDesc for PrometheusRpc service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -844,6 +1084,34 @@ var PrometheusRpc_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "BatchDeleteAlertRule",
 			Handler:    _PrometheusRpc_BatchDeleteAlertRule_Handler,
+		},
+		{
+			MethodName: "GetRecordRuleList",
+			Handler:    _PrometheusRpc_GetRecordRuleList_Handler,
+		},
+		{
+			MethodName: "CreateRecordRule",
+			Handler:    _PrometheusRpc_CreateRecordRule_Handler,
+		},
+		{
+			MethodName: "UpdateRecordRule",
+			Handler:    _PrometheusRpc_UpdateRecordRule_Handler,
+		},
+		{
+			MethodName: "DeleteRecordRule",
+			Handler:    _PrometheusRpc_DeleteRecordRule_Handler,
+		},
+		{
+			MethodName: "EnableSwitchRecordRule",
+			Handler:    _PrometheusRpc_EnableSwitchRecordRule_Handler,
+		},
+		{
+			MethodName: "BatchEnableSwitchRecordRule",
+			Handler:    _PrometheusRpc_BatchEnableSwitchRecordRule_Handler,
+		},
+		{
+			MethodName: "BatchDeleteRecordRule",
+			Handler:    _PrometheusRpc_BatchDeleteRecordRule_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},

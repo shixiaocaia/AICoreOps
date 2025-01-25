@@ -112,7 +112,7 @@ func (r *recordConfigCache) GeneratePrometheusRecordRuleConfigYamlOnePool(ctx co
 
 	// 构建规则组
 	for _, rule := range rules {
-		forD, err := pm.ParseDuration(rule.ForTime)
+		forD, err := pm.ParseDuration(rule.ForDuration)
 		if err != nil {
 			r.Logger.Infof("[监控模块] 解析预聚合规则持续时间失败，使用默认值: %v", err)
 			forD, _ = pm.ParseDuration("5s")

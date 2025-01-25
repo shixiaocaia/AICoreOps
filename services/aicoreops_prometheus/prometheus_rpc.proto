@@ -34,6 +34,13 @@ service Prometheus_rpc {
   rpc BatchDeleteAlertRule(BatchDeleteAlertRuleRequest) returns(BatchDeleteAlertRuleResponse);
 
   // recordRule 预聚合规则
+  rpc GetRecordRuleList(GetRecordRuleListRequest) returns(GetRecordRuleListResponse);
+  rpc CreateRecordRule(CreateRecordRuleRequest) returns(CreateRecordRuleResponse);
+  rpc UpdateRecordRule(UpdateRecordRuleRequest) returns(UpdateRecordRuleResponse);
+  rpc DeleteRecordRule(DeleteRecordRuleRequest) returns(DeleteRecordRuleResponse);
+  rpc EnableSwitchRecordRule(EnableSwitchRecordRuleRequest) returns(EnableSwitchRecordRuleResponse);
+  rpc BatchEnableSwitchRecordRule(BatchEnableSwitchRecordRuleRequest) returns(BatchEnableSwitchRecordRuleResponse);
+  rpc BatchDeleteRecordRule(BatchDeleteRecordRuleRequest) returns(BatchDeleteRecordRuleResponse);
  
   // 预聚合
 
@@ -298,3 +305,80 @@ message BatchDeleteAlertRuleResponse {
   int32 code = 1;
   string message = 2;
 }
+
+// recordRule 预聚合规则
+message RecordRule {
+  int64 id = 1;
+  string name = 2;
+  string record_name = 3;
+  int64 user_id = 4;
+  int64 pool_id = 5;
+  int64 tree_node_id = 6;
+  int32 enable = 7;
+  string for_duration = 8;
+  string expr = 9;
+}
+
+message GetRecordRuleListRequest {
+}
+
+message GetRecordRuleListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated RecordRule data = 3;
+}
+
+message CreateRecordRuleRequest {
+  RecordRule rule = 1;
+}
+
+message CreateRecordRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message UpdateRecordRuleRequest {
+  RecordRule rule = 1;
+}
+
+message UpdateRecordRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message DeleteRecordRuleRequest {
+  int64 id = 1;
+}
+
+message DeleteRecordRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message EnableSwitchRecordRuleRequest {
+  int64 id = 1;
+}
+
+message EnableSwitchRecordRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message BatchEnableSwitchRecordRuleRequest {
+  repeated int64 ids = 1;
+}
+
+message BatchEnableSwitchRecordRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message BatchDeleteRecordRuleRequest {
+  repeated int64 ids = 1;
+}
+
+message BatchDeleteRecordRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+

@@ -61,9 +61,21 @@ func (d *MonitorRecordRuleDAO) DeleteMonitorRecordRule(ctx context.Context, rule
 		Update("is_deleted", 1).Error
 }
 
+// BatchDeleteMonitorRecordRule 批量删除记录规则
+func (d *MonitorRecordRuleDAO) BatchDeleteMonitorRecordRule(ctx context.Context, ruleIDs []int64) error {
+	return d.db.WithContext(ctx).Model(&model.MonitorRecordRule{}).Where("id IN (?)", ruleIDs).
+		Update("is_deleted", 1).Error
+}
+
 // EnableSwitchMonitorRecordRule 启用/禁用记录规则
 func (d *MonitorRecordRuleDAO) EnableSwitchMonitorRecordRule(ctx context.Context, ruleID int64) error {
 	return d.db.WithContext(ctx).Model(&model.MonitorRecordRule{}).Where("id = ?", ruleID).
+		Update("enable", gorm.Expr("CASE WHEN enable = 1 THEN 2 ELSE 1 END")).Error
+}
+
+// BatchEnableSwitchMonitorRecordRule 批量启用/禁用记录规则
+func (d *MonitorRecordRuleDAO) BatchEnableSwitchMonitorRecordRule(ctx context.Context, ruleIDs []int64) error {
+	return d.db.WithContext(ctx).Model(&model.MonitorRecordRule{}).Where("id IN (?)", ruleIDs).
 		Update("enable", gorm.Expr("CASE WHEN enable = 1 THEN 2 ELSE 1 END")).Error
 }
 
@@ -91,74 +103,74 @@ func (d *MonitorRecordRuleDAO) CheckMonitorRecordRuleNameExists(ctx context.Cont
 func (d *MonitorRecordRuleDAO) ExampleRecordRules() []*model.MonitorRecordRule {
 	return []*model.MonitorRecordRule{
 		{
-			Name:       "node_memory_usage_bytes",
-			RecordName: "node:memory:usage:bytes",
-			Expr:       "node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes",
-			ForTime:    "5m",
-			Enable:     1,
+			Name:        "node_memory_usage_bytes",
+			RecordName:  "node:memory:usage:bytes",
+			Expr:        "node_memory_MemTotal_bytes - node_memory_MemAvailable_bytes",
+			ForDuration: "5m",
+			Enable:      1,
 		},
 		{
-			Name:       "node_cpu_usage_percent",
-			RecordName: "node:cpu:usage:percent",
-			Expr:       "100 - (avg by(instance) (rate(node_cpu_seconds_total{mode='idle'}[5m])) * 100)",
-			ForTime:    "5m",
-			Enable:     1,
+			Name:        "node_cpu_usage_percent",
+			RecordName:  "node:cpu:usage:percent",
+			Expr:        "100 - (avg by(instance) (rate(node_cpu_seconds_total{mode='idle'}[5m])) * 100)",
+			ForDuration: "5m",
+			Enable:      1,
 		},
 		{
-			Name:       "node_disk_usage_percent",
-			RecordName: "node:disk:usage:percent",
-			Expr:       "100 - ((node_filesystem_avail_bytes{mountpoint='/'} * 100) / node_filesystem_size_bytes{mountpoint='/'})",
-			ForTime:    "5m",
-			Enable:     1,
+			Name:        "node_disk_usage_percent",
+			RecordName:  "node:disk:usage:percent",
+			Expr:        "100 - ((node_filesystem_avail_bytes{mountpoint='/'} * 100) / node_filesystem_size_bytes{mountpoint='/'})",
+			ForDuration: "5m",
+			Enable:      1,
 		},
 		{
-			Name:       "http_request_total_5m",
-			RecordName: "http:request:total:5m",
-			Expr:       "sum(rate(http_requests_total[5m])) by (instance)",
-			ForTime:    "5m",
-			Enable:     1,
+			Name:        "http_request_total_5m",
+			RecordName:  "http:request:total:5m",
+			Expr:        "sum(rate(http_requests_total[5m])) by (instance)",
+			ForDuration: "5m",
+			Enable:      1,
 		},
 		{
-			Name:       "http_request_errors_5m",
-			RecordName: "http:request:errors:5m",
-			Expr:       "sum(rate(http_requests_total{status=~'5..'}[5m])) by (instance)",
-			ForTime:    "5m",
-			Enable:     1,
+			Name:        "http_request_errors_5m",
+			RecordName:  "http:request:errors:5m",
+			Expr:        "sum(rate(http_requests_total{status=~'5..'}[5m])) by (instance)",
+			ForDuration: "5m",
+			Enable:      1,
 		},
 		{
-			Name:       "container_memory_usage_bytes",
-			RecordName: "container:memory:usage:bytes",
-			Expr:       "sum(container_memory_usage_bytes) by (container)",
-			ForTime:    "5m",
-			Enable:     1,
+			Name:        "container_memory_usage_bytes",
+			RecordName:  "container:memory:usage:bytes",
+			Expr:        "sum(container_memory_usage_bytes) by (container)",
+			ForDuration: "5m",
+			Enable:      1,
 		},
 		{
-			Name:       "container_cpu_usage_seconds",
-			RecordName: "container:cpu:usage:seconds",
-			Expr:       "sum(rate(container_cpu_usage_seconds_total[5m])) by (container)",
-			ForTime:    "5m",
-			Enable:     1,
+			Name:        "container_cpu_usage_seconds",
+			RecordName:  "container:cpu:usage:seconds",
+			Expr:        "sum(rate(container_cpu_usage_seconds_total[5m])) by (container)",
+			ForDuration: "5m",
+			Enable:      1,
 		},
 		{
-			Name:       "mysql_queries_rate",
-			RecordName: "mysql:queries:rate",
-			Expr:       "rate(mysql_global_status_queries[5m])",
-			ForTime:    "5m",
-			Enable:     1,
+			Name:        "mysql_queries_rate",
+			RecordName:  "mysql:queries:rate",
+			Expr:        "rate(mysql_global_status_queries[5m])",
+			ForDuration: "5m",
+			Enable:      1,
 		},
 		{
-			Name:       "redis_connected_clients",
-			RecordName: "redis:connected:clients",
-			Expr:       "redis_connected_clients",
-			ForTime:    "5m",
-			Enable:     1,
+			Name:        "redis_connected_clients",
+			RecordName:  "redis:connected:clients",
+			Expr:        "redis_connected_clients",
+			ForDuration: "5m",
+			Enable:      1,
 		},
 		{
-			Name:       "redis_commands_per_second",
-			RecordName: "redis:commands:per:second",
-			Expr:       "rate(redis_commands_processed_total[5m])",
-			ForTime:    "5m",
-			Enable:     1,
+			Name:        "redis_commands_per_second",
+			RecordName:  "redis:commands:per:second",
+			Expr:        "rate(redis_commands_processed_total[5m])",
+			ForDuration: "5m",
+			Enable:      1,
 		},
 	}
 }

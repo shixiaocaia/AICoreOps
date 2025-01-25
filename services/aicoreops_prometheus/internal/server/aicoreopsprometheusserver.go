@@ -122,3 +122,39 @@ func (s *AicoreopsPrometheusServer) CheckPromqlExpr(ctx context.Context, req *ty
 	l := logic.NewAlertRuleLogic(ctx, s.svcCtx)
 	return l.CheckPromqlExpr(ctx, req)
 }
+
+// record rule
+func (s *AicoreopsPrometheusServer) GetRecordRuleList(ctx context.Context, req *types.GetRecordRuleListRequest) (*types.GetRecordRuleListResponse, error) {
+	l := logic.NewRecordRuleLogic(ctx, s.svcCtx)
+	return l.GetRecordRuleList(ctx)
+}
+
+func (s *AicoreopsPrometheusServer) CreateRecordRule(ctx context.Context, req *types.CreateRecordRuleRequest) (*types.CreateRecordRuleResponse, error) {
+	l := logic.NewRecordRuleLogic(ctx, s.svcCtx)
+	return l.CreateRecordRule(ctx, req)
+}
+
+func (s *AicoreopsPrometheusServer) UpdateRecordRule(ctx context.Context, req *types.UpdateRecordRuleRequest) (*types.UpdateRecordRuleResponse, error) {
+	l := logic.NewRecordRuleLogic(ctx, s.svcCtx)
+	return l.UpdateRecordRule(ctx, req)
+}
+
+func (s *AicoreopsPrometheusServer) DeleteRecordRule(ctx context.Context, req *types.DeleteRecordRuleRequest) (*types.DeleteRecordRuleResponse, error) {
+	l := logic.NewRecordRuleLogic(ctx, s.svcCtx)
+	return l.DeleteRecordRule(ctx, req)
+}
+
+func (s *AicoreopsPrometheusServer) BatchDeleteRecordRule(ctx context.Context, req *types.BatchDeleteRecordRuleRequest) (*types.BatchDeleteRecordRuleResponse, error) {
+	l := logic.NewRecordRuleLogic(ctx, s.svcCtx)
+	return l.BatchDeleteRecordRule(ctx, req)
+}
+
+func (s *AicoreopsPrometheusServer) EnableSwitchRecordRule(ctx context.Context, req *types.EnableSwitchRecordRuleRequest) (*types.EnableSwitchRecordRuleResponse, error) {
+	l := logic.NewRecordRuleLogic(ctx, s.svcCtx)
+	return l.EnableSwitchRecordRule(ctx, req)
+}
+
+func (s *AicoreopsPrometheusServer) BatchEnableSwitchRecordRule(ctx context.Context, req *types.BatchEnableSwitchRecordRuleRequest) (*types.BatchEnableSwitchRecordRuleResponse, error) {
+	l := logic.NewRecordRuleLogic(ctx, s.svcCtx)
+	return l.BatchEnableSwitchRecordRule(ctx, req)
+}
