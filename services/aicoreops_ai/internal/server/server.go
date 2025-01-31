@@ -19,7 +19,13 @@ func NewAicoreopsAiServer(svcCtx *svc.ServiceContext) *AicoreopsAiServer {
 	}
 }
 
-// GetHistoryList 获取历史会话
+// CreateNewChat 创建新的聊天
+func (s *AicoreopsAiServer) CreateNewChat(ctx context.Context, req *types.CreateNewChatRequest) (*types.CreateNewChatResponse, error) {
+	l := logic.NewAIHelperLogic(ctx, s.svcCtx)
+	return l.CreateNewChat(req)
+}
+
+// GetHistoryList 获取历史列表
 func (s *AicoreopsAiServer) GetHistoryList(ctx context.Context, req *types.GetHistoryListRequest) (*types.GetHistoryListResponse, error) {
 	l := logic.NewAIHelperLogic(ctx, s.svcCtx)
 	return l.GetHistoryList(req)
@@ -37,7 +43,7 @@ func (s *AicoreopsAiServer) UploadDocument(ctx context.Context, req *types.Uploa
 	return l.UploadDocument(req)
 }
 
-// AskQuestion 实现 AI 助手的提问接口逻辑
+// AskQuestion AI问答
 func (s *AicoreopsAiServer) AskQuestion(stream types.AIHelper_AskQuestionServer) error {
 	l := logic.NewAIHelperLogic(stream.Context(), s.svcCtx)
 	return l.AskQuestion(stream)

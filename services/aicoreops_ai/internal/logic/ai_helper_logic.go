@@ -28,12 +28,39 @@ type AIHelperLogic struct {
 	logx.Logger
 }
 
+const newSessionTitle = "新会话"
+
 func NewAIHelperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AIHelperLogic {
 	return &AIHelperLogic{
 		ctx:    ctx,
 		svcCtx: svcCtx,
 		Logger: logx.WithContext(ctx),
 	}
+}
+
+// CreateNewChat 创建新的聊天
+func (a *AIHelperLogic) CreateNewChat(req *types.CreateNewChatRequest) (*types.CreateNewChatResponse, error) {
+	// 1. 生成sessionID
+	sessionID := uuid.New().String()
+
+	// TODO 2. 只有发起对话才会真正创建会话
+	// _, err := a.svcCtx.HistorySessionModel.Insert(a.ctx, &model.HistorySession{
+	// 	UserId:    req.UserId,
+	// 	SessionId: sessionID,
+	// 	CreatedAt: time.Now(),
+	// })
+	// if err != nil {
+	// 	a.Logger.Errorf("创建新会话失败: %v", err)
+	// 	return nil, fmt.Errorf("创建新会话失败: %v", err)
+	// }
+
+	return &types.CreateNewChatResponse{
+		Code:    0,
+		Message: "success",
+		Data: &types.CreateNewChatResponse_SessionData{
+			SessionId: sessionID,
+		},
+	}, nil
 }
 
 // AskQuestion 实现 AI 助手的提问接口逻辑，使用双向流式 RPC

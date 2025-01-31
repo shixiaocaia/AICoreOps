@@ -7,7 +7,7 @@ import (
 )
 
 // InitLLM 初始化 LLM 模型
-func InitLLM(c config.MyLLMConfig) *ollama.LLM {
+func InitLLM(c config.LLMConfig) *ollama.LLM {
 	client, err := ollama.New(
 		ollama.WithServerURL(c.Url),
 		ollama.WithModel(c.Model),

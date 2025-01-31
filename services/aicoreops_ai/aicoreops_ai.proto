@@ -4,6 +4,21 @@ package ai;
 
 option go_package = "./types";
 
+// 创建新会话请求
+message CreateNewChatRequest {
+  int64 user_id = 1;    // 用户ID
+}
+
+message CreateNewChatResponse {
+  int32 code = 1;       // 状态码
+  string message = 2;   // 错误信息或成功提示
+  SessionData data = 3; // 返回的数据
+
+  message SessionData {
+    string session_id = 1;  // 会话ID
+  }
+}
+
 // 对话式 AI 助手请求
 message AskQuestionRequest {
   string question = 1;  // 用户提问内容
@@ -119,9 +134,10 @@ message FixTaskResponse {
 // 对话式 AI 助手接口
 service AIHelper {
   rpc AskQuestion (stream AskQuestionRequest) returns (stream AskQuestionResponse);       // 用户提问，获取解答
-  rpc GetChatHistory (GetChatHistoryRequest) returns (GetChatHistoryResponse); // 获取具体会话历史
-  rpc UploadDocument (UploadDocumentRequest) returns (UploadDocumentResponse); // 上传文档到知识库
-  rpc GetHistoryList (GetHistoryListRequest) returns (GetHistoryListResponse); // 获取历史会话列表
+  rpc GetChatHistory (GetChatHistoryRequest) returns (GetChatHistoryResponse);            // 获取具体会话历史
+  rpc UploadDocument (UploadDocumentRequest) returns (UploadDocumentResponse);            // 上传文档到知识库
+  rpc GetHistoryList (GetHistoryListRequest) returns (GetHistoryListResponse);            // 获取历史会话列表
+  rpc CreateNewChat (CreateNewChatRequest) returns (CreateNewChatResponse);               // 创建新会话
 }
 
 // 日志分析与修复建议接口

@@ -7,6 +7,9 @@ import (
 	"net/url"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/config"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/dao"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/repo"
+	"gorm.io/gorm"
 
 	"github.com/tmc/langchaingo/documentloaders"
 	"github.com/tmc/langchaingo/embeddings"
@@ -16,6 +19,18 @@ import (
 	"github.com/tmc/langchaingo/vectorstores"
 	"github.com/tmc/langchaingo/vectorstores/qdrant"
 )
+
+type AIHelperDomain struct {
+	HistoryRepo        repo.HistoryRepo
+	HistorySessionRepo repo.HistorySessionRepo
+}
+
+func NewAIHelperDomain(db *gorm.DB) *AIHelperDomain {
+	return &AIHelperDomain{
+		HistoryRepo:        dao.NewHistoryDAO(db),
+		HistorySessionRepo: dao.NewHistorySessionDAO(db),
+	}
+}
 
 // InitQdrantStore 初始化并配置Qdrant向量存储
 func InitQdrantStore(c config.QdrantConfig, llm *ollama.LLM) (*qdrant.Store, error) {

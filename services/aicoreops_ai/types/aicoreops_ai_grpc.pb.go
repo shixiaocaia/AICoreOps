@@ -23,6 +23,7 @@ const (
 	AIHelper_GetChatHistory_FullMethodName = "/ai.AIHelper/GetChatHistory"
 	AIHelper_UploadDocument_FullMethodName = "/ai.AIHelper/UploadDocument"
 	AIHelper_GetHistoryList_FullMethodName = "/ai.AIHelper/GetHistoryList"
+	AIHelper_CreateNewChat_FullMethodName  = "/ai.AIHelper/CreateNewChat"
 )
 
 // AIHelperClient is the client API for AIHelper service.
@@ -35,6 +36,7 @@ type AIHelperClient interface {
 	GetChatHistory(ctx context.Context, in *GetChatHistoryRequest, opts ...grpc.CallOption) (*GetChatHistoryResponse, error)
 	UploadDocument(ctx context.Context, in *UploadDocumentRequest, opts ...grpc.CallOption) (*UploadDocumentResponse, error)
 	GetHistoryList(ctx context.Context, in *GetHistoryListRequest, opts ...grpc.CallOption) (*GetHistoryListResponse, error)
+	CreateNewChat(ctx context.Context, in *CreateNewChatRequest, opts ...grpc.CallOption) (*CreateNewChatResponse, error)
 }
 
 type aIHelperClient struct {
@@ -88,6 +90,16 @@ func (c *aIHelperClient) GetHistoryList(ctx context.Context, in *GetHistoryListR
 	return out, nil
 }
 
+func (c *aIHelperClient) CreateNewChat(ctx context.Context, in *CreateNewChatRequest, opts ...grpc.CallOption) (*CreateNewChatResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(CreateNewChatResponse)
+	err := c.cc.Invoke(ctx, AIHelper_CreateNewChat_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AIHelperServer is the server API for AIHelper service.
 // All implementations must embed UnimplementedAIHelperServer
 // for forward compatibility.
@@ -98,6 +110,7 @@ type AIHelperServer interface {
 	GetChatHistory(context.Context, *GetChatHistoryRequest) (*GetChatHistoryResponse, error)
 	UploadDocument(context.Context, *UploadDocumentRequest) (*UploadDocumentResponse, error)
 	GetHistoryList(context.Context, *GetHistoryListRequest) (*GetHistoryListResponse, error)
+	CreateNewChat(context.Context, *CreateNewChatRequest) (*CreateNewChatResponse, error)
 	mustEmbedUnimplementedAIHelperServer()
 }
 
@@ -119,6 +132,9 @@ func (UnimplementedAIHelperServer) UploadDocument(context.Context, *UploadDocume
 }
 func (UnimplementedAIHelperServer) GetHistoryList(context.Context, *GetHistoryListRequest) (*GetHistoryListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetHistoryList not implemented")
+}
+func (UnimplementedAIHelperServer) CreateNewChat(context.Context, *CreateNewChatRequest) (*CreateNewChatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNewChat not implemented")
 }
 func (UnimplementedAIHelperServer) mustEmbedUnimplementedAIHelperServer() {}
 func (UnimplementedAIHelperServer) testEmbeddedByValue()                  {}
@@ -202,6 +218,24 @@ func _AIHelper_GetHistoryList_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
+func _AIHelper_CreateNewChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateNewChatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AIHelperServer).CreateNewChat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AIHelper_CreateNewChat_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AIHelperServer).CreateNewChat(ctx, req.(*CreateNewChatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AIHelper_ServiceDesc is the grpc.ServiceDesc for AIHelper service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -220,6 +254,10 @@ var AIHelper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "GetHistoryList",
 			Handler:    _AIHelper_GetHistoryList_Handler,
+		},
+		{
+			MethodName: "CreateNewChat",
+			Handler:    _AIHelper_CreateNewChat_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
