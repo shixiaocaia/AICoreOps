@@ -4,7 +4,14 @@ package ai;
 
 option go_package = "./types";
 
-// 创建新会话请求
+// ----------------------- 通用消息类型 -----------------------
+message HistorySession {
+  string session_id = 1; // 会话ID
+  string title = 2;      // 会话标题
+}
+
+// ----------------------- AI 助手相关消息 -----------------------
+// 创建新会话
 message CreateNewChatRequest {
   int64 user_id = 1;    // 用户ID
 }
@@ -19,32 +26,45 @@ message CreateNewChatResponse {
   }
 }
 
-// 对话式 AI 助手请求
+// 对话消息
 message AskQuestionRequest {
-  string question = 1;  // 用户提问内容
-  string session_id = 2; // 会话ID,用于追踪对话上下文
+  string title = 1;            // 用于指定文档检索
+  string question = 2;         // 用户提问内容
+  string session_id = 3;       // 会话ID,用于追踪对话上下文
+  float score_threshold = 4; // 用于指定文档检索的相似度阈值
+  int32 top_k = 5;            // 用于指定文档检索的返回数量
 }
 
-// 对话式 AI 助手响应
 message AskQuestionResponse {
   int32 code = 1;        // 状态码，0 表示成功，非 0 表示错误
   string message = 2;    // 错误信息或成功提示
   AnswerData data = 3;   // 返回的数据
 
   message AnswerData {
-    string answer = 1;   // AI 助手的回答内容
+    string answer = 1;    // AI 助手的回答内容
     string session_id = 2; // 会话ID
   }
 }
 
-// 获取聊天历史请求
+// 历史记录相关
+message GetHistoryListRequest {
+  int64 user_id = 1;  // 用户ID
+  int32 page = 2;     // 页码
+  int32 page_size = 3; // 每页数量
+}
+
+message GetHistoryListResponse {
+  int32 code = 1;                    // 状态码
+  string message = 2;                // 错误信息或成功提示
+  repeated HistorySession data = 3;  // 返回的数据
+}
+
 message GetChatHistoryRequest {
   string session_id = 1; // 会话ID
   int32 page = 2;       // 页码
   int32 page_size = 3;  // 每页数量
 }
 
-// 获取聊天历史响应
 message GetChatHistoryResponse {
   int32 code = 1;           // 状态码
   string message = 2;       // 错误信息或成功提示
@@ -56,54 +76,33 @@ message GetChatHistoryResponse {
   }
 
   message ChatMessage {
-    string question = 1;  // 问题
-    string answer = 2;    // 回答
+    string question = 1;   // 问题
+    string answer = 2;     // 回答
     int64 create_time = 3; // 创建时间
   }
 }
 
-// 上传文档请求
+// 文档管理相关
 message UploadDocumentRequest {
-  string title = 1;     // 文档标题
-  string content = 2;   // 文档内容
+  string title = 1;    // 文档标题
+  string content = 2;  // 文档内容
 }
 
-// 上传文档响应
 message UploadDocumentResponse {
-  int32 code = 1;       // 状态码
-  string message = 2;   // 错误信息或成功提示
-  DocData data = 3;     // 返回的数据
+  int32 code = 1;      // 状态码
+  string message = 2;  // 错误信息或成功提示
+  DocData data = 3;    // 返回的数据
 
   message DocData {
-    string doc_id = 1;  // 文档ID
+    string doc_id = 1; // 文档ID
   }
 }
 
-// 历史会话
-message HistorySession {
-  string session_id = 1; // 会话ID
-  string title = 2; // 会话标题
-}
-
-// 获取历史会话
-message GetHistoryListRequest {
-  string user_id = 1; // 用户ID
-}
-
-// 获取历史会话响应
-message GetHistoryListResponse {
-  int32 code = 1; // 状态码
-  string message = 2; // 错误信息或成功提示
-  repeated HistorySession data = 3; // 返回的数据
-}
-
-
-// 日志分析请求
+// ----------------------- 日志分析相关消息 -----------------------
 message AnalyzeLogsRequest {
   string log_data = 1;  // 提交的日志内容
 }
 
-// 日志分析响应
 message AnalyzeLogsResponse {
   int32 code = 1;            // 状态码
   string message = 2;        // 错误信息或成功提示
@@ -114,13 +113,12 @@ message AnalyzeLogsResponse {
   }
 }
 
-// 自动修复任务请求
+// ----------------------- 自动修复相关消息 -----------------------
 message FixTaskRequest {
-  string task = 1;      // 修复任务类型（如 fixOOM）
-  string pod_id = 2;    // Pod ID
+  string task = 1;     // 修复任务类型（如 fixOOM）
+  string pod_id = 2;   // Pod ID
 }
 
-// 自动修复任务响应
 message FixTaskResponse {
   int32 code = 1;          // 状态码
   string message = 2;      // 错误信息或成功提示
@@ -131,21 +129,29 @@ message FixTaskResponse {
   }
 }
 
-// 对话式 AI 助手接口
+// ----------------------- 服务定义 -----------------------
+// 对话式 AI 助手服务
 service AIHelper {
-  rpc AskQuestion (stream AskQuestionRequest) returns (stream AskQuestionResponse);       // 用户提问，获取解答
-  rpc GetChatHistory (GetChatHistoryRequest) returns (GetChatHistoryResponse);            // 获取具体会话历史
-  rpc UploadDocument (UploadDocumentRequest) returns (UploadDocumentResponse);            // 上传文档到知识库
-  rpc GetHistoryList (GetHistoryListRequest) returns (GetHistoryListResponse);            // 获取历史会话列表
-  rpc CreateNewChat (CreateNewChatRequest) returns (CreateNewChatResponse);               // 创建新会话
+  // 创建新会话
+  rpc CreateNewChat (CreateNewChatRequest) returns (CreateNewChatResponse);
+  // 获取历史会话列表
+  rpc GetHistoryList (GetHistoryListRequest) returns (GetHistoryListResponse);
+  // 获取具体会话历史
+  rpc GetChatHistory (GetChatHistoryRequest) returns (GetChatHistoryResponse);
+  // 上传文档到知识库
+  rpc UploadDocument (UploadDocumentRequest) returns (UploadDocumentResponse);
+  // 用户提问，获取解答
+  rpc AskQuestion (stream AskQuestionRequest) returns (stream AskQuestionResponse);
 }
 
-// 日志分析与修复建议接口
+// 日志分析服务
 service LogAnalysis {
-  rpc AnalyzeLogs (AnalyzeLogsRequest) returns (AnalyzeLogsResponse);  // 分析日志，返回修复建议
+  // 分析日志，返回修复建议
+  rpc AnalyzeLogs (AnalyzeLogsRequest) returns (AnalyzeLogsResponse);
 }
 
-// 自动修复任务接口
+// 自动修复服务
 service AutoFix {
-  rpc FixTask (FixTaskRequest) returns (FixTaskResponse);  // 执行修复任务
+  // 执行修复任务
+  rpc FixTask (FixTaskRequest) returns (FixTaskResponse);
 }

@@ -20,13 +20,13 @@ func (d *HistoryDAO) CreateHistory(ctx context.Context, history *model.History) 
 	return d.db.WithContext(ctx).Create(history).Error
 }
 
-// GetHistoryByID 获取历史记录
-func (d *HistoryDAO) GetHistoryByID(ctx context.Context, id int64) (*model.History, error) {
-	var history model.History
-	if err := d.db.Where("id = ?", id).First(&history).Error; err != nil {
+// GetHistoryBySessionID 获取历史记录
+func (d *HistoryDAO) GetHistoryBySessionID(ctx context.Context, sessionID string) ([]*model.History, error) {
+	var history []*model.History
+	if err := d.db.WithContext(ctx).Where("session_id = ?", sessionID).Find(&history).Error; err != nil {
 		return nil, err
 	}
-	return &history, nil
+	return history, nil
 }
 
 // GetHistoryList 获取历史记录列表

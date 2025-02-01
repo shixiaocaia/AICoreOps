@@ -1,8 +1,9 @@
 package svc
 
 import (
+	"sync"
+
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/config"
-	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/domain"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/pkg"
 	"gorm.io/gorm"
 
@@ -17,16 +18,12 @@ type ServiceContext struct {
 	Qdrant    *qdrant.Store
 	DB        *gorm.DB
 	MemoryBuf map[string]*memory.ConversationTokenBuffer
+	Mutex     *sync.RWMutex
 }
 
 func NewServiceContext(c config.Config) *ServiceContext {
 	llm := pkg.InitLLM(c.LLM)
-
-	store, err := domain.InitQdrantStore(c.Qdrant, llm)
-	if err != nil {
-		panic(err)
-	}
-
+	store := pkg.InitQdrantStore(c.Qdrant, llm)
 	db := pkg.InitDB(c.MySQL)
 
 	return &ServiceContext{
@@ -35,5 +32,6 @@ func NewServiceContext(c config.Config) *ServiceContext {
 		Qdrant:    store,
 		DB:        db,
 		MemoryBuf: make(map[string]*memory.ConversationTokenBuffer),
+		Mutex:     &sync.RWMutex{},
 	}
 }

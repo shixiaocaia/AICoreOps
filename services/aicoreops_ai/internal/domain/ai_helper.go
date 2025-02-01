@@ -1,110 +1,221 @@
 package domain
 
 import (
-	"bytes"
 	"context"
+	"encoding/base64"
 	"fmt"
-	"net/url"
+	"strings"
+	"sync"
 
-	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/config"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/dao"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/model"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/repo"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/svc"
+	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/types"
 	"gorm.io/gorm"
 
-	"github.com/tmc/langchaingo/documentloaders"
-	"github.com/tmc/langchaingo/embeddings"
+	"github.com/tmc/langchaingo/llms"
 	"github.com/tmc/langchaingo/llms/ollama"
+	"github.com/tmc/langchaingo/memory"
 	"github.com/tmc/langchaingo/schema"
-	"github.com/tmc/langchaingo/textsplitter"
-	"github.com/tmc/langchaingo/vectorstores"
 	"github.com/tmc/langchaingo/vectorstores/qdrant"
 )
 
 type AIHelperDomain struct {
 	HistoryRepo        repo.HistoryRepo
 	HistorySessionRepo repo.HistorySessionRepo
+	Qdrant             *dao.QdrantDAO
 }
 
-func NewAIHelperDomain(db *gorm.DB) *AIHelperDomain {
+func NewAIHelperDomain(db *gorm.DB, qd *qdrant.Store) *AIHelperDomain {
 	return &AIHelperDomain{
 		HistoryRepo:        dao.NewHistoryDAO(db),
 		HistorySessionRepo: dao.NewHistorySessionDAO(db),
+		Qdrant:             dao.NewQdrantDAO(qd),
 	}
 }
 
-// InitQdrantStore 初始化并配置Qdrant向量存储
-func InitQdrantStore(c config.QdrantConfig, llm *ollama.LLM) (*qdrant.Store, error) {
-	parsedURL, err := url.Parse(c.Url)
+func (d *AIHelperDomain) GetHistorySessionList(ctx context.Context, uid int64, limit, offset int) ([]*types.HistorySession, error) {
+	list, err := d.HistorySessionRepo.GetHistorySessionList(ctx, uid, offset, limit)
 	if err != nil {
-		return nil, fmt.Errorf("解析URL失败: %w", err)
+		return nil, err
 	}
 
-	ollamaEmbedder, err := embeddings.NewEmbedder(llm)
-	if err != nil {
-		return nil, fmt.Errorf("创建文档嵌入器失败: %w", err)
+	sessions := make([]*types.HistorySession, 0, len(list))
+	for _, h := range list {
+		sessions = append(sessions, &types.HistorySession{
+			Title:     h.Title,
+			SessionId: h.SessionID,
+		})
 	}
 
-	vectorStore, err := qdrant.New(
-		qdrant.WithURL(*parsedURL),
-		qdrant.WithCollectionName(c.CollectionName),
-		qdrant.WithEmbedder(ollamaEmbedder),
-	)
-	if err != nil {
-		return nil, fmt.Errorf("创建Qdrant存储实例失败: %w", err)
-	}
-
-	return &vectorStore, nil
+	return sessions, nil
 }
 
-func InsertDocsToQdrantStore(vectorStore *qdrant.Store, docs []schema.Document) error {
-	_, err := vectorStore.AddDocuments(context.Background(), docs)
+func (d *AIHelperDomain) GetHistoryBySessionID(ctx context.Context, sessionID string) ([]*types.GetChatHistoryResponse_ChatMessage, error) {
+	histories, err := d.HistoryRepo.GetHistoryBySessionID(ctx, sessionID)
 	if err != nil {
+		return nil, fmt.Errorf("获取历史记录失败: %w", err)
+	}
+
+	return d.BuildHistoryRespModel(ctx, histories), nil
+}
+
+func (d *AIHelperDomain) UploadDocument(ctx context.Context, title, content string) error {
+	// 1. 解码 Base64 内容
+	fileBytes, err := base64.StdEncoding.DecodeString(content)
+	if err != nil {
+		return fmt.Errorf("解码 Base64 内容失败: %w", err)
+	}
+
+	// 2. 将文本文件拆分成文档块
+	docs, err := d.Qdrant.TextToDocuments(ctx, fileBytes)
+	if err != nil {
+		return fmt.Errorf("拆分文本失败: %w", err)
+	}
+
+	// 3. 存储到 Qdrant 向量存储中
+	if err = d.Qdrant.StoreDocumentWithMetadata(ctx, docs, title); err != nil {
 		return fmt.Errorf("添加文档失败: %w", err)
 	}
 
 	return nil
 }
 
-// RetrieveRelevantDocs 从Qdrant存储中检索相关文档
-func RetrieveRelevantDocs(vectorStore *qdrant.Store, queryText string) ([]schema.Document, error) {
-	const (
-		scoreThreshold = 0.30 // 相似度阈值
-		topK           = 5    // 返回最相关文档数量
+func (d *AIHelperDomain) LoadHistoryToMemory(ctx context.Context, sc *svc.ServiceContext, sessionID string, histories []*types.GetChatHistoryResponse_ChatMessage) error {
+	if _, ok := sc.MemoryBuf[sessionID]; ok {
+		return nil
+	}
+	buf := memory.NewConversationTokenBuffer(
+		sc.LLM,
+		10000,
 	)
-
-	// 设置向量检索选项
-	retrievalOptions := []vectorstores.Option{
-		vectorstores.WithScoreThreshold(scoreThreshold),
+	for _, h := range histories {
+		err := buf.SaveContext(ctx, map[string]any{"question": h.Question}, map[string]any{"answer": h.Answer})
+		if err != nil {
+			return err
+		}
 	}
 
-	// 创建检索器实例并执行检索
-	docRetriever := vectorstores.ToRetriever(vectorStore, topK, retrievalOptions...)
-	relevantDocs, err := docRetriever.GetRelevantDocuments(context.Background(), queryText)
-	if err != nil {
-		return nil, fmt.Errorf("检索文档失败: %w", err)
-	}
+	// 并发写入
+	sc.Mutex.Lock()
+	sc.MemoryBuf[sessionID] = buf
+	sc.Mutex.Unlock()
 
-	return relevantDocs, nil
+	return nil
 }
 
-// TextToChunks 将文本文件拆分成多个文档块
-func TextToChunks(contentBytes []byte) ([]schema.Document, error) {
-	const (
-		chunkSize    = 768
-		chunkOverlap = 64
-	)
+func (d *AIHelperDomain) CheckSession(ctx context.Context) (userID int64, sessionID string, err error) {
+	userID = ctx.Value("userId").(int64)
+	if userID == 0 {
+		return 0, "", fmt.Errorf("用户ID为空")
+	}
 
-	contentReader := bytes.NewReader(contentBytes)
-	docLoaded := documentloaders.NewText(contentReader)
+	sessionID = ctx.Value("sessionID").(string)
+	if sessionID == "" {
+		return 0, "", fmt.Errorf("会话ID为空")
+	}
 
-	splitter := textsplitter.NewRecursiveCharacter()
-	splitter.ChunkSize = chunkSize
-	splitter.ChunkOverlap = chunkOverlap
+	return userID, sessionID, nil
+}
 
-	docs, err := docLoaded.LoadAndSplit(context.Background(), splitter)
+func (d *AIHelperDomain) GetMemoryBuf(ctx context.Context, sessionID string, llm *ollama.LLM, mp map[string]*memory.ConversationTokenBuffer, mutex *sync.RWMutex) (*memory.ConversationTokenBuffer, bool, error) {
+	buf, ok := mp[sessionID]
+	if !ok {
+		buf = memory.NewConversationTokenBuffer(
+			llm,
+			10000,
+		)
+		mutex.Lock()
+		mp[sessionID] = buf
+		mutex.Unlock()
+	}
+
+	return buf, ok, nil
+}
+
+func (d *AIHelperDomain) RetrieveRelevantDocs(ctx context.Context, title, question string, scoreThreshold float32, topK int) ([]schema.Document, error) {
+	docs, err := d.Qdrant.SearchSimilarDocuments(ctx, title, question, dao.WithScoreThreshold(scoreThreshold), dao.WithTopK(topK))
 	if err != nil {
-		return nil, fmt.Errorf("拆分文本失败: %w", err)
+		return nil, fmt.Errorf("检索相关文档失败: %w", err)
 	}
 
 	return docs, nil
+}
+
+func (d *AIHelperDomain) SaveHistory(ctx context.Context, answer string, req *types.AskQuestionRequest, newSession bool, userID int64, sessionID string, buf *memory.ConversationTokenBuffer) error {
+	// 1. 会话内容
+	if err := d.HistoryRepo.CreateHistory(ctx, &model.History{
+		SessionID: req.SessionId,
+		Question:  req.Question,
+		Answer:    answer,
+	}); err != nil {
+		return fmt.Errorf("保存历史记录失败: %w", err)
+	}
+
+	// 2. 会话 Session
+	if newSession {
+		err := d.HistorySessionRepo.CreateHistorySession(ctx, &model.HistorySession{
+			UserID:    userID,
+			SessionID: sessionID,
+			Title:     req.Question,
+		})
+		if err != nil {
+			return fmt.Errorf("创建新会话失败: %w", err)
+		}
+	}
+
+	// 3. 缓存
+	if err := buf.SaveContext(ctx, map[string]any{"question": req.Question}, map[string]any{"answer": answer}); err != nil {
+		return fmt.Errorf("保存历史记录失败: %w", err)
+	}
+
+	return nil
+}
+
+func (d *AIHelperDomain) BuildContext(ctx context.Context, buf *memory.ConversationTokenBuffer, req *types.AskQuestionRequest) ([]llms.MessageContent, error) {
+	// 1. 检索相关文档
+	docs, err := d.RetrieveRelevantDocs(ctx, req.Title, req.Question, req.ScoreThreshold, int(req.TopK))
+	if err != nil {
+		return nil, fmt.Errorf("检索相关文档失败: %w", err)
+	}
+
+	// 2. 获取历史记录
+	history, err := buf.LoadMemoryVariables(context.Background(), map[string]any{})
+	if err != nil {
+		return nil, fmt.Errorf("获取历史记录失败: %v", err)
+	}
+
+	// 3. 构建上下文
+	var contextTexts []string
+	for _, doc := range docs {
+		contextTexts = append(contextTexts, doc.PageContent)
+	}
+
+	for _, h := range history {
+		contextTexts = append(contextTexts, h.(string))
+	}
+
+	content := []llms.MessageContent{
+		llms.TextParts(llms.ChatMessageTypeSystem, "请你仔细思考，读取上下文内容给出高质量的回答"),
+		// 上下文
+		llms.TextParts(llms.ChatMessageTypeHuman, strings.Join(contextTexts, "\n")),
+		// 问题
+		llms.TextParts(llms.ChatMessageTypeHuman, req.Question),
+	}
+
+	return content, nil
+}
+
+func (d *AIHelperDomain) BuildHistoryRespModel(ctx context.Context, histories []*model.History) []*types.GetChatHistoryResponse_ChatMessage {
+	res := make([]*types.GetChatHistoryResponse_ChatMessage, 0, len(histories))
+	for _, h := range histories {
+		res = append(res, &types.GetChatHistoryResponse_ChatMessage{
+			Question:   h.Question,
+			Answer:     h.Answer,
+			CreateTime: h.CreatedAt,
+		})
+	}
+
+	return res
 }
