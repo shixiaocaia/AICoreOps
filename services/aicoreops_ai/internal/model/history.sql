@@ -4,22 +4,29 @@ CREATE DATABASE AICoreOps
     COLLATE utf8mb4_general_ci;
 
 USE AICoreOps;
+
+DROP TABLE IF EXISTS history;
 CREATE TABLE IF NOT EXISTS history (
-    id bigint AUTO_INCREMENT,
-    session_id varchar(255) NOT NULL,
-    question text NOT NULL,
-    answer text NOT NULL,
-    created_at timestamp DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
-) ENGINE = InnoDB COLLATE utf8mb4_general_ci COMMENT 'history table';
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `session_id` varchar(255) NOT NULL COMMENT '会话ID',
+    `question` text NOT NULL COMMENT '问题',
+    `answer` text NOT NULL COMMENT '答案',
+    `created_at` bigint DEFAULT NULL COMMENT '创建时间',
+    `updated_at` bigint DEFAULT NULL COMMENT '更新时间',
+    `deleted_at` bigint DEFAULT '0' COMMENT '删除时间',
+    PRIMARY KEY (id),
+    KEY `idx_session_id` (`session_id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+DROP TABLE IF EXISTS history_session;
 CREATE TABLE IF NOT EXISTS history_session (
-    id bigint AUTO_INCREMENT,
-    user_id bigint NOT NULL,
-    session_id varchar(255) NOT NULL,
-    title varchar(255) NOT NULL,
-    created_at timestamp DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (id)
-) ENGINE = InnoDB COLLATE utf8mb4_general_ci COMMENT 'history session table';
-
-# goctl model mysql ddl --src history.sql --dir .
+    `id` bigint NOT NULL AUTO_INCREMENT COMMENT '主键ID',
+    `user_id` bigint NOT NULL COMMENT '用户ID',
+    `session_id` varchar(255) NOT NULL COMMENT '会话ID',
+    `title` varchar(255) NOT NULL COMMENT '标题',
+    `created_at` bigint DEFAULT NULL COMMENT '创建时间',
+    `updated_at` bigint DEFAULT NULL COMMENT '更新时间',
+    `deleted_at` bigint DEFAULT '0' COMMENT '删除时间',
+    PRIMARY KEY (id),
+    KEY `idx_user_id` (`user_id`)
+) ENGINE = InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

@@ -20,7 +20,7 @@ const _ = grpc.SupportPackageIsVersion9
 
 const (
 	AIHelper_CreateNewChat_FullMethodName  = "/ai.AIHelper/CreateNewChat"
-	AIHelper_GetHistoryList_FullMethodName = "/ai.AIHelper/GetHistoryList"
+	AIHelper_GetChatList_FullMethodName    = "/ai.AIHelper/GetChatList"
 	AIHelper_GetChatHistory_FullMethodName = "/ai.AIHelper/GetChatHistory"
 	AIHelper_UploadDocument_FullMethodName = "/ai.AIHelper/UploadDocument"
 	AIHelper_AskQuestion_FullMethodName    = "/ai.AIHelper/AskQuestion"
@@ -36,7 +36,7 @@ type AIHelperClient interface {
 	// 创建新会话
 	CreateNewChat(ctx context.Context, in *CreateNewChatRequest, opts ...grpc.CallOption) (*CreateNewChatResponse, error)
 	// 获取历史会话列表
-	GetHistoryList(ctx context.Context, in *GetHistoryListRequest, opts ...grpc.CallOption) (*GetHistoryListResponse, error)
+	GetChatList(ctx context.Context, in *GetChatListRequest, opts ...grpc.CallOption) (*GetChatListResponse, error)
 	// 获取具体会话历史
 	GetChatHistory(ctx context.Context, in *GetChatHistoryRequest, opts ...grpc.CallOption) (*GetChatHistoryResponse, error)
 	// 上传文档到知识库
@@ -63,10 +63,10 @@ func (c *aIHelperClient) CreateNewChat(ctx context.Context, in *CreateNewChatReq
 	return out, nil
 }
 
-func (c *aIHelperClient) GetHistoryList(ctx context.Context, in *GetHistoryListRequest, opts ...grpc.CallOption) (*GetHistoryListResponse, error) {
+func (c *aIHelperClient) GetChatList(ctx context.Context, in *GetChatListRequest, opts ...grpc.CallOption) (*GetChatListResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetHistoryListResponse)
-	err := c.cc.Invoke(ctx, AIHelper_GetHistoryList_FullMethodName, in, out, cOpts...)
+	out := new(GetChatListResponse)
+	err := c.cc.Invoke(ctx, AIHelper_GetChatList_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -116,7 +116,7 @@ type AIHelperServer interface {
 	// 创建新会话
 	CreateNewChat(context.Context, *CreateNewChatRequest) (*CreateNewChatResponse, error)
 	// 获取历史会话列表
-	GetHistoryList(context.Context, *GetHistoryListRequest) (*GetHistoryListResponse, error)
+	GetChatList(context.Context, *GetChatListRequest) (*GetChatListResponse, error)
 	// 获取具体会话历史
 	GetChatHistory(context.Context, *GetChatHistoryRequest) (*GetChatHistoryResponse, error)
 	// 上传文档到知识库
@@ -136,8 +136,8 @@ type UnimplementedAIHelperServer struct{}
 func (UnimplementedAIHelperServer) CreateNewChat(context.Context, *CreateNewChatRequest) (*CreateNewChatResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateNewChat not implemented")
 }
-func (UnimplementedAIHelperServer) GetHistoryList(context.Context, *GetHistoryListRequest) (*GetHistoryListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetHistoryList not implemented")
+func (UnimplementedAIHelperServer) GetChatList(context.Context, *GetChatListRequest) (*GetChatListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetChatList not implemented")
 }
 func (UnimplementedAIHelperServer) GetChatHistory(context.Context, *GetChatHistoryRequest) (*GetChatHistoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetChatHistory not implemented")
@@ -187,20 +187,20 @@ func _AIHelper_CreateNewChat_Handler(srv interface{}, ctx context.Context, dec f
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AIHelper_GetHistoryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetHistoryListRequest)
+func _AIHelper_GetChatList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChatListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AIHelperServer).GetHistoryList(ctx, in)
+		return srv.(AIHelperServer).GetChatList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AIHelper_GetHistoryList_FullMethodName,
+		FullMethod: AIHelper_GetChatList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AIHelperServer).GetHistoryList(ctx, req.(*GetHistoryListRequest))
+		return srv.(AIHelperServer).GetChatList(ctx, req.(*GetChatListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -260,8 +260,8 @@ var AIHelper_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AIHelper_CreateNewChat_Handler,
 		},
 		{
-			MethodName: "GetHistoryList",
-			Handler:    _AIHelper_GetHistoryList_Handler,
+			MethodName: "GetChatList",
+			Handler:    _AIHelper_GetChatList_Handler,
 		},
 		{
 			MethodName: "GetChatHistory",

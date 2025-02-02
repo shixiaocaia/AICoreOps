@@ -35,6 +35,13 @@ func NewAIHelperDomain(db *gorm.DB, qd *qdrant.Store) *AIHelperDomain {
 	}
 }
 
+type ChatSession struct {
+	UserID    int64
+	SessionID string
+	MemoryBuf *memory.ConversationTokenBuffer
+	IsNew     bool
+}
+
 func (d *AIHelperDomain) GetHistorySessionList(ctx context.Context, uid int64, limit, offset int) ([]*types.HistorySession, error) {
 	list, err := d.HistorySessionRepo.GetHistorySessionList(ctx, uid, offset, limit)
 	if err != nil {
@@ -143,30 +150,33 @@ func (d *AIHelperDomain) RetrieveRelevantDocs(ctx context.Context, title, questi
 	return docs, nil
 }
 
-func (d *AIHelperDomain) SaveHistory(ctx context.Context, answer string, req *types.AskQuestionRequest, newSession bool, userID int64, sessionID string, buf *memory.ConversationTokenBuffer) error {
+func (d *AIHelperDomain) SaveHistory(ctx context.Context, question, answer string, session *ChatSession) error {
 	// 1. 会话内容
 	if err := d.HistoryRepo.CreateHistory(ctx, &model.History{
-		SessionID: req.SessionId,
-		Question:  req.Question,
+		SessionID: session.SessionID,
+		Question:  question,
 		Answer:    answer,
 	}); err != nil {
 		return fmt.Errorf("保存历史记录失败: %w", err)
 	}
 
 	// 2. 会话 Session
-	if newSession {
+	if session.IsNew {
 		err := d.HistorySessionRepo.CreateHistorySession(ctx, &model.HistorySession{
-			UserID:    userID,
-			SessionID: sessionID,
-			Title:     req.Question,
+			UserID:    session.UserID,
+			SessionID: session.SessionID,
+			Title:     question,
 		})
 		if err != nil {
 			return fmt.Errorf("创建新会话失败: %w", err)
 		}
+
+		// 避免重复存储
+		session.IsNew = false
 	}
 
 	// 3. 缓存
-	if err := buf.SaveContext(ctx, map[string]any{"question": req.Question}, map[string]any{"answer": answer}); err != nil {
+	if err := session.MemoryBuf.SaveContext(ctx, map[string]any{"question": question}, map[string]any{"answer": answer}); err != nil {
 		return fmt.Errorf("保存历史记录失败: %w", err)
 	}
 

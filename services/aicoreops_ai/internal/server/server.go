@@ -25,10 +25,10 @@ func (s *AicoreopsAiServer) CreateNewChat(ctx context.Context, req *types.Create
 	return l.CreateNewChat(req)
 }
 
-// GetHistoryList 获取历史列表
-func (s *AicoreopsAiServer) GetHistoryList(ctx context.Context, req *types.GetHistoryListRequest) (*types.GetHistoryListResponse, error) {
+// GetChatList 获取历史列表
+func (s *AicoreopsAiServer) GetChatList(ctx context.Context, req *types.GetChatListRequest) (*types.GetChatListResponse, error) {
 	l := logic.NewAIHelperLogic(ctx, s.svcCtx)
-	return l.GetHistoryList(req)
+	return l.GetChatList(req)
 }
 
 // GetChatHistory 获取单个聊天历史

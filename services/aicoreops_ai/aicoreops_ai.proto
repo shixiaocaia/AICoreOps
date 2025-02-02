@@ -13,7 +13,6 @@ message HistorySession {
 // ----------------------- AI 助手相关消息 -----------------------
 // 创建新会话
 message CreateNewChatRequest {
-  int64 user_id = 1;    // 用户ID
 }
 
 message CreateNewChatResponse {
@@ -46,14 +45,13 @@ message AskQuestionResponse {
   }
 }
 
-// 历史记录相关
-message GetHistoryListRequest {
-  int64 user_id = 1;  // 用户ID
-  int32 page = 2;     // 页码
-  int32 page_size = 3; // 每页数量
+// 获取会话列表
+message GetChatListRequest {
+  int32 page = 1;     // 页码
+  int32 page_size = 2; // 每页数量
 }
 
-message GetHistoryListResponse {
+message GetChatListResponse {
   int32 code = 1;                    // 状态码
   string message = 2;                // 错误信息或成功提示
   repeated HistorySession data = 3;  // 返回的数据
@@ -65,6 +63,7 @@ message GetChatHistoryRequest {
   int32 page_size = 3;  // 每页数量
 }
 
+// 获取具体会话历史
 message GetChatHistoryResponse {
   int32 code = 1;           // 状态码
   string message = 2;       // 错误信息或成功提示
@@ -88,6 +87,7 @@ message UploadDocumentRequest {
   string content = 2;  // 文档内容
 }
 
+// 上传文档
 message UploadDocumentResponse {
   int32 code = 1;      // 状态码
   string message = 2;  // 错误信息或成功提示
@@ -95,6 +95,24 @@ message UploadDocumentResponse {
 
   message DocData {
     string doc_id = 1; // 文档ID
+  }
+}
+
+// 获取文档列表
+message GetDocListRequest {
+  int32 page = 1;     // 页码
+  int32 page_size = 2; // 每页数量
+}
+
+message GetDocListResponse {
+  int32 code = 1;      // 状态码
+  string message = 2;  // 错误信息或成功提示
+  repeated DocData data = 3; // 返回的数据
+
+  message DocData {
+    string doc_id = 1; // 文档ID
+    string title = 2;  // 文档标题
+    string content = 3; // 文档内容 or URL
   }
 }
 
@@ -135,13 +153,15 @@ service AIHelper {
   // 创建新会话
   rpc CreateNewChat (CreateNewChatRequest) returns (CreateNewChatResponse);
   // 获取历史会话列表
-  rpc GetHistoryList (GetHistoryListRequest) returns (GetHistoryListResponse);
+  rpc GetChatList (GetChatListRequest) returns (GetChatListResponse);
   // 获取具体会话历史
   rpc GetChatHistory (GetChatHistoryRequest) returns (GetChatHistoryResponse);
   // 上传文档到知识库
   rpc UploadDocument (UploadDocumentRequest) returns (UploadDocumentResponse);
   // 用户提问，获取解答
   rpc AskQuestion (stream AskQuestionRequest) returns (stream AskQuestionResponse);
+  // 获取文档列表
+  rpc GetDocList (GetDocListRequest) returns (GetDocListResponse);
 }
 
 // 日志分析服务

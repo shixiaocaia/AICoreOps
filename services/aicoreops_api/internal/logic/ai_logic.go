@@ -135,7 +135,7 @@ func (l *AiLogic) AskQuestion(w http.ResponseWriter, r *http.Request, sessionId 
 	ctx, cancel := context.WithCancel(metadata.NewOutgoingContext(l.ctx, md))
 	defer cancel()
 
-	stream, err := l.svcCtx.AiRpc.AskQuestion(ctx)
+	stream, err := l.svcCtx.AiRpc.AskQuestion(l.ctx)
 	if err != nil {
 		l.Logger.Errorf("建立 gRPC 双向流失败: %v", err)
 		l.sendWebSocketError(conn, "gRPC 连接失败")

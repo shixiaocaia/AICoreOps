@@ -30,8 +30,8 @@ func NewAIHelperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AIHelper
 	}
 }
 
-// GetHistoryList 获取历史会话列表
-func (a *AIHelperLogic) GetHistoryList(req *types.GetHistoryListRequest) (*types.GetHistoryListResponse, error) {
+// GetChatList 获取历史会话列表
+func (a *AIHelperLogic) GetChatList(req *types.GetChatListRequest) (*types.GetChatListResponse, error) {
 	uid := a.ctx.Value("userId").(int64)
 	if uid == 0 {
 		a.Logger.Error("[获取历史会话列表失败]: 用户ID为空")
@@ -44,7 +44,7 @@ func (a *AIHelperLogic) GetHistoryList(req *types.GetHistoryListRequest) (*types
 		return nil, fmt.Errorf("获取历史会话列表失败: %v", err)
 	}
 
-	return &types.GetHistoryListResponse{
+	return &types.GetChatListResponse{
 		Code:    0,
 		Message: "success",
 		Data:    histories,
@@ -88,19 +88,7 @@ func (a *AIHelperLogic) UploadDocument(req *types.UploadDocumentRequest) (*types
 
 // CreateNewChat 创建新聊天
 func (a *AIHelperLogic) CreateNewChat(req *types.CreateNewChatRequest) (*types.CreateNewChatResponse, error) {
-	// 1. 生成sessionID
 	sessionID := uuid.New().String()
-
-	// TODO 2. 只有发起对话才会真正创建会话
-	// _, err := a.svcCtx.HistorySessionModel.Insert(a.ctx, &model.HistorySession{
-	// 	UserId:    req.UserId,
-	// 	SessionId: sessionID,
-	// 	CreatedAt: time.Now(),
-	// })
-	// if err != nil {
-	// 	a.Logger.Errorf("创建新会话失败: %v", err)
-	// 	return nil, fmt.Errorf("创建新会话失败: %v", err)
-	// }
 
 	return &types.CreateNewChatResponse{
 		Code:    0,
@@ -121,10 +109,17 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 	}
 
 	// 2. get memoryBuf
-	buf, newSession, err := a.domain.GetMemoryBuf(a.ctx, sessionID, a.svcCtx.LLM, a.svcCtx.MemoryBuf, a.svcCtx.Mutex)
+	buf, new, err := a.domain.GetMemoryBuf(a.ctx, sessionID, a.svcCtx.LLM, a.svcCtx.MemoryBuf, a.svcCtx.Mutex)
 	if err != nil {
 		a.Logger.Errorf("获取 MemoryBuf 失败: %v", err)
 		return fmt.Errorf("获取 MemoryBuf 失败: %v", err)
+	}
+
+	session := &domain.ChatSession{
+		UserID:    userID,
+		SessionID: sessionID,
+		MemoryBuf: buf,
+		IsNew:     new,
 	}
 
 	// 3. Ask & Reply
@@ -150,26 +145,30 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 		}
 
 		// 3.3 生成回答 & 流式发送
-		completion, err := a.svcCtx.LLM.GenerateContent(a.ctx, content, llms.WithStreamingFunc(func(ctx context.Context, chunk []byte) error {
-			err := stream.Send(&types.AskQuestionResponse{
-				Code:    0,
-				Message: "success",
-				Data:    &types.AskQuestionResponse_AnswerData{Answer: string(chunk), SessionId: sessionID},
-			})
-			if err != nil {
-				a.Logger.Errorf("发送响应失败: %v", err)
-				return fmt.Errorf("发送响应失败: %v", err)
-			}
-			return nil
-		}))
+		completion, err := a.svcCtx.LLM.GenerateContent(a.ctx, content,
+			llms.WithStreamingFunc(func(ctx context.Context, chunk []byte) error {
+				if err := stream.Send(&types.AskQuestionResponse{
+					Code:    0,
+					Message: "success",
+					Data:    &types.AskQuestionResponse_AnswerData{Answer: string(chunk), SessionId: sessionID},
+				}); err != nil {
+					a.Logger.Errorf("发送响应失败: %v", err)
+					return fmt.Errorf("发送响应失败: %v", err)
+				}
+
+				return nil
+			}))
 		if err != nil {
 			a.Logger.Errorf("生成回答失败: %v", err)
 			return fmt.Errorf("生成回答失败: %v", err)
 		}
 
 		// 3.4 保存对话历史
-		err = a.domain.SaveHistory(a.ctx, completion.Choices[0].Content, req, newSession, userID, sessionID, buf)
-		if err != nil {
+		if err := a.domain.SaveHistory(a.ctx,
+			req.Question,
+			completion.Choices[0].Content,
+			session,
+		); err != nil {
 			a.Logger.Errorf("保存对话历史失败: %v", err)
 			return fmt.Errorf("保存对话历史失败: %v", err)
 		}
