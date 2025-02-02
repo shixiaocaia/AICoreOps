@@ -149,11 +149,10 @@ func (l *AiLogic) AskQuestion(w http.ResponseWriter, r *http.Request, sessionId 
 	})
 
 	// 3. 建立 stream 双向流 RPC
-	md := metadata.Pairs("sessionId", sessionId, "userId", strconv.FormatInt(uid, 10))
-	ctx, cancel := context.WithCancel(metadata.NewOutgoingContext(l.ctx, md))
-	defer cancel()
+	md := metadata.Pairs("uid", strconv.FormatInt(uid, 10), "sessionID", sessionId)
+	ctx := metadata.NewOutgoingContext(l.ctx, md)
 
-	stream, err := l.svcCtx.AiRpc.AskQuestion(l.ctx)
+	stream, err := l.svcCtx.AiRpc.AskQuestion(ctx)
 	if err != nil {
 		l.Logger.Errorf("建立 gRPC 双向流失败: %v", err)
 		l.sendWebSocketError(conn, "gRPC 连接失败")

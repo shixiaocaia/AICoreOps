@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/base64"
 	"fmt"
+	"strconv"
 	"strings"
 	"sync"
 
@@ -12,6 +13,7 @@ import (
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/repo"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/svc"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/types"
+	"google.golang.org/grpc/metadata"
 	"gorm.io/gorm"
 
 	"github.com/tmc/langchaingo/llms"
@@ -112,18 +114,32 @@ func (d *AIHelperDomain) LoadHistoryToMemory(ctx context.Context, sc *svc.Servic
 	return nil
 }
 
-func (d *AIHelperDomain) CheckSession(ctx context.Context) (userID int64, sessionID string, err error) {
-	userID = ctx.Value("userId").(int64)
-	if userID == 0 {
-		return 0, "", fmt.Errorf("用户ID为空")
+// CheckSession 从上下文中获取用户ID和会话ID
+func (d *AIHelperDomain) CheckSession(ctx context.Context) (int64, string, error) {
+	// 从上下文获取元数据
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return 0, "", fmt.Errorf("context中未找到metadata")
 	}
 
-	sessionID = ctx.Value("sessionID").(string)
-	if sessionID == "" {
-		return 0, "", fmt.Errorf("会话ID为空")
+	// 获取并验证用户ID
+	userIDs := md.Get("uid")
+	if len(userIDs) == 0 {
+		return 0, "", fmt.Errorf("metadata中未找到uid")
 	}
 
-	return userID, sessionID, nil
+	uid, err := strconv.ParseInt(userIDs[0], 10, 64)
+	if err != nil {
+		return 0, "", fmt.Errorf("解析用户ID失败: %w", err)
+	}
+
+	// 获取会话ID（可选）
+	sessionIDs := md.Get("sessionID")
+	if len(sessionIDs) > 0 {
+		return uid, sessionIDs[0], nil
+	}
+
+	return uid, "", nil
 }
 
 func (d *AIHelperDomain) GetMemoryBuf(ctx context.Context, sessionID string, llm *ollama.LLM, mp map[string]*memory.ConversationTokenBuffer, mutex *sync.RWMutex) (*memory.ConversationTokenBuffer, bool, error) {
@@ -144,7 +160,7 @@ func (d *AIHelperDomain) GetMemoryBuf(ctx context.Context, sessionID string, llm
 func (d *AIHelperDomain) RetrieveRelevantDocs(ctx context.Context, title, question string, scoreThreshold float32, topK int) ([]schema.Document, error) {
 	docs, err := d.Qdrant.SearchSimilarDocuments(ctx, title, question, dao.WithScoreThreshold(scoreThreshold), dao.WithTopK(topK))
 	if err != nil {
-		return nil, fmt.Errorf("检索相关文档失败: %w", err)
+		return nil, err
 	}
 
 	return docs, nil

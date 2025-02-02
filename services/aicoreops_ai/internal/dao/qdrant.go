@@ -145,9 +145,18 @@ func (q *QdrantDAO) SearchSimilarDocuments(ctx context.Context, title, query str
 		vectorstores.WithScoreThreshold(options.scoreThreshold),
 	}
 	if title != "" {
-		retrievalOpts = append(retrievalOpts, vectorstores.WithFilters(map[string]interface{}{
-			"title": title,
-		}))
+		// 使用 Qdrant 的过滤语法
+		filter := map[string]interface{}{
+			"must": []map[string]interface{}{
+				{
+					"key": "title",
+					"match": map[string]interface{}{
+						"value": title,
+					},
+				},
+			},
+		}
+		retrievalOpts = append(retrievalOpts, vectorstores.WithFilters(filter))
 	}
 
 	retriever := vectorstores.ToRetriever(q.store, options.topK, retrievalOpts...)

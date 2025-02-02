@@ -143,7 +143,6 @@ func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
 		})
 		return
 	}
-	l := logic.NewAiLogic(r.Context(), h.svcCtx)
 
 	// 检查是否为 ws 连接
 	if !websocket.IsWebSocketUpgrade(r) {
@@ -154,6 +153,7 @@ func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	l := logic.NewAiLogic(r.Context(), h.svcCtx)
 	resp, err := l.AskQuestion(w, r, sessionId, title, float32(scoreThresholdFloat), int32(topKInt))
 	if err != nil {
 		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{

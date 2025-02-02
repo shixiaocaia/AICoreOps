@@ -4,13 +4,11 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"strconv"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/domain"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/svc"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/types"
 	"github.com/google/uuid"
-	"google.golang.org/grpc/metadata"
 
 	"github.com/tmc/langchaingo/llms"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -34,12 +32,10 @@ func NewAIHelperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AIHelper
 
 // GetChatList 获取历史会话列表
 func (a *AIHelperLogic) GetChatList(req *types.GetChatListRequest) (*types.GetChatListResponse, error) {
-	vals, _ := metadata.FromIncomingContext(a.ctx)
-	userId := vals.Get("uid")[0]
-	uid, err := strconv.ParseInt(userId, 10, 64)
+	uid, _, err := a.domain.CheckSession(a.ctx)
 	if err != nil {
-		a.Logger.Error("获取历史会话列表失败: 用户ID为空")
-		return nil, fmt.Errorf("获取历史会话列表失败: 用户ID为空")
+		a.Logger.Errorf("获取历史会话列表失败: %v", err)
+		return nil, fmt.Errorf("获取历史会话列表失败: %v", err)
 	}
 
 	limit := req.PageSize
@@ -109,7 +105,7 @@ func (a *AIHelperLogic) CreateNewChat(req *types.CreateNewChatRequest) (*types.C
 // AskQuestion 实现 AI 助手的提问接口逻辑，使用双向流式 RPC
 func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) error {
 	// 1. check session
-	userID, sessionID, err := a.domain.CheckSession(a.ctx)
+	uid, sessionID, err := a.domain.CheckSession(a.ctx)
 	if err != nil {
 		a.Logger.Errorf("检查会话失败: %v", err)
 		return fmt.Errorf("检查会话失败: %v", err)
@@ -123,7 +119,7 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 	}
 
 	session := &domain.ChatSession{
-		UserID:    userID,
+		UserID:    uid,
 		SessionID: sessionID,
 		MemoryBuf: buf,
 		IsNew:     new,
@@ -142,7 +138,7 @@ func (a *AIHelperLogic) AskQuestion(stream types.AIHelper_AskQuestionServer) err
 			return fmt.Errorf("流: %v, 接收请求失败: %v", sessionID, err)
 		}
 
-		a.Logger.Infof("成功接收请求: %v", req.Question)
+		a.Logger.Infof("成功接收请求: %v", req)
 
 		// 3.2 构建上下文
 		content, err := a.domain.BuildContext(a.ctx, buf, req)

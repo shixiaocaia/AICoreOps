@@ -8,7 +8,7 @@ type HistorySession struct {
 
 	CreatedAt int64 `json:"created_at" gorm:"autoCreateTime;comment:创建时间"`
 	UpdatedAt int64 `json:"updated_at" gorm:"autoUpdateTime;comment:更新时间"`
-	DeleteAt  int64 `json:"delete_at" gorm:"comment:删除时间"`
+	DeletedAt int64 `json:"deleted_at" gorm:"comment:删除时间"`
 }
 
 func (m *HistorySession) TableName() string {
