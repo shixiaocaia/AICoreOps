@@ -3,7 +3,7 @@ module github.com/GoSimplicity/AICoreOps/services/aicoreops_api
 go 1.22.8
 
 require (
-	github.com/GoSimplicity/AICoreOps/services/aicoreops_common v0.0.0-20250116115134-f4a83fd19764
+	github.com/GoSimplicity/AICoreOps/services/aicoreops_common v0.0.0-20250202065926-89bcc03d2b98
 	github.com/casbin/casbin/v2 v2.102.0
 	github.com/casbin/gorm-adapter/v3 v3.32.0
 	github.com/gorilla/websocket v1.5.0

@@ -2,6 +2,7 @@ package dao
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/model"
 	"gorm.io/gorm"
@@ -31,6 +32,12 @@ func (d *HistorySessionDAO) GetHistorySessionByID(ctx context.Context, id int64)
 
 // GetHistorySessionList 获取历史会话列表
 func (d *HistorySessionDAO) GetHistorySessionList(ctx context.Context, userId int64, offset, limit int) ([]*model.HistorySession, error) {
+	if limit < 0 {
+		return nil, fmt.Errorf("limit 不能小于0")
+	}
+	if offset < 0 {
+		return nil, fmt.Errorf("offset 不能小于0")
+	}
 	var sessions []*model.HistorySession
 	if err := d.db.WithContext(ctx).Where("user_id = ?", userId).Offset(offset).Limit(limit).Find(&sessions).Error; err != nil {
 		return nil, err

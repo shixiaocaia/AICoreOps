@@ -18,8 +18,8 @@ github.com/Azure/azure-sdk-for-go/sdk/security/keyvault/internal v0.8.0/go.mod h
 github.com/AzureAD/microsoft-authentication-library-for-go v1.0.0/go.mod h1:kgDmCTgBzIEPFElEF+FK0SdjAor06dRq2Go927dnQ6o=
 github.com/AzureAD/microsoft-authentication-library-for-go v1.1.0 h1:HCc0+LpPfpCKs6LGGLAhwBARt9632unrVcI6i8s/8os=
 github.com/AzureAD/microsoft-authentication-library-for-go v1.1.0/go.mod h1:wP83P5OoQ5p6ip3ScPr0BAq0BvuPAvacpEuSzyouqAI=
-github.com/GoSimplicity/AICoreOps/services/aicoreops_common v0.0.0-20250116115134-f4a83fd19764 h1:40Ru/eJD0zO20gKQFhkHrcBXtzMpnzTe7XcZeNRuEO0=
-github.com/GoSimplicity/AICoreOps/services/aicoreops_common v0.0.0-20250116115134-f4a83fd19764/go.mod h1:jzx9pqu5U2pLkHgLXdgKm6cjOp18C/zyqBlTekE1xqY=
+github.com/GoSimplicity/AICoreOps/services/aicoreops_common v0.0.0-20250202065926-89bcc03d2b98 h1:5d3xoR+k8+epycKrSopDyKb1Z121Qr75tGM8eC33pWA=
+github.com/GoSimplicity/AICoreOps/services/aicoreops_common v0.0.0-20250202065926-89bcc03d2b98/go.mod h1:jzx9pqu5U2pLkHgLXdgKm6cjOp18C/zyqBlTekE1xqY=
 github.com/alicebob/gopher-json v0.0.0-20230218143504-906a9b012302 h1:uvdUDbHQHO85qeSydJtItA4T55Pw6BtAejd0APRJOCE=
 github.com/alicebob/gopher-json v0.0.0-20230218143504-906a9b012302/go.mod h1:SGnFV6hVsYE877CKEZ6tDNTjaSXYUk6QqoIK6PrAtcc=
 github.com/alicebob/miniredis/v2 v2.33.0 h1:uvTF0EDeu9RLnUEG27Db5I68ESoIxTiXbNUiji6lZrA=

@@ -4,11 +4,13 @@ import (
 	"context"
 	"fmt"
 	"io"
+	"strconv"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/domain"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/internal/svc"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_ai/types"
 	"github.com/google/uuid"
+	"google.golang.org/grpc/metadata"
 
 	"github.com/tmc/langchaingo/llms"
 	"github.com/zeromicro/go-zero/core/logx"
@@ -32,15 +34,20 @@ func NewAIHelperLogic(ctx context.Context, svcCtx *svc.ServiceContext) *AIHelper
 
 // GetChatList 获取历史会话列表
 func (a *AIHelperLogic) GetChatList(req *types.GetChatListRequest) (*types.GetChatListResponse, error) {
-	uid := a.ctx.Value("userId").(int64)
-	if uid == 0 {
-		a.Logger.Error("[获取历史会话列表失败]: 用户ID为空")
-		return nil, fmt.Errorf("用户ID为空")
+	vals, _ := metadata.FromIncomingContext(a.ctx)
+	userId := vals.Get("uid")[0]
+	uid, err := strconv.ParseInt(userId, 10, 64)
+	if err != nil {
+		a.Logger.Error("获取历史会话列表失败: 用户ID为空")
+		return nil, fmt.Errorf("获取历史会话列表失败: 用户ID为空")
 	}
 
-	histories, err := a.domain.GetHistorySessionList(a.ctx, uid, int(req.PageSize), int(req.Page))
+	limit := req.PageSize
+	offset := (req.Page - 1) * req.PageSize
+
+	histories, err := a.domain.GetHistorySessionList(a.ctx, uid, int(limit), int(offset))
 	if err != nil {
-		a.Logger.Errorf("[获取历史会话列表失败]: %v", err)
+		a.Logger.Errorf("获取历史会话列表失败: %v", err)
 		return nil, fmt.Errorf("获取历史会话列表失败: %v", err)
 	}
 

@@ -87,8 +87,9 @@ func RegisterHandlers(r *Routers, serverCtx *svc.ServiceContext) {
 	// AI相关接口
 	aiGroup := group.Group("")
 	aiGroup.Use(authMiddleware.Handle) // , casbinMiddleware.Handle)
-	aiGroup.Get("/ai/history", ai.GetHistoryList)
+	aiGroup.Get("/ai/list", ai.GetChatList)
 	aiGroup.Get("/ai/chat", ai.GetChatHistory)
 	aiGroup.Post("/ai/upload", ai.UploadDocument)
 	aiGroup.Get("/ai/ask", ai.AskQuestion)
+	aiGroup.Post("/ai/newChat", ai.NewChat)
 }

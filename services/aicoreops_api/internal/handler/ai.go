@@ -21,6 +21,7 @@ package handler
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/logic"
 	"github.com/GoSimplicity/AICoreOps/services/aicoreops_api/internal/svc"
@@ -40,9 +41,29 @@ func NewAiHandler(svcCtx *svc.ServiceContext) *AiHandler {
 	}
 }
 
-func (h *AiHandler) GetHistoryList(w http.ResponseWriter, r *http.Request) {
+func (h *AiHandler) GetChatList(w http.ResponseWriter, r *http.Request) {
+	page := r.URL.Query().Get("page")
+	pageInt, err := strconv.ParseInt(page, 10, 32)
+	if err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusBadRequest,
+			Message: "page 必须是正整数",
+		})
+		return
+	}
+
+	pageSize := r.URL.Query().Get("page_size")
+	pageSizeInt, err := strconv.ParseInt(pageSize, 10, 32)
+	if err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusBadRequest,
+			Message: "page_size 必须是正整数",
+		})
+		return
+	}
+
 	l := logic.NewAiLogic(r.Context(), h.svcCtx)
-	resp, err := l.GetHistoryList(r.Context())
+	resp, err := l.GetChatList(r.Context(), int32(pageInt), int32(pageSizeInt))
 	if err != nil {
 		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
 			Code:    http.StatusInternalServerError,
@@ -103,6 +124,25 @@ func (h *AiHandler) UploadDocument(w http.ResponseWriter, r *http.Request) {
 
 func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
 	sessionId := r.URL.Query().Get("session_id")
+	title := r.URL.Query().Get("title")
+	scoreThreshold := r.URL.Query().Get("score_threshold")
+	scoreThresholdFloat, err := strconv.ParseFloat(scoreThreshold, 32)
+	if err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusBadRequest,
+			Message: "score_threshold 必须是数字",
+		})
+		return
+	}
+	topK := r.URL.Query().Get("top_k")
+	topKInt, err := strconv.Atoi(topK)
+	if err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusBadRequest,
+			Message: "top_k 必须是数字",
+		})
+		return
+	}
 	l := logic.NewAiLogic(r.Context(), h.svcCtx)
 
 	// 检查是否为 ws 连接
@@ -114,13 +154,28 @@ func (h *AiHandler) AskQuestion(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	resp, err := l.AskQuestion(w, r, sessionId)
+	resp, err := l.AskQuestion(w, r, sessionId, title, float32(scoreThresholdFloat), int32(topKInt))
 	if err != nil {
 		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
 			Code:    http.StatusInternalServerError,
 			Message: err.Error(),
 		})
 		fmt.Println(err)
+		return
+	}
+	resp.Code = http.StatusOK
+
+	httpx.OkJsonCtx(r.Context(), w, resp)
+}
+
+func (h *AiHandler) NewChat(w http.ResponseWriter, r *http.Request) {
+	l := logic.NewAiLogic(r.Context(), h.svcCtx)
+	resp, err := l.NewChat()
+	if err != nil {
+		httpx.OkJsonCtx(r.Context(), w, types.GeneralResponse{
+			Code:    http.StatusInternalServerError,
+			Message: err.Error(),
+		})
 		return
 	}
 	resp.Code = http.StatusOK

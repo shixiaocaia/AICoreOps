@@ -24,6 +24,7 @@ const (
 	AIHelper_GetChatHistory_FullMethodName = "/ai.AIHelper/GetChatHistory"
 	AIHelper_UploadDocument_FullMethodName = "/ai.AIHelper/UploadDocument"
 	AIHelper_AskQuestion_FullMethodName    = "/ai.AIHelper/AskQuestion"
+	AIHelper_GetDocList_FullMethodName     = "/ai.AIHelper/GetDocList"
 )
 
 // AIHelperClient is the client API for AIHelper service.
@@ -43,6 +44,8 @@ type AIHelperClient interface {
 	UploadDocument(ctx context.Context, in *UploadDocumentRequest, opts ...grpc.CallOption) (*UploadDocumentResponse, error)
 	// 用户提问，获取解答
 	AskQuestion(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AskQuestionRequest, AskQuestionResponse], error)
+	// 获取文档列表
+	GetDocList(ctx context.Context, in *GetDocListRequest, opts ...grpc.CallOption) (*GetDocListResponse, error)
 }
 
 type aIHelperClient struct {
@@ -106,6 +109,16 @@ func (c *aIHelperClient) AskQuestion(ctx context.Context, opts ...grpc.CallOptio
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type AIHelper_AskQuestionClient = grpc.BidiStreamingClient[AskQuestionRequest, AskQuestionResponse]
 
+func (c *aIHelperClient) GetDocList(ctx context.Context, in *GetDocListRequest, opts ...grpc.CallOption) (*GetDocListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetDocListResponse)
+	err := c.cc.Invoke(ctx, AIHelper_GetDocList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // AIHelperServer is the server API for AIHelper service.
 // All implementations must embed UnimplementedAIHelperServer
 // for forward compatibility.
@@ -123,6 +136,8 @@ type AIHelperServer interface {
 	UploadDocument(context.Context, *UploadDocumentRequest) (*UploadDocumentResponse, error)
 	// 用户提问，获取解答
 	AskQuestion(grpc.BidiStreamingServer[AskQuestionRequest, AskQuestionResponse]) error
+	// 获取文档列表
+	GetDocList(context.Context, *GetDocListRequest) (*GetDocListResponse, error)
 	mustEmbedUnimplementedAIHelperServer()
 }
 
@@ -147,6 +162,9 @@ func (UnimplementedAIHelperServer) UploadDocument(context.Context, *UploadDocume
 }
 func (UnimplementedAIHelperServer) AskQuestion(grpc.BidiStreamingServer[AskQuestionRequest, AskQuestionResponse]) error {
 	return status.Errorf(codes.Unimplemented, "method AskQuestion not implemented")
+}
+func (UnimplementedAIHelperServer) GetDocList(context.Context, *GetDocListRequest) (*GetDocListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDocList not implemented")
 }
 func (UnimplementedAIHelperServer) mustEmbedUnimplementedAIHelperServer() {}
 func (UnimplementedAIHelperServer) testEmbeddedByValue()                  {}
@@ -248,6 +266,24 @@ func _AIHelper_AskQuestion_Handler(srv interface{}, stream grpc.ServerStream) er
 // This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
 type AIHelper_AskQuestionServer = grpc.BidiStreamingServer[AskQuestionRequest, AskQuestionResponse]
 
+func _AIHelper_GetDocList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDocListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AIHelperServer).GetDocList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AIHelper_GetDocList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AIHelperServer).GetDocList(ctx, req.(*GetDocListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // AIHelper_ServiceDesc is the grpc.ServiceDesc for AIHelper service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -270,6 +306,10 @@ var AIHelper_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "UploadDocument",
 			Handler:    _AIHelper_UploadDocument_Handler,
+		},
+		{
+			MethodName: "GetDocList",
+			Handler:    _AIHelper_GetDocList_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

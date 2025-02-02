@@ -64,16 +64,34 @@ var (
 	}
 )
 
+// NewChat 创建新会话
+func (l *AiLogic) NewChat() (*ai.CreateNewChatResponse, error) {
+	resp, err := l.svcCtx.AiRpc.CreateNewChat(l.ctx, &ai.CreateNewChatRequest{})
+	if err != nil {
+		return nil, fmt.Errorf("创建新会话失败: %v", err)
+	}
+	return resp, nil
+}
+
 // GetHistoryList 获取历史记录列表
-func (l *AiLogic) GetHistoryList(ctx context.Context) (*ai.GetHistoryListResponse, error) {
+func (l *AiLogic) GetChatList(ctx context.Context, page int32, pageSize int32) (*ai.GetChatListResponse, error) {
 	uidValue := ctx.Value(middleware.UidKey{})
 	uid, ok := uidValue.(int64)
 	if !ok {
 		return nil, fmt.Errorf("无效的用户ID类型或未找到用户ID")
 	}
 
-	resp, err := l.svcCtx.AiRpc.GetHistoryList(l.ctx, &ai.GetHistoryListRequest{
-		UserId: strconv.FormatInt(uid, 10),
+	md := metadata.Pairs("uid", strconv.FormatInt(uid, 10))
+	newCtx := metadata.NewOutgoingContext(l.ctx, md)
+
+	l.Logger.Infof("uid: %d", uid)
+
+	l.Logger.Infof("page: %d", page)
+	l.Logger.Infof("pageSize: %d", pageSize)
+
+	resp, err := l.svcCtx.AiRpc.GetChatList(newCtx, &ai.GetChatListRequest{
+		Page:     page,
+		PageSize: pageSize,
 	})
 	if err != nil {
 		return nil, fmt.Errorf("获取历史会话失败: %v", err)
@@ -106,7 +124,7 @@ func (l *AiLogic) UploadDocument(req *types.UploadDocumentRequest) (*ai.UploadDo
 }
 
 // AskQuestion 提问
-func (l *AiLogic) AskQuestion(w http.ResponseWriter, r *http.Request, sessionId string) (*ai.AskQuestionResponse, error) {
+func (l *AiLogic) AskQuestion(w http.ResponseWriter, r *http.Request, sessionId string, title string, scoreThreshold float32, topK int32) (*ai.AskQuestionResponse, error) {
 	// 1. 验证会话有效性
 	uidValue := l.ctx.Value(middleware.UidKey{})
 	uid, ok := uidValue.(int64)
@@ -161,7 +179,7 @@ func (l *AiLogic) AskQuestion(w http.ResponseWriter, r *http.Request, sessionId 
 	// 4.2从 WebSocket 接收消息并发送到 gRPC
 	go func() {
 		defer wg.Done()
-		l.sendMessages(conn, stream, opCtx, timeout, sessionId)
+		l.sendMessages(conn, stream, opCtx, timeout, sessionId, title, scoreThreshold, topK)
 	}()
 
 	// 4.3监控超时
@@ -209,7 +227,7 @@ func (l *AiLogic) receiveResponses(conn *websocket.Conn, stream ai.AIHelper_AskQ
 	}
 }
 
-func (l *AiLogic) sendMessages(conn *websocket.Conn, stream ai.AIHelper_AskQuestionClient, ctx context.Context, timeout *time.Timer, sessionId string) {
+func (l *AiLogic) sendMessages(conn *websocket.Conn, stream ai.AIHelper_AskQuestionClient, ctx context.Context, timeout *time.Timer, sessionId string, title string, scoreThreshold float32, topK int32) {
 	for {
 		select {
 		case <-ctx.Done():
@@ -246,8 +264,11 @@ func (l *AiLogic) sendMessages(conn *websocket.Conn, stream ai.AIHelper_AskQuest
 
 			// 发送消息到 gRPC 流
 			req := &ai.AskQuestionRequest{
-				Question:  string(message),
-				SessionId: sessionId,
+				Question:       string(message),
+				SessionId:      sessionId,
+				Title:          title,
+				ScoreThreshold: scoreThreshold,
+				TopK:           topK,
 			}
 
 			if err := stream.Send(req); err != nil {
