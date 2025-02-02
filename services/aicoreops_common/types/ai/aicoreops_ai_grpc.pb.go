@@ -19,22 +19,33 @@ import (
 const _ = grpc.SupportPackageIsVersion9
 
 const (
-	AIHelper_AskQuestion_FullMethodName    = "/ai.AIHelper/AskQuestion"
+	AIHelper_CreateNewChat_FullMethodName  = "/ai.AIHelper/CreateNewChat"
+	AIHelper_GetChatList_FullMethodName    = "/ai.AIHelper/GetChatList"
 	AIHelper_GetChatHistory_FullMethodName = "/ai.AIHelper/GetChatHistory"
 	AIHelper_UploadDocument_FullMethodName = "/ai.AIHelper/UploadDocument"
-	AIHelper_GetHistoryList_FullMethodName = "/ai.AIHelper/GetHistoryList"
+	AIHelper_AskQuestion_FullMethodName    = "/ai.AIHelper/AskQuestion"
+	AIHelper_GetDocList_FullMethodName     = "/ai.AIHelper/GetDocList"
 )
 
 // AIHelperClient is the client API for AIHelper service.
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// 对话式 AI 助手接口
+// ----------------------- 服务定义 -----------------------
+// 对话式 AI 助手服务
 type AIHelperClient interface {
-	AskQuestion(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AskQuestionRequest, AskQuestionResponse], error)
+	// 创建新会话
+	CreateNewChat(ctx context.Context, in *CreateNewChatRequest, opts ...grpc.CallOption) (*CreateNewChatResponse, error)
+	// 获取历史会话列表
+	GetChatList(ctx context.Context, in *GetChatListRequest, opts ...grpc.CallOption) (*GetChatListResponse, error)
+	// 获取具体会话历史
 	GetChatHistory(ctx context.Context, in *GetChatHistoryRequest, opts ...grpc.CallOption) (*GetChatHistoryResponse, error)
+	// 上传文档到知识库
 	UploadDocument(ctx context.Context, in *UploadDocumentRequest, opts ...grpc.CallOption) (*UploadDocumentResponse, error)
-	GetHistoryList(ctx context.Context, in *GetHistoryListRequest, opts ...grpc.CallOption) (*GetHistoryListResponse, error)
+	// 用户提问，获取解答
+	AskQuestion(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AskQuestionRequest, AskQuestionResponse], error)
+	// 获取文档列表
+	GetDocList(ctx context.Context, in *GetDocListRequest, opts ...grpc.CallOption) (*GetDocListResponse, error)
 }
 
 type aIHelperClient struct {
@@ -45,18 +56,25 @@ func NewAIHelperClient(cc grpc.ClientConnInterface) AIHelperClient {
 	return &aIHelperClient{cc}
 }
 
-func (c *aIHelperClient) AskQuestion(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AskQuestionRequest, AskQuestionResponse], error) {
+func (c *aIHelperClient) CreateNewChat(ctx context.Context, in *CreateNewChatRequest, opts ...grpc.CallOption) (*CreateNewChatResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	stream, err := c.cc.NewStream(ctx, &AIHelper_ServiceDesc.Streams[0], AIHelper_AskQuestion_FullMethodName, cOpts...)
+	out := new(CreateNewChatResponse)
+	err := c.cc.Invoke(ctx, AIHelper_CreateNewChat_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &grpc.GenericClientStream[AskQuestionRequest, AskQuestionResponse]{ClientStream: stream}
-	return x, nil
+	return out, nil
 }
 
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type AIHelper_AskQuestionClient = grpc.BidiStreamingClient[AskQuestionRequest, AskQuestionResponse]
+func (c *aIHelperClient) GetChatList(ctx context.Context, in *GetChatListRequest, opts ...grpc.CallOption) (*GetChatListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetChatListResponse)
+	err := c.cc.Invoke(ctx, AIHelper_GetChatList_FullMethodName, in, out, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
 
 func (c *aIHelperClient) GetChatHistory(ctx context.Context, in *GetChatHistoryRequest, opts ...grpc.CallOption) (*GetChatHistoryResponse, error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
@@ -78,10 +96,23 @@ func (c *aIHelperClient) UploadDocument(ctx context.Context, in *UploadDocumentR
 	return out, nil
 }
 
-func (c *aIHelperClient) GetHistoryList(ctx context.Context, in *GetHistoryListRequest, opts ...grpc.CallOption) (*GetHistoryListResponse, error) {
+func (c *aIHelperClient) AskQuestion(ctx context.Context, opts ...grpc.CallOption) (grpc.BidiStreamingClient[AskQuestionRequest, AskQuestionResponse], error) {
 	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
-	out := new(GetHistoryListResponse)
-	err := c.cc.Invoke(ctx, AIHelper_GetHistoryList_FullMethodName, in, out, cOpts...)
+	stream, err := c.cc.NewStream(ctx, &AIHelper_ServiceDesc.Streams[0], AIHelper_AskQuestion_FullMethodName, cOpts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &grpc.GenericClientStream[AskQuestionRequest, AskQuestionResponse]{ClientStream: stream}
+	return x, nil
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type AIHelper_AskQuestionClient = grpc.BidiStreamingClient[AskQuestionRequest, AskQuestionResponse]
+
+func (c *aIHelperClient) GetDocList(ctx context.Context, in *GetDocListRequest, opts ...grpc.CallOption) (*GetDocListResponse, error) {
+	cOpts := append([]grpc.CallOption{grpc.StaticMethod()}, opts...)
+	out := new(GetDocListResponse)
+	err := c.cc.Invoke(ctx, AIHelper_GetDocList_FullMethodName, in, out, cOpts...)
 	if err != nil {
 		return nil, err
 	}
@@ -92,12 +123,21 @@ func (c *aIHelperClient) GetHistoryList(ctx context.Context, in *GetHistoryListR
 // All implementations must embed UnimplementedAIHelperServer
 // for forward compatibility.
 //
-// 对话式 AI 助手接口
+// ----------------------- 服务定义 -----------------------
+// 对话式 AI 助手服务
 type AIHelperServer interface {
-	AskQuestion(grpc.BidiStreamingServer[AskQuestionRequest, AskQuestionResponse]) error
+	// 创建新会话
+	CreateNewChat(context.Context, *CreateNewChatRequest) (*CreateNewChatResponse, error)
+	// 获取历史会话列表
+	GetChatList(context.Context, *GetChatListRequest) (*GetChatListResponse, error)
+	// 获取具体会话历史
 	GetChatHistory(context.Context, *GetChatHistoryRequest) (*GetChatHistoryResponse, error)
+	// 上传文档到知识库
 	UploadDocument(context.Context, *UploadDocumentRequest) (*UploadDocumentResponse, error)
-	GetHistoryList(context.Context, *GetHistoryListRequest) (*GetHistoryListResponse, error)
+	// 用户提问，获取解答
+	AskQuestion(grpc.BidiStreamingServer[AskQuestionRequest, AskQuestionResponse]) error
+	// 获取文档列表
+	GetDocList(context.Context, *GetDocListRequest) (*GetDocListResponse, error)
 	mustEmbedUnimplementedAIHelperServer()
 }
 
@@ -108,8 +148,11 @@ type AIHelperServer interface {
 // pointer dereference when methods are called.
 type UnimplementedAIHelperServer struct{}
 
-func (UnimplementedAIHelperServer) AskQuestion(grpc.BidiStreamingServer[AskQuestionRequest, AskQuestionResponse]) error {
-	return status.Errorf(codes.Unimplemented, "method AskQuestion not implemented")
+func (UnimplementedAIHelperServer) CreateNewChat(context.Context, *CreateNewChatRequest) (*CreateNewChatResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CreateNewChat not implemented")
+}
+func (UnimplementedAIHelperServer) GetChatList(context.Context, *GetChatListRequest) (*GetChatListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetChatList not implemented")
 }
 func (UnimplementedAIHelperServer) GetChatHistory(context.Context, *GetChatHistoryRequest) (*GetChatHistoryResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method GetChatHistory not implemented")
@@ -117,8 +160,11 @@ func (UnimplementedAIHelperServer) GetChatHistory(context.Context, *GetChatHisto
 func (UnimplementedAIHelperServer) UploadDocument(context.Context, *UploadDocumentRequest) (*UploadDocumentResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method UploadDocument not implemented")
 }
-func (UnimplementedAIHelperServer) GetHistoryList(context.Context, *GetHistoryListRequest) (*GetHistoryListResponse, error) {
-	return nil, status.Errorf(codes.Unimplemented, "method GetHistoryList not implemented")
+func (UnimplementedAIHelperServer) AskQuestion(grpc.BidiStreamingServer[AskQuestionRequest, AskQuestionResponse]) error {
+	return status.Errorf(codes.Unimplemented, "method AskQuestion not implemented")
+}
+func (UnimplementedAIHelperServer) GetDocList(context.Context, *GetDocListRequest) (*GetDocListResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method GetDocList not implemented")
 }
 func (UnimplementedAIHelperServer) mustEmbedUnimplementedAIHelperServer() {}
 func (UnimplementedAIHelperServer) testEmbeddedByValue()                  {}
@@ -141,12 +187,41 @@ func RegisterAIHelperServer(s grpc.ServiceRegistrar, srv AIHelperServer) {
 	s.RegisterService(&AIHelper_ServiceDesc, srv)
 }
 
-func _AIHelper_AskQuestion_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(AIHelperServer).AskQuestion(&grpc.GenericServerStream[AskQuestionRequest, AskQuestionResponse]{ServerStream: stream})
+func _AIHelper_CreateNewChat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CreateNewChatRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AIHelperServer).CreateNewChat(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AIHelper_CreateNewChat_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AIHelperServer).CreateNewChat(ctx, req.(*CreateNewChatRequest))
+	}
+	return interceptor(ctx, in, info, handler)
 }
 
-// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
-type AIHelper_AskQuestionServer = grpc.BidiStreamingServer[AskQuestionRequest, AskQuestionResponse]
+func _AIHelper_GetChatList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetChatListRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(AIHelperServer).GetChatList(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: AIHelper_GetChatList_FullMethodName,
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(AIHelperServer).GetChatList(ctx, req.(*GetChatListRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
 
 func _AIHelper_GetChatHistory_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(GetChatHistoryRequest)
@@ -184,20 +259,27 @@ func _AIHelper_UploadDocument_Handler(srv interface{}, ctx context.Context, dec 
 	return interceptor(ctx, in, info, handler)
 }
 
-func _AIHelper_GetHistoryList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(GetHistoryListRequest)
+func _AIHelper_AskQuestion_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(AIHelperServer).AskQuestion(&grpc.GenericServerStream[AskQuestionRequest, AskQuestionResponse]{ServerStream: stream})
+}
+
+// This type alias is provided for backwards compatibility with existing code that references the prior non-generic stream type by name.
+type AIHelper_AskQuestionServer = grpc.BidiStreamingServer[AskQuestionRequest, AskQuestionResponse]
+
+func _AIHelper_GetDocList_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(GetDocListRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(AIHelperServer).GetHistoryList(ctx, in)
+		return srv.(AIHelperServer).GetDocList(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: AIHelper_GetHistoryList_FullMethodName,
+		FullMethod: AIHelper_GetDocList_FullMethodName,
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(AIHelperServer).GetHistoryList(ctx, req.(*GetHistoryListRequest))
+		return srv.(AIHelperServer).GetDocList(ctx, req.(*GetDocListRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -210,6 +292,14 @@ var AIHelper_ServiceDesc = grpc.ServiceDesc{
 	HandlerType: (*AIHelperServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
+			MethodName: "CreateNewChat",
+			Handler:    _AIHelper_CreateNewChat_Handler,
+		},
+		{
+			MethodName: "GetChatList",
+			Handler:    _AIHelper_GetChatList_Handler,
+		},
+		{
 			MethodName: "GetChatHistory",
 			Handler:    _AIHelper_GetChatHistory_Handler,
 		},
@@ -218,8 +308,8 @@ var AIHelper_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _AIHelper_UploadDocument_Handler,
 		},
 		{
-			MethodName: "GetHistoryList",
-			Handler:    _AIHelper_GetHistoryList_Handler,
+			MethodName: "GetDocList",
+			Handler:    _AIHelper_GetDocList_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{
@@ -241,8 +331,9 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// 日志分析与修复建议接口
+// 日志分析服务
 type LogAnalysisClient interface {
+	// 分析日志，返回修复建议
 	AnalyzeLogs(ctx context.Context, in *AnalyzeLogsRequest, opts ...grpc.CallOption) (*AnalyzeLogsResponse, error)
 }
 
@@ -268,8 +359,9 @@ func (c *logAnalysisClient) AnalyzeLogs(ctx context.Context, in *AnalyzeLogsRequ
 // All implementations must embed UnimplementedLogAnalysisServer
 // for forward compatibility.
 //
-// 日志分析与修复建议接口
+// 日志分析服务
 type LogAnalysisServer interface {
+	// 分析日志，返回修复建议
 	AnalyzeLogs(context.Context, *AnalyzeLogsRequest) (*AnalyzeLogsResponse, error)
 	mustEmbedUnimplementedLogAnalysisServer()
 }
@@ -347,8 +439,9 @@ const (
 //
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 //
-// 自动修复任务接口
+// 自动修复服务
 type AutoFixClient interface {
+	// 执行修复任务
 	FixTask(ctx context.Context, in *FixTaskRequest, opts ...grpc.CallOption) (*FixTaskResponse, error)
 }
 
@@ -374,8 +467,9 @@ func (c *autoFixClient) FixTask(ctx context.Context, in *FixTaskRequest, opts ..
 // All implementations must embed UnimplementedAutoFixServer
 // for forward compatibility.
 //
-// 自动修复任务接口
+// 自动修复服务
 type AutoFixServer interface {
+	// 执行修复任务
 	FixTask(context.Context, *FixTaskRequest) (*FixTaskResponse, error)
 	mustEmbedUnimplementedAutoFixServer()
 }
