@@ -4,7 +4,7 @@
 // - protoc             v5.27.1
 // source: aicoreops_ai.proto
 
-package types
+package ai
 
 import (
 	context "context"
