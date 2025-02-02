@@ -3,14 +3,382 @@ syntax = "proto3";
 package prometheus_rpc;
 option go_package="./types";
 
-message Request {
-  string ping = 1;
-}
-
-message Response {
-  string pong = 1;
-}
-
 service Prometheus_rpc {
-  rpc Ping(Request) returns(Response);
+  // scrapePool 采集池
+  rpc GetMonitorScrapePoolList(GetMonitorScrapePoolListRequest) returns(GetMonitorScrapePoolListResponse);
+  rpc CreateMonitorScrapePool(CreateMonitorScrapePoolRequest) returns(CreateMonitorScrapePoolResponse);
+  rpc UpdateMonitorScrapePool(UpdateMonitorScrapePoolRequest) returns(UpdateMonitorScrapePoolResponse);
+  rpc DeleteMonitorScrapePool(DeleteMonitorScrapePoolRequest) returns(DeleteMonitorScrapePoolResponse);
+  
+
+  // alertmanagerPool 告警池
+  rpc GetMonitorAlertManagerPoolList(GetAlertManagerPoolListRequest) returns(GetAlertManagerPoolListResponse);
+  rpc CreateMonitorAlertManagerPool(CreateMonitorAlertManagerPoolRequest) returns(CreateMonitorAlertManagerPoolResponse);
+  rpc UpdateMonitorAlertManagerPool(UpdateMonitorAlertManagerPoolRequest) returns(UpdateMonitorAlertManagerPoolResponse);
+  rpc DeleteMonitorAlertManagerPool(DeleteMonitorAlertManagerPoolRequest) returns(DeleteMonitorAlertManagerPoolResponse);
+
+  // scrapeJob 采集任务
+  rpc GetMonitorScrapeJobList(GetMonitorScrapeJobListRequest) returns(GetMonitorScrapeJobListResponse);
+  rpc CreateMonitorScrapeJob(CreateMonitorScrapeJobRequest) returns(CreateMonitorScrapeJobResponse);
+  rpc UpdateMonitorScrapeJob(UpdateMonitorScrapeJobRequest) returns(UpdateMonitorScrapeJobResponse);
+  rpc DeleteMonitorScrapeJob(DeleteMonitorScrapeJobRequest) returns(DeleteMonitorScrapeJobResponse);
+
+  // alertRule 告警规则
+  rpc GetAlertRuleList(GetAlertRuleListRequest) returns(GetAlertRuleListResponse);
+  rpc CreateAlertRule(CreateAlertRuleRequest) returns(CreateAlertRuleResponse);
+  rpc UpdateAlertRule(UpdateAlertRuleRequest) returns(UpdateAlertRuleResponse);
+  rpc DeleteAlertRule(DeleteAlertRuleRequest) returns(DeleteAlertRuleResponse);
+  rpc CheckPromqlExpr(CheckPromqlExprRequest) returns(CheckPromqlExprResponse);
+  rpc EnableSwitchAlertRule(EnableSwitchAlertRuleRequest) returns(EnableSwitchAlertRuleResponse);
+  rpc BatchEnableSwitchAlertRule(BatchEnableSwitchAlertRuleRequest) returns(BatchEnableSwitchAlertRuleResponse);
+  rpc BatchDeleteAlertRule(BatchDeleteAlertRuleRequest) returns(BatchDeleteAlertRuleResponse);
+
+  // recordRule 预聚合规则
+  rpc GetRecordRuleList(GetRecordRuleListRequest) returns(GetRecordRuleListResponse);
+  rpc CreateRecordRule(CreateRecordRuleRequest) returns(CreateRecordRuleResponse);
+  rpc UpdateRecordRule(UpdateRecordRuleRequest) returns(UpdateRecordRuleResponse);
+  rpc DeleteRecordRule(DeleteRecordRuleRequest) returns(DeleteRecordRuleResponse);
+  rpc EnableSwitchRecordRule(EnableSwitchRecordRuleRequest) returns(EnableSwitchRecordRuleResponse);
+  rpc BatchEnableSwitchRecordRule(BatchEnableSwitchRecordRuleRequest) returns(BatchEnableSwitchRecordRuleResponse);
+  rpc BatchDeleteRecordRule(BatchDeleteRecordRuleRequest) returns(BatchDeleteRecordRuleResponse);
+ 
+  // 预聚合
+
+  // 配置文件
+
+  // 值班组
+
+  // 发送组
 }
+
+// scrapePool 采集池
+message ScrapePool {
+  int64 id = 1;
+  string name = 2;
+  repeated string prometheus_instances = 3;
+  repeated string alertmanager_instances = 4;
+  int64 user_id = 5;
+  int32 scrape_interval = 6;
+  int32 scrape_timeout = 7;
+  repeated string external_labels = 8;
+  int32 support_alert = 9;
+  int32 support_record = 10;
+  string remote_read_url = 11;
+  string alertmanager_url = 12;
+  string rule_file_path = 13;
+  string record_file_path = 14;
+  string remote_write_url = 15;
+  int32 remote_timeout_seconds = 16;
+}
+
+message GetMonitorScrapePoolListRequest {
+}
+
+message GetMonitorScrapePoolListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated ScrapePool data = 3;
+}
+
+message CreateMonitorScrapePoolRequest {
+  ScrapePool pool = 1;
+}
+
+message CreateMonitorScrapePoolResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message UpdateMonitorScrapePoolRequest {
+  ScrapePool pool = 1;
+}
+
+message UpdateMonitorScrapePoolResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message DeleteMonitorScrapePoolRequest {
+  int64 id = 1;
+}
+
+message DeleteMonitorScrapePoolResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// alertmanagerPool 告警池
+message AlertManagerPool {
+  int64 id = 1;
+  string name = 2;
+  repeated string alertmanager_instances = 3;
+  int64 user_id = 4;
+  string resolve_timeout = 5;
+  string group_wait = 6;
+  string group_interval = 7;
+  string repeat_interval = 8;
+  repeated string group_by = 9;
+  string receiver = 10;
+}
+
+message GetAlertManagerPoolListRequest {
+}
+
+message GetAlertManagerPoolListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated AlertManagerPool data = 3;
+}
+
+message CreateMonitorAlertManagerPoolRequest {
+  AlertManagerPool pool = 1;
+}
+
+message CreateMonitorAlertManagerPoolResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message UpdateMonitorAlertManagerPoolRequest {
+  AlertManagerPool pool = 1;
+}
+
+message UpdateMonitorAlertManagerPoolResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message DeleteMonitorAlertManagerPoolRequest {
+  int64 id = 1;
+}
+
+message DeleteMonitorAlertManagerPoolResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// scrapeJob 采集任务
+message ScrapeJob {
+  int64 id = 1;
+  string name = 2;
+  int64 user_id = 3;
+  int32 enable = 4;
+  string service_discovery_type = 5;
+  string metrics_path = 6;
+  string scheme = 7;
+  int32 scrape_interval = 8;
+  int32 scrape_timeout = 9;
+  int64 pool_id = 10;
+  string relabel_configs_yaml_string = 11;
+  int32 refresh_interval = 12;
+  int32 port = 13;
+  repeated int64 tree_node_ids = 14;
+  string kube_config_file_path = 15;
+  string tls_ca_file_path = 16;
+  string tls_ca_content = 17;
+  string bearer_token = 18;
+  string bearer_token_file = 19;
+  string kubernetes_sd_role = 20;
+}
+
+message GetMonitorScrapeJobListRequest {
+}
+
+message GetMonitorScrapeJobListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated ScrapeJob data = 3;
+}
+
+message CreateMonitorScrapeJobRequest {
+  ScrapeJob job = 1;
+}
+
+message CreateMonitorScrapeJobResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message UpdateMonitorScrapeJobRequest {
+  ScrapeJob job = 1;
+}
+
+message UpdateMonitorScrapeJobResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message DeleteMonitorScrapeJobRequest {
+  int64 id = 1;
+}
+
+message DeleteMonitorScrapeJobResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// alertRule 告警规则
+message AlertRule {
+  int64 id = 1;
+  string name = 2;
+  int64 user_id = 3;
+  int64 pool_id = 4;
+  int64 send_group_id = 5;
+  int64 tree_node_id = 6;
+  int32 enable = 7;
+  string expr = 8;
+  string severity = 9;
+  string grafana_link = 10;
+  string for_duration = 11;
+  repeated string labels = 12;
+  repeated string annotations = 13;
+}
+
+message GetAlertRuleListRequest {
+}
+
+message GetAlertRuleListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated AlertRule data = 3;
+}
+
+message CreateAlertRuleRequest {
+  AlertRule rule = 1;
+}
+
+message CreateAlertRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message UpdateAlertRuleRequest {
+  AlertRule rule = 1;
+}
+
+message UpdateAlertRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message DeleteAlertRuleRequest {
+  int64 id = 1;
+}
+
+message DeleteAlertRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message CheckPromqlExprRequest {
+  string expr = 1;
+}
+
+message CheckPromqlExprResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message EnableSwitchAlertRuleRequest {
+  int64 id = 1;
+}
+
+message EnableSwitchAlertRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message BatchEnableSwitchAlertRuleRequest {
+  repeated int64 ids = 1;
+}
+
+message BatchEnableSwitchAlertRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message BatchDeleteAlertRuleRequest {
+  repeated int64 ids = 1;
+}
+
+message BatchDeleteAlertRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+// recordRule 预聚合规则
+message RecordRule {
+  int64 id = 1;
+  string name = 2;
+  string record_name = 3;
+  int64 user_id = 4;
+  int64 pool_id = 5;
+  int64 tree_node_id = 6;
+  int32 enable = 7;
+  string for_duration = 8;
+  string expr = 9;
+}
+
+message GetRecordRuleListRequest {
+}
+
+message GetRecordRuleListResponse {
+  int32 code = 1;
+  string message = 2;
+  repeated RecordRule data = 3;
+}
+
+message CreateRecordRuleRequest {
+  RecordRule rule = 1;
+}
+
+message CreateRecordRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message UpdateRecordRuleRequest {
+  RecordRule rule = 1;
+}
+
+message UpdateRecordRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message DeleteRecordRuleRequest {
+  int64 id = 1;
+}
+
+message DeleteRecordRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message EnableSwitchRecordRuleRequest {
+  int64 id = 1;
+}
+
+message EnableSwitchRecordRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message BatchEnableSwitchRecordRuleRequest {
+  repeated int64 ids = 1;
+}
+
+message BatchEnableSwitchRecordRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+
+message BatchDeleteRecordRuleRequest {
+  repeated int64 ids = 1;
+}
+
+message BatchDeleteRecordRuleResponse {
+  int32 code = 1;
+  string message = 2;
+}
+

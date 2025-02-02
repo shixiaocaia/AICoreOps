@@ -1,0 +1,77 @@
+services:
+  # 服务发现服务
+  sd-service:
+    build:
+      context: .
+      dockerfile: Dockerfile.sd
+    container_name: sd-service
+    ports:
+      - "8888:8888"
+    networks:
+      - prom-network
+
+  # Prometheus 服务
+  prometheus:
+    build:
+      context: .
+      dockerfile: Dockerfile.prometheus
+    container_name: prometheus
+    ports:
+      - "9091:9090"
+    depends_on:
+      - sd-service
+    networks:
+      - prom-network
+
+  # AlertManager 实例1
+  alertmanager1:
+    image: prom/alertmanager:latest
+    container_name: alertmanager1
+    ports:
+      - "9093:9093"
+    volumes:
+      - ./alertmanager1:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yaml'
+      - '--cluster.listen-address=0.0.0.0:9094'
+      - '--cluster.peer=alertmanager2:9094'
+    networks:
+      - prom-network
+
+  # AlertManager 实例2
+  alertmanager2:
+    image: prom/alertmanager:latest
+    container_name: alertmanager2
+    ports:
+      - "9095:9093"
+    volumes:
+      - ./alertmanager2:/etc/alertmanager
+    command:
+      - '--config.file=/etc/alertmanager/alertmanager.yaml'
+      - '--cluster.listen-address=0.0.0.0:9094'
+      - '--cluster.peer=alertmanager1:9094'
+    networks:
+      - prom-network
+
+  # 模拟的目标服务（提供 metrics）
+  target-service-1:
+    build:
+      context: .
+      dockerfile: Dockerfile.target
+    ports:
+      - "8081:9100"
+    networks:
+      - prom-network
+
+  target-service-2:
+    build:
+      context: .
+      dockerfile: Dockerfile.target
+    ports:
+      - "8082:9100"
+    networks:
+      - prom-network
+
+networks:
+  prom-network:
+    driver: bridge

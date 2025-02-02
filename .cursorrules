@@ -1,0 +1,24 @@
+# 项目介绍：
+AICoreOps 是一个基于 **go-zero** 的微服务架构的 AI 驱动云原生运维管理平台，旨在通过人工智能技术提升运维效率和智能化水平。平台包含以下核心模块：
+
+1. **AIOps 模块**：通过机器学习和 AI 技术，分析系统日志、监控数据，提供智能告警、故障预测和根因分析。
+2. **用户与权限**：管理用户、角色及权限，确保系统的安全和可控性。
+3. **服务树与 CMDB**：提供可视化的服务树结构和配置管理数据库（CMDB），实现运维资源的全面管理。
+4. **工单系统**：支持工单的创建、分配、处理和追踪，提高问题解决效率。
+5. **Prometheus 集成**：实时监控系统性能，结合 AI 技术，进行异常预警和自动化响应。
+6. **Kubernetes 管理**：支持 Kubernetes 集群的管理与监控，简化云端资源操作，集成 AI 进行自动化优化和资源调度。
+
+# 项目目录：
+- services/
+  - aicoreops_ai: 对话助手
+  - aicoreops_api: gateway
+  - aicoreops_cicd: 持续集成与持续交付
+  - aicoreops_common: 公共库
+  - aicoreops_prometheus: 监控告警
+  - aicoreops_user: 用户
+
+# 编码风格
+- 注意代码可读性，尽量使用有意义的变量和函数名
+- 尽量使用 go 语言特性，如：context、errgroup、waitgroup 等
+- 尽量使用 go-zero 框架特性，如：rpc、api、middleware 等
+- 关键部分增加注释，有意义的日志输出

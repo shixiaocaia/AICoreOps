@@ -1,0 +1,2 @@
+FROM prom/node-exporter:latest
+EXPOSE 8080
